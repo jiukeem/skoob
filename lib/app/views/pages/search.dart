@@ -29,7 +29,6 @@ class _SearchState extends State<Search> {
 
   @override
   Widget build(BuildContext context) {
-    print('search page: build ran');
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -84,6 +83,7 @@ class _SearchState extends State<Search> {
           Text('SearchStatus is results')
         ];
       default:
+        print('WARNING: Encountered an unexpected search status: $_currentStatus in search.dart');
         return [
           Text('SearchStatus is unknown')
         ];

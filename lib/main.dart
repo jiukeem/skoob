@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:skoob/pages/bookshelf.dart';
-import 'package:skoob/pages/search.dart';
+import 'package:skoob/app/views/pages/bookshelf.dart';
+import 'package:skoob/app/views/pages/search.dart';
 
 void main() => runApp(MaterialApp(
   initialRoute: '/',
