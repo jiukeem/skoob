@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:skoob/app/models/book.dart';
+import 'package:skoob/app/models/aladin.dart';
+import 'package:http/http.dart';
 
 class Search extends StatefulWidget {
   const Search({super.key});
@@ -14,12 +17,32 @@ class _SearchState extends State<Search> {
   String _searchKeyword = '';
   SearchStatus _currentStatus = SearchStatus.initial;
   List<String> _searchResults = [];
+  Aladin aladin = Aladin();
 
   void _startSearch() {
     setState(() {
       _currentStatus = SearchStatus.loading;
     });
     // network request
+  }
+
+  Future<void> _searchBookByTitle() async {
+    Uri url = Uri.parse(aladin.requestUrl);
+    Map<String, dynamic> queryParams = {
+      'TTBKey': aladin.ttb_key,
+      'Query': _searchKeyword,
+      'Output': 'JS',
+      'Version': '20131101',
+      'Cover': 'Big'
+    };
+    Uri uri = Uri.https(url.authority, url.path, queryParams);
+
+    Response response = await get(uri);
+    if (response.statusCode == 200) {
+      print('jiu response: ${response.body}');
+    } else {
+      print('jiu request failed');
+    }
   }
 
   @override
@@ -65,6 +88,7 @@ class _SearchState extends State<Search> {
                 setState(() {
                   _searchKeyword = _searchController.text;
                   _currentStatus = SearchStatus.loading;
+                  _searchBookByTitle();
                 });
               },
               child: Text('Search'),
