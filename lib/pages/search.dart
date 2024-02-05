@@ -25,7 +25,6 @@ class _SearchState extends State<Search> {
   @override
   void initState() {
     super.initState();
-    print('search page: initState ran');
   }
 
   @override
@@ -37,44 +36,58 @@ class _SearchState extends State<Search> {
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (_currentStatus == SearchStatus.initial) ...[
-                SizedBox(
-                height: 40.0,
-                width: 250.0,
-                child: TextField(
-                  controller: _searchController,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(50.0)),
-                    labelText: 'book title',
-                    prefixIcon: Icon(Icons.search),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        _searchKeyword = _searchController.text;
-                        _currentStatus = SearchStatus.loading;
-                      });
-                    },
-                    child: Text('Search'),
-                ),
-              ),]
-              else if (_currentStatus == SearchStatus.loading) ...[
-                SpinKitRotatingCircle(
-                  size: 30.0,
-                  color: Colors.purple[100],
-                )
-              ]
-              else ...[]
-            ],
+            children: _buildContentBasedOnSearchStatus(),
           ),
         ),
       ),
     );
+  }
+
+  List<Widget> _buildContentBasedOnSearchStatus() {
+    switch (_currentStatus) {
+      case SearchStatus.initial:
+        return [
+          SizedBox(
+            height: 40.0,
+            width: 250.0,
+            child: TextField(
+              controller: _searchController,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(50.0)),
+                labelText: 'book title',
+                prefixIcon: Icon(Icons.search),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  _searchKeyword = _searchController.text;
+                  _currentStatus = SearchStatus.loading;
+                });
+              },
+              child: Text('Search'),
+            ),
+          )
+        ];
+      case SearchStatus.loading:
+        return [
+          SpinKitRotatingCircle(
+            size: 30.0,
+            color: Colors.purple[100],
+          )
+        ];
+      case SearchStatus.results:
+        return [
+          Text('SearchStatus is results')
+        ];
+      default:
+        return [
+          Text('SearchStatus is unknown')
+        ];
+    }
   }
 }
 
