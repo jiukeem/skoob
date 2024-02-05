@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class Search extends StatefulWidget {
   const Search({super.key});
@@ -8,8 +9,73 @@ class Search extends StatefulWidget {
 }
 
 class _SearchState extends State<Search> {
+
+  TextEditingController _searchController = TextEditingController();
+  String _searchKeyword = '';
+  SearchStatus _currentStatus = SearchStatus.initial;
+  List<String> _searchResults = [];
+
+  void _startSearch() {
+    setState(() {
+      _currentStatus = SearchStatus.loading;
+    });
+    // network request
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    print('search page: initState ran');
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    print('search page: build ran');
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (_currentStatus == SearchStatus.initial) ...[
+                SizedBox(
+                height: 40.0,
+                width: 250.0,
+                child: TextField(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(50.0)),
+                    labelText: 'book title',
+                    prefixIcon: Icon(Icons.search),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        _searchKeyword = _searchController.text;
+                        _currentStatus = SearchStatus.loading;
+                      });
+                    },
+                    child: Text('Search'),
+                ),
+              ),]
+              else if (_currentStatus == SearchStatus.loading) ...[
+                SpinKitRotatingCircle(
+                  size: 30.0,
+                  color: Colors.purple[100],
+                )
+              ]
+              else ...[]
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
+
+enum SearchStatus { initial, loading, results }
