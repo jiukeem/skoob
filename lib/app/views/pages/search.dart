@@ -3,6 +3,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:skoob/app/models/book.dart';
 import 'package:skoob/app/models/aladin.dart';
 import 'package:http/http.dart';
+import 'dart:convert';
 
 class Search extends StatefulWidget {
   const Search({super.key});
@@ -16,14 +17,14 @@ class _SearchState extends State<Search> {
   TextEditingController _searchController = TextEditingController();
   String _searchKeyword = '';
   SearchStatus _currentStatus = SearchStatus.initial;
-  List<String> _searchResults = [];
+  List<Book> _searchResults = [];
   Aladin aladin = Aladin();
 
   void _startSearch() {
     setState(() {
       _currentStatus = SearchStatus.loading;
     });
-    // network request
+    _searchBookByTitle();
   }
 
   Future<void> _searchBookByTitle() async {
@@ -33,16 +34,47 @@ class _SearchState extends State<Search> {
       'Query': _searchKeyword,
       'Output': 'JS',
       'Version': '20131101',
-      'Cover': 'Big'
+      'Cover': 'Big',
+      'MaxResults': '50',
+      'Start': '1',
     };
     Uri uri = Uri.https(url.authority, url.path, queryParams);
 
     Response response = await get(uri);
     if (response.statusCode == 200) {
-      print('jiu response: ${response.body}');
+      _setSearchResults(response);
+      setState(() {
+        _currentStatus = SearchStatus.results;
+      });
     } else {
-      print('jiu request failed');
+      setState(() {
+        _currentStatus = SearchStatus.error;
+      });
     }
+  }
+
+  void _setSearchResults(Response rawResponse) {
+    Map<String, dynamic> result = jsonDecode(rawResponse.body);
+    List<dynamic> items = result['item'];
+    items.forEach((item) {
+      var book = _setBookConfiguration(item);
+      _searchResults.add(book);
+    });
+  }
+
+  Book _setBookConfiguration(dynamic item) {
+    return Book(
+      title: item['title'],
+      author: item['author'],
+      publisher: item['publisher'],
+      pubDate: item['pubDate'],
+      description: item['description'],
+      coverImageUrl: item['cover'],
+      infoUrl: item['link'],
+      category: item['categoryName'],
+      isbn10: item['isbn'],
+      isbn13: item['isbn13'],
+    );
   }
 
   @override
@@ -87,8 +119,7 @@ class _SearchState extends State<Search> {
               onPressed: () {
                 setState(() {
                   _searchKeyword = _searchController.text;
-                  _currentStatus = SearchStatus.loading;
-                  _searchBookByTitle();
+                  _startSearch();
                 });
               },
               child: Text('Search'),
@@ -104,7 +135,46 @@ class _SearchState extends State<Search> {
         ];
       case SearchStatus.results:
         return [
-          Text('SearchStatus is results')
+          Expanded(
+            child: ListView.builder(
+              itemCount: _searchResults.length,
+              itemBuilder: (context, index) {
+                Book book = _searchResults[index];
+                return ListTile(
+                  title: Text(book.title),
+                  subtitle: Text(book.author),
+                  leading: ClipRect(
+                    child: Image.network(
+                      book.coverImageUrl,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  trailing: IconButton(
+                    icon: Icon(Icons.add),
+                    onPressed: () {
+                      // add to my bookshelf
+                    },
+                  ),
+                );
+              },
+            ),
+          )
+        ];
+      case SearchStatus.error:
+        return [
+          Text('SearchStatus is error'),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  _currentStatus = SearchStatus.loading;
+                  _searchBookByTitle();
+                });
+              },
+              child: Text('Retry')
+            ),
+          ),
         ];
       default:
         print('WARNING: Encountered an unexpected search status: $_currentStatus in search.dart');
@@ -115,4 +185,4 @@ class _SearchState extends State<Search> {
   }
 }
 
-enum SearchStatus { initial, loading, results }
+enum SearchStatus { initial, loading, results, error }
