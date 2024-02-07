@@ -4,6 +4,8 @@ import 'package:skoob/app/models/book.dart';
 import 'package:skoob/app/models/aladin.dart';
 import 'package:http/http.dart';
 import 'dart:convert';
+import 'package:skoob/app/controller/shared_list_state.dart';
+import 'package:provider/provider.dart';
 
 class Search extends StatefulWidget {
   const Search({super.key});
@@ -152,7 +154,7 @@ class _SearchState extends State<Search> {
                   trailing: IconButton(
                     icon: Icon(Icons.add),
                     onPressed: () {
-                      // add to my bookshelf
+                      Provider.of<SharedListState>(context, listen: false).addItem(book);
                     },
                   ),
                 );
