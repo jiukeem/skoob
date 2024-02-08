@@ -37,4 +37,10 @@ class SharedListState with ChangeNotifier {
     _items = bookList;
     notifyListeners();
   }
+
+  void deleteItem(Book book) {
+    _items.remove(book);
+    _saveItemInLocal();
+    notifyListeners();
+  }
 }

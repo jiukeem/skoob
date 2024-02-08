@@ -42,6 +42,10 @@ class _BookshelfState extends State<Bookshelf> {
     });
   }
 
+  void _deleteSelectedBook(Book book) {
+    Provider.of<SharedListState>(context, listen: false).deleteItem(book);
+  }
+
   @override
   Widget build(BuildContext context) {
     final SharedListState listener = Provider.of<SharedListState>(context);
@@ -78,6 +82,12 @@ class _BookshelfState extends State<Bookshelf> {
                     book.coverImageUrl,
                     fit: BoxFit.cover,
                   ),
+                ),
+                trailing: IconButton(
+                  icon: Icon(Icons.delete_forever),
+                  onPressed: () {
+                    _deleteSelectedBook(book);
+                  },
                 ),
               );
             },
