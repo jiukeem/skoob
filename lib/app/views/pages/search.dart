@@ -147,6 +147,12 @@ class _SearchState extends State<Search> {
                     icon: Icon(Icons.add),
                     onPressed: () {
                       Provider.of<SharedListState>(context, listen: false).addItem(book);
+                      const snackBar = SnackBar(
+                        content: Text('책장에 책이 추가되었습니다.'),
+                        duration: Duration(seconds: 1),
+                        padding: EdgeInsets.all(20.0),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
                     },
                   ),
                 );
