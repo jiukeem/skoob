@@ -24,4 +24,36 @@ class Book {
     required this.isbn10,
     this.translator = '',
   });
+
+  Map<String, String?> toJson() {
+    return {
+      'title': title,
+      'author': author,
+      'publisher': publisher,
+      'pubDate': pubDate,
+      'description': description,
+      'coverImageUrl': coverImageUrl,
+      'infoUrl': infoUrl,
+      'category': category,
+      'isbn13': isbn13,
+      'isbn10': isbn10,
+      'translator': translator,
+    };
+  }
+
+  factory Book.fromJson(Map<String, dynamic> json) {
+    return Book(
+      title: json['title'] ?? '',
+      author: json['author'] ?? '',
+      publisher: json['publisher'] ?? '',
+      pubDate: json['pubDate'] ?? '',
+      description: json['description'] ?? '',
+      coverImageUrl: json['coverImageUrl'] ?? '',
+      infoUrl: json['infoUrl'] ?? '',
+      category: json['category'] ?? '',
+      isbn13: json['isbn13'] ?? '',
+      isbn10: json['isbn10'] ?? '',
+      translator: json['translator'] ?? '',
+    );
+  }
 }
