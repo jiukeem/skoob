@@ -129,6 +129,17 @@ class _SearchState extends State<Search> {
         ];
       case SearchStatus.results:
         return [
+          TextButton(
+              onPressed: () {
+                setState(() {
+                  _searchKeyword = '';
+                  setState(() {
+                    _currentStatus = SearchStatus.initial;
+                  });
+                });
+              },
+              child: Text('back')
+          ),
           Expanded(
             child: ListView.builder(
               itemCount: _searchResults.length,
