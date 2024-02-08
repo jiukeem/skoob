@@ -15,27 +15,10 @@ class _BookshelfState extends State<Bookshelf> {
   Widget build(BuildContext context) {
     final SharedListState listener = Provider.of<SharedListState>(context);
 
-    return Center(
-      child: (listener.items.length == 0)
-          ? Text('책장에 책이 없습니다.')
-          : Expanded(
-            child: ListView.builder(
-                itemCount: listener.items.length,
-                itemBuilder: (context, index) {
-                  Book book = listener.items[index];
-                  return ListTile(
-                    title: Text(book.title),
-                    subtitle: Text(book.author),
-                    leading: ClipRect(
-                      child: Image.network(
-                        book.coverImageUrl,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  );
-                },
-              )
-          ),
+    return SafeArea(
+        child: Center(
+          child: _buildContentBasedOnBookshelfStatus(listener),
+        )
     );
   }
 }

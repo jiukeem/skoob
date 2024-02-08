@@ -15,7 +15,7 @@ class _SkoobFrameState extends State<SkoobFrame> {
 
   final List<Widget> _pages = [
     Bookshelf(),
-    Search()
+    Search(),
   ];
   
   void _onItemTapped(int index) {
@@ -28,6 +28,7 @@ class _SkoobFrameState extends State<SkoobFrame> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        backgroundColor: Colors.white,
         body: IndexedStack(
           index: _currentPageIndex,
           children: _pages,
