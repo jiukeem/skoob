@@ -5,8 +5,9 @@ import 'package:skoob/app/models/book.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:skoob/app/utils/app_colors.dart';
 
-class Bookshelf extends StatefulWidget {
+class Bookshelf extends StatefulWidget{
   const Bookshelf({super.key});
 
   @override
@@ -60,14 +61,14 @@ class _BookshelfState extends State<Bookshelf> {
   Widget _buildContentBasedOnBookshelfStatus(SharedListState listener) {
     switch (_currentStatus) {
       case BookshelfStatus.loading:
-        return SpinKitRotatingCircle(
+        return const SpinKitRotatingCircle(
           size: 30.0,
-          color: Colors.purple[100],
+          color: AppColors.primaryYellow,
         );
       case BookshelfStatus.complete:
-        if (listener.items.length == 0) {
-          return Center(
-            child: Text('책장에 책이 없습니다.'),
+        if (listener.items.isEmpty) {
+          return const Center(
+            child: Text('추가한 책이 없습니다'),
           );
         } else {
           return ListView.builder(

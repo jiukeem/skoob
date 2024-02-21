@@ -6,6 +6,7 @@ import 'package:http/http.dart';
 import 'dart:convert';
 import 'package:skoob/app/controller/shared_list_state.dart';
 import 'package:provider/provider.dart';
+import 'package:skoob/app/utils/app_colors.dart';
 
 class Search extends StatefulWidget {
   const Search({super.key});
@@ -16,10 +17,10 @@ class Search extends StatefulWidget {
 
 class _SearchState extends State<Search> {
 
-  TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
   String _searchKeyword = '';
   SearchStatus _currentStatus = SearchStatus.initial;
-  List<Book> _searchResults = [];
+  final List<Book> _searchResults = [];
   Aladin aladin = Aladin();
 
   void _startSearch() {
@@ -122,9 +123,9 @@ class _SearchState extends State<Search> {
         ];
       case SearchStatus.loading:
         return [
-          SpinKitRotatingCircle(
+          const SpinKitRotatingCircle(
             size: 30.0,
-            color: Colors.purple[100],
+            color: AppColors.primaryYellow,
           )
         ];
       case SearchStatus.results:
