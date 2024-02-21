@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:skoob/app/controller/shared_list_state.dart';
 import 'package:skoob/app/views/pages/bookshelf.dart';
 import 'package:skoob/app/views/pages/search.dart';
 import 'package:skoob/app/views/widgets/skoob_bottom_nav_bar.dart';
 import 'package:skoob/app/utils/app_colors.dart';
+import 'package:provider/provider.dart';
 
-void main() => runApp(MaterialApp(
-  theme: ThemeData(
-    primaryColor: AppColors.primaryYellow, // Used for the AppBar and other primary color areas.
-  ),
-  home: Skoob(),
-)
-);
+void main() => runApp(ChangeNotifierProvider(
+    create: (context) => SharedListState(),
+    child: MaterialApp(
+      theme: ThemeData(
+        primaryColor: AppColors
+            .primaryYellow, // Used for the AppBar and other primary color areas.
+      ),
+      home: const Skoob(),
+    )));
 
 class Skoob extends StatefulWidget {
   const Skoob({super.key});
@@ -23,8 +27,8 @@ class _SkoobState extends State<Skoob> {
   int _currentPageIndex = 0;
 
   final List<Widget> _pages = [
-    Search(),
-    Search(),
+    const Bookshelf(),
+    const Search(),
   ];
 
   void _onItemTapped(int index) {
