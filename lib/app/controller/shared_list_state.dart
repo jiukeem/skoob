@@ -7,40 +7,33 @@ class SharedListState with ChangeNotifier {
   List<Book> _items = [];
   List<Book> get items => _items;
 
-  void addItem(Book book) {
-    _items.add(book);
+  void _saveItemInLocal() async {
+    final SharedPreferences localPrefs = await SharedPreferences.getInstance();
+    String booksJson = jsonEncode(_items.map((book) => book.toJson()).toList());
+    localPrefs.setString('books', booksJson);
+    return;
+  }
+
+  void updateItems(List<Book> Function(List<Book>) updateFunc)  {
+    _items = updateFunc(_items);
     _removeDuplicates();
     _saveItemInLocal();
     notifyListeners();
   }
 
   void _removeDuplicates() {
-    final List<Book> uniqueList = [];
-    final Set<Book> seen = {};
-    for (var book in _items) {
-      if (seen.add(book)) {
-        uniqueList.add(book);
-      }
-    }
-    _items = uniqueList;
-    return;
+    _items = _items.toSet().toList();
   }
 
-  Future<void> _saveItemInLocal() async {
-    final SharedPreferences localPrefs = await SharedPreferences.getInstance();
-    String booksJson = jsonEncode(_items.map((book) => book.toJson()).toList());
-    await localPrefs.setString('books', booksJson);
-    return;
+  void addItem(Book book) {
+    updateItems((items) => [...items, book]);
   }
 
   void replaceWithLoadedBookList(List<Book> bookList) {
-    _items = bookList;
-    notifyListeners();
+    updateItems((_) => bookList);
   }
 
   void deleteItem(Book book) {
-    _items.remove(book);
-    _saveItemInLocal();
-    notifyListeners();
+    updateItems((items) => items.where((item) => item != book).toList());
   }
 }
