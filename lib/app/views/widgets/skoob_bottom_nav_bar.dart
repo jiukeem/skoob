@@ -15,27 +15,26 @@ class SkoobBottomNavBar extends StatelessWidget {
       height: 52.0,
       decoration: BoxDecoration(
         color: AppColors.white,
-        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+        borderRadius: const BorderRadius.all(Radius.circular(20.0)),
         border: Border.all(
           color: AppColors.gray3,
           width: 0.8
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.softBlack.withOpacity(0.1), // Shadow color
+            color: AppColors.softBlack.withOpacity(0.1),
             spreadRadius: 0,
-            blurRadius: 2, // Shadow blur radius
-            offset: Offset(0, 2), // Shadow position
+            blurRadius: 2,
+            offset: const Offset(0, 2),
           )
         ]
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.all(Radius.circular(20.0)),
-        child: BottomAppBar(
-          surfaceTintColor: AppColors.white,
-          padding: EdgeInsets.zero,
+        borderRadius: const BorderRadius.all(Radius.circular(20.0)),
+        child: Center(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               navBarItem(
                   index: 0,
