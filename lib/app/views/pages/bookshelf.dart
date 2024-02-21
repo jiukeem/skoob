@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:skoob/app/utils/app_colors.dart';
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 
 class Bookshelf extends StatefulWidget{
   const Bookshelf({super.key});
@@ -16,6 +17,7 @@ class Bookshelf extends StatefulWidget{
 
 class _BookshelfState extends State<Bookshelf> {
   BookshelfStatus _currentStatus = BookshelfStatus.loading;
+  BookshelfViewOption _currentViewOption = BookshelfViewOption.detail;
 
   @override
   void initState() {
@@ -52,9 +54,62 @@ class _BookshelfState extends State<Bookshelf> {
     final SharedListState listener = Provider.of<SharedListState>(context);
 
     return SafeArea(
-        child: Center(
-          child: _buildContentBasedOnBookshelfStatus(listener),
+        child: Column(
+          children: [
+            _buildBookshelfAppBar(),
+            _buildContentBasedOnBookshelfStatus(listener),
+          ],
         )
+    );
+  }
+
+  Widget _buildBookshelfAppBar() {
+    return SizedBox(
+      height: 60.0,
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(20.0, 10.0, 8.0, 0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Text(
+              'MY BOOKS',
+              style: TextStyle(
+                  fontFamily: 'LexendExaMedium',
+                  fontSize: 24.0
+              ),
+            ),
+            Row(
+              children: [
+                _viewOptionItem(viewOption: BookshelfViewOption.detail,
+                    defaultIcon: const Icon(FluentIcons.apps_list_detail_24_regular, color: AppColors.gray2),
+                    selectedIcon: const Icon(FluentIcons.apps_list_detail_24_filled, color: AppColors.softBlack)
+                ),
+                _viewOptionItem(viewOption: BookshelfViewOption.table,
+                    defaultIcon: const Icon(FluentIcons.navigation_24_regular, color: AppColors.gray2),
+                    selectedIcon: const Icon(FluentIcons.navigation_24_filled, color: AppColors.softBlack)
+                ),
+                _viewOptionItem(viewOption: BookshelfViewOption.album,
+                    defaultIcon: const Icon(FluentIcons.grid_24_regular, color: AppColors.gray2),
+                    selectedIcon: const Icon(FluentIcons.grid_24_filled, color: AppColors.softBlack)
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _viewOptionItem({required BookshelfViewOption viewOption, required Icon defaultIcon, required Icon selectedIcon}) {
+    bool isSelected = viewOption == _currentViewOption;
+    return IconButton(
+        onPressed: () {
+          setState(() {
+            _currentViewOption = viewOption;
+          });
+        },
+        icon: isSelected ? selectedIcon : defaultIcon
     );
   }
 
@@ -67,31 +122,40 @@ class _BookshelfState extends State<Bookshelf> {
         );
       case BookshelfStatus.complete:
         if (listener.items.isEmpty) {
-          return const Center(
-            child: Text('추가한 책이 없습니다'),
+          return const Expanded(
+            child: Center(
+              child: Text('추가한 책이 없습니다'),
+            ),
           );
         } else {
-          return ListView.builder(
-            itemCount: listener.items.length,
-            itemBuilder: (context, index) {
-              Book book = listener.items[index];
-              return ListTile(
-                title: Text(book.title),
-                subtitle: Text(book.author),
-                leading: ClipRect(
-                  child: Image.network(
-                    book.coverImageUrl,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                trailing: IconButton(
-                  icon: Icon(Icons.delete_forever),
-                  onPressed: () {
-                    _deleteSelectedBook(book);
+          return Expanded(
+            child: Column(
+              children: [
+                // TODO filter & sorting
+                ListView.builder(
+                  itemCount: listener.items.length,
+                  itemBuilder: (context, index) {
+                    Book book = listener.items[index];
+                    return ListTile(
+                      title: Text(book.title),
+                      subtitle: Text(book.author),
+                      leading: ClipRect(
+                        child: Image.network(
+                          book.coverImageUrl,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      trailing: IconButton(
+                        icon: Icon(Icons.delete_forever),
+                        onPressed: () {
+                          _deleteSelectedBook(book);
+                        },
+                      ),
+                    );
                   },
                 ),
-              );
-            },
+              ],
+            ),
           );
         }
     }
@@ -99,3 +163,4 @@ class _BookshelfState extends State<Bookshelf> {
 }
 
 enum BookshelfStatus { loading, complete }
+enum BookshelfViewOption { detail, table, album }
