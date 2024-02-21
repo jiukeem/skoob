@@ -36,13 +36,24 @@ class _SkoobState extends State<Skoob> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(
-        index: _currentPageIndex,
-        children: _pages,
-      ),
-      bottomNavigationBar: SkoobBottomNavBar(
-        currentIndex: _currentPageIndex,
-        onTap: _onItemTapped
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: IndexedStack(
+            index: _currentPageIndex,
+            children: _pages,
+            ),
+          ),
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: SkoobBottomNavBar(
+              currentIndex: _currentPageIndex,
+              onTap: _onItemTapped
+          ),
+          )
+        ]
       ),
     );
   }
