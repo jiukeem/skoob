@@ -40,22 +40,22 @@ class SkoobBottomNavBar extends StatelessWidget {
               navBarItem(
                   index: 0,
                   defaultIcon: const Icon(
-                      FluentIcons.library_20_regular,
+                      FluentIcons.library_24_regular,
                       color: AppColors.softBlack,
                   ),
                   selectedIcon: const Icon(
-                      FluentIcons.library_20_filled,
+                      FluentIcons.library_24_filled,
                       color: AppColors.white,
                   )
               ),
               navBarItem(
                   index: 1,
                   defaultIcon: const Icon(
-                      FluentIcons.book_search_20_regular,
+                      FluentIcons.book_search_24_regular,
                       color: AppColors.softBlack,
                   ),
                   selectedIcon: const Icon(
-                      FluentIcons.book_search_20_filled,
+                      FluentIcons.book_search_24_filled,
                       color: AppColors.white,
                   )
               )
