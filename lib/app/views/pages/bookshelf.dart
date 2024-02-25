@@ -216,7 +216,7 @@ class _BookshelfState extends State<Bookshelf> {
                         case BookshelfViewOption.detail:
                           return DetailViewListTile(book: book, isLast: isLast);
                         case BookshelfViewOption.table:
-                          return TableViewListTile(book: book);
+                          return TableViewListTile(book: book, isLast: isLast);
                         case BookshelfViewOption.album:
                           return AlbumViewListTile(book: book);
                         default:
