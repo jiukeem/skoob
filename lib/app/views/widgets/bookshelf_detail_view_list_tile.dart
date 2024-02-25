@@ -12,4 +12,166 @@ class DetailViewListTile extends StatelessWidget with BookshelfListTileMixin {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 4.5),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 168.0,
+                  width: 120.0,
+                  child: Image.network(
+                    book.coverImageUrl,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                const SizedBox(width: 8.0),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        book.title,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                            color: AppColors.softBlack,
+                            fontFamily: 'NotoSansKRMedium',
+                            fontSize: 16.0
+                        ),
+                      ),
+                      const SizedBox(height: 4.0,),
+                      Text(
+                        book.author,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                            color: AppColors.softBlack,
+                            fontFamily: 'NotoSansKRRegular',
+                            fontSize: 12.0
+                        ),
+                      ),
+                      const SizedBox(height: 4.0,),
+                      Row(
+                        children: [
+                          Text(
+                            book.publisher,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                                color: AppColors.softBlack,
+                                fontFamily: 'NotoSansKRRegular',
+                                fontSize: 12.0
+                            ),
+                          ),
+                          const SizedBox(width: 4.0,),
+                          Text(
+                            book.pubDate.substring(0,4),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                                color: AppColors.softBlack,
+                                fontFamily: 'InriaSansRegular',
+                                fontSize: 12.0
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 6.0,),
+                      Container(
+                        color: AppColors.gray3,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 1.0, horizontal: 4.0),
+                          child: Text(
+                            book.category.split('>')[1],
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                                color: AppColors.softBlack,
+                                fontFamily: 'NotoSansKRRegular',
+                                fontSize: 12.0
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8.0,),
+                      // TODO below is dummy
+                      Row(
+                        children: [
+                          Container(
+                            decoration: const BoxDecoration(
+                              color: AppColors.secondaryYellow,
+                              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 1.0, horizontal: 6.0),
+                              child: Text(
+                                'reading',
+                                style: TextStyle(
+                                    fontFamily: 'LexendRegular',
+                                    color: AppColors.softBlack,
+                                    fontSize: 11.0
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8.0),
+                          const Text(
+                            '2024.02.14 ~',
+                            style: TextStyle(
+                                fontFamily: 'InriaSansRegular',
+                                color: AppColors.gray1,
+                                fontSize: 12.0
+                            ),
+                          )
+                        ],
+                      ),
+                      const SizedBox(height: 4.0,),
+                      const Row(
+                        children: [
+                          Icon(
+                            FluentIcons.star_20_filled,
+                            color: AppColors.secondaryYellow,
+                          ),
+                          Icon(
+                            FluentIcons.star_20_filled,
+                            color: AppColors.secondaryYellow,
+                          ),
+                          Icon(
+                            FluentIcons.star_20_filled,
+                            color: AppColors.secondaryYellow,
+                          ),
+                          Icon(
+                            FluentIcons.star_20_filled,
+                            color: AppColors.secondaryYellow,
+                          ),
+                          Icon(
+                            FluentIcons.star_half_20_regular,
+                            color: AppColors.secondaryYellow,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (isLast)
+            const SizedBox(
+              height: 92.0,
+            )
+          else
+            const Divider(
+              height: 20.0,
+              thickness: 0.5,
+            )
+        ],
+      ),
+    );
+  }
+}
