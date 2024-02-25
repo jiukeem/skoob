@@ -109,6 +109,13 @@ flutter:
     - family: InriaSansRegular
       fonts:
         - asset: fonts/InriaSans-Regular.ttf
+    - family: InriaSansLight
+      fonts:
+        - asset: fonts/InriaSans-Light.ttf
+    - family: InriaSansBold
+      fonts:
+        - asset: fonts/InriaSans-Bold.ttf
+
 
 
   #

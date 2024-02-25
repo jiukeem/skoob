@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:skoob/app/models/book.dart';
 import 'package:skoob/app/utils/app_colors.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
+import 'package:skoob/app/views/widgets/general_divider.dart';
 import '../../services/bookshelf_list_tile_mixin.dart';
 
 class DetailViewListTile extends StatelessWidget with BookshelfListTileMixin {
@@ -166,10 +167,7 @@ class DetailViewListTile extends StatelessWidget with BookshelfListTileMixin {
               height: 92.0,
             )
           else
-            const Divider(
-              height: 20.0,
-              thickness: 0.5,
-            )
+            const GeneralDivider(padding: 20.0,)
         ],
       ),
     );
