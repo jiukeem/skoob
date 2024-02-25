@@ -137,7 +137,7 @@ class _BookshelfState extends State<Bookshelf> {
             child: Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(20.0, 0, 20.0, 24.0),
+                  padding: const EdgeInsets.fromLTRB(20.0, 4.0, 20.0, 20.0),
                   child: Row(
                     children: [
                       Container(
