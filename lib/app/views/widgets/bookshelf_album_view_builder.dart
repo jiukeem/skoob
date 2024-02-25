@@ -31,7 +31,7 @@ class _BookshelfAlbumViewBuilderState extends State<BookshelfAlbumViewBuilder> {
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+        padding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 92.0),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: maxItemNum,
             mainAxisSpacing: gap,
