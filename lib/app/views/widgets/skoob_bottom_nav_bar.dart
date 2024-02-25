@@ -67,16 +67,20 @@ class SkoobBottomNavBar extends StatelessWidget {
 
   Widget navBarItem({required int index, required Icon defaultIcon, required Icon selectedIcon}) {
     bool isSelected = index == currentIndex;
-    return GestureDetector(
+    return InkWell(
       onTap: () => onTap(index),
-      child: Container(
-        height: 35.0,
-        width: 35.0,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: isSelected ? AppColors.primaryYellow : AppColors.white,
+      customBorder: const CircleBorder(),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 28.0),
+        child: Container(
+          height: 35.0,
+          width: 35.0,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: isSelected ? AppColors.primaryYellow : AppColors.white,
+          ),
+          child: isSelected ? selectedIcon : defaultIcon
         ),
-        child: isSelected ? selectedIcon : defaultIcon
       ),
     );
   }
