@@ -10,7 +10,7 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:skoob/app/views/widgets/bookshelf_detail_view_list_tile.dart';
 import 'package:skoob/app/views/widgets/bookshelf_table_view_label.dart';
 
-import '../widgets/bookshelf_album_view_list_tile.dart';
+import '../widgets/bookshelf_album_view_builder.dart';
 import '../widgets/bookshelf_table_view_list_tile.dart';
 
 class Bookshelf extends StatefulWidget{
@@ -207,25 +207,22 @@ class _BookshelfState extends State<Bookshelf> {
                 if (_currentViewOption == BookshelfViewOption.table)
                   const TableViewLabel(),
                 Expanded(
-                  child: ListView.builder(
-                    itemCount: listener.items.length,
-                    itemBuilder: (context, index) {
-                      Book book = listener.items[index];
-                      bool isLast = index + 1 == listener.items.length;
-                      switch (_currentViewOption) {
-                        case BookshelfViewOption.detail:
-                          return DetailViewListTile(book: book, isLast: isLast);
-                        case BookshelfViewOption.table:
-                          return TableViewListTile(book: book, isLast: isLast);
-                        case BookshelfViewOption.album:
-                          return AlbumViewListTile(book: book);
-                        default:
-                          return ListTile(
-                            title: Text(book.title),
-                          );
-                      }
-                    },
-                  ),
+                  child: _currentViewOption == BookshelfViewOption.album
+                      ? BookshelfAlbumViewBuilder(items: listener.items)
+                      : ListView.builder(
+                          itemCount: listener.items.length,
+                          itemBuilder: (context, index) {
+                            Book book = listener.items[index];
+                            bool isLast = index + 1 == listener.items.length;
+                            if (_currentViewOption == BookshelfViewOption.detail) {
+                              return DetailViewListTile(book: book, isLast: isLast);
+                            } else if (_currentViewOption == BookshelfViewOption.table) {
+                              return TableViewListTile(book: book, isLast: isLast);
+                            } else {
+                              return ListTile(title: Text(book.title));
+                            }
+                          },
+                        ),
                 ),
               ],
             ),
