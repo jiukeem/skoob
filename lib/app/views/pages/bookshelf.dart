@@ -135,6 +135,74 @@ class _BookshelfState extends State<Bookshelf> {
           return Expanded(
             child: Column(
               children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20.0, 0, 20.0, 24.0),
+                  child: Row(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                              color: AppColors.gray1,
+                              width: 0.5,
+                            ),
+                            borderRadius: const BorderRadius.all(Radius.circular(20.0))
+                        ),
+                        child: const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 8.0),
+                          child: Row(
+                            children: [
+                              Icon(
+                                FluentIcons.arrow_sort_16_regular,
+                                color: AppColors.gray1,
+                                size: 14.0,
+                              ),
+                              SizedBox(width: 4.0,),
+                              Text(
+                                'sort',
+                                style: TextStyle(
+                                    color: AppColors.gray1,
+                                    fontFamily: 'LexendRegular',
+                                    fontSize: 14.0
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12.0,),
+                      Container(
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                              color: AppColors.gray1,
+                              width: 0.5,
+                            ),
+                            borderRadius: const BorderRadius.all(Radius.circular(20.0))
+                        ),
+                        child: const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 8.0),
+                          child: Row(
+                            children: [
+                              Icon(
+                                FluentIcons.options_16_regular,
+                                color: AppColors.gray1,
+                                size: 14.0,
+                              ),
+                              SizedBox(width: 4.0,),
+                              Text(
+                                'filter',
+                                style: TextStyle(
+                                    color: AppColors.gray1,
+                                    fontFamily: 'LexendRegular',
+                                    fontSize: 14.0
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 Expanded(
                   child: ListView.builder(
                     itemCount: listener.items.length,
