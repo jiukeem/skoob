@@ -8,6 +8,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:skoob/app/utils/app_colors.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:skoob/app/views/widgets/bookshelf_detail_view_list_tile.dart';
+import 'package:skoob/app/views/widgets/bookshelf_table_view_label.dart';
 
 import '../widgets/bookshelf_album_view_list_tile.dart';
 import '../widgets/bookshelf_table_view_list_tile.dart';
@@ -203,6 +204,8 @@ class _BookshelfState extends State<Bookshelf> {
                     ],
                   ),
                 ),
+                if (_currentViewOption == BookshelfViewOption.table)
+                  const TableViewLabel(),
                 Expanded(
                   child: ListView.builder(
                     itemCount: listener.items.length,
