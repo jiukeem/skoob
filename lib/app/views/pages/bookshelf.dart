@@ -33,7 +33,7 @@ class _BookshelfState extends State<Bookshelf> {
         _currentStatus = BookshelfStatus.complete;
       });
       return;
-    };
+    }
 
     List<dynamic> bookMaps = jsonDecode(booksJson);
     List<Book> localBookList = bookMaps.map((bookMap) => Book.fromJson(bookMap))
@@ -67,7 +67,7 @@ class _BookshelfState extends State<Bookshelf> {
     return SizedBox(
       height: 60.0,
       child: Padding(
-        padding: EdgeInsets.fromLTRB(20.0, 10.0, 8.0, 0),
+        padding: const EdgeInsets.fromLTRB(20.0, 10.0, 8.0, 0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
