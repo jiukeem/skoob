@@ -7,6 +7,10 @@ import 'dart:convert';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:skoob/app/utils/app_colors.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
+import 'package:skoob/app/views/widgets/bookshelf_detail_view_list_tile.dart';
+
+import '../widgets/bookshelf_album_view_list_tile.dart';
+import '../widgets/bookshelf_table_view_list_tile.dart';
 
 class Bookshelf extends StatefulWidget{
   const Bookshelf({super.key});
@@ -131,28 +135,26 @@ class _BookshelfState extends State<Bookshelf> {
           return Expanded(
             child: Column(
               children: [
-                // TODO filter & sorting
-                ListView.builder(
-                  itemCount: listener.items.length,
-                  itemBuilder: (context, index) {
-                    Book book = listener.items[index];
-                    return ListTile(
-                      title: Text(book.title),
-                      subtitle: Text(book.author),
-                      leading: ClipRect(
-                        child: Image.network(
-                          book.coverImageUrl,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      trailing: IconButton(
-                        icon: Icon(Icons.delete_forever),
-                        onPressed: () {
-                          _deleteSelectedBook(book);
-                        },
-                      ),
-                    );
-                  },
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: listener.items.length,
+                    itemBuilder: (context, index) {
+                      Book book = listener.items[index];
+                      bool isLast = index + 1 == listener.items.length;
+                      switch (_currentViewOption) {
+                        case BookshelfViewOption.detail:
+                          return DetailViewListTile(book: book, isLast: isLast);
+                        case BookshelfViewOption.table:
+                          return TableViewListTile(book: book);
+                        case BookshelfViewOption.album:
+                          return AlbumViewListTile(book: book);
+                        default:
+                          return ListTile(
+                            title: Text(book.title),
+                          );
+                      }
+                    },
+                  ),
                 ),
               ],
             ),
