@@ -25,6 +25,8 @@ class _SearchState extends State<Search> {
   Aladin aladin = Aladin();
 
   void _startSearch() {
+    if (_searchKeyword.isEmpty) return;
+
     setState(() {
       _currentStatus = SearchStatus.loading;
     });
