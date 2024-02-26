@@ -10,8 +10,12 @@ void main() => runApp(ChangeNotifierProvider(
     create: (context) => SharedListState(),
     child: MaterialApp(
       theme: ThemeData(
-        primaryColor: AppColors
-            .primaryYellow, // Used for the AppBar and other primary color areas.
+        primaryColor: AppColors.primaryYellow,
+        textSelectionTheme: const TextSelectionThemeData(
+          selectionHandleColor: AppColors.primaryYellow,
+          selectionColor: AppColors.gray2,
+          cursorColor: AppColors.gray2
+        ),
       ),
       home: const Skoob(),
     )));
