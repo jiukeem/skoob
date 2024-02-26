@@ -61,6 +61,8 @@ class _SearchState extends State<Search> {
   }
 
   void _setSearchResults(Response rawResponse) {
+    _searchResults.clear();
+
     Map<String, dynamic> result = jsonDecode(rawResponse.body);
     List<dynamic> items = result['item'];
     items.forEach((item) {
