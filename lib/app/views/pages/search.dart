@@ -124,7 +124,7 @@ class _SearchState extends State<Search> {
 
   Widget _buildSearchField() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20.0, 0, 10.0, 0),
+      padding: const EdgeInsets.fromLTRB(20.0, 0, 10.0, 12.0),
       child: Row(
         children: [
           Expanded(
