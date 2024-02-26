@@ -25,9 +25,15 @@ class _SearchResultViewListTileState extends State<SearchResultViewListTile> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
+          Container(
             width: 70.0,
             height: 70 * 70 / 50,
+            decoration: BoxDecoration(
+                border: Border.all(
+                  color: AppColors.gray2,
+                  width: 0.5,
+                )
+            ),
             child: Image.network(
               book.coverImageUrl,
               fit: BoxFit.cover,
