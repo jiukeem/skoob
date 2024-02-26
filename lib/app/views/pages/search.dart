@@ -1,3 +1,4 @@
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:skoob/app/models/book.dart';
@@ -159,104 +160,47 @@ class _SearchState extends State<Search> {
   Widget _buildContentBasedOnSearchStatus() {
     switch (_currentStatus) {
       case SearchStatus.initial:
-        return [
-          SizedBox(
-            height: 40.0,
-            width: 250.0,
-            child: TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(50.0)),
-                labelText: 'book title',
-                prefixIcon: Icon(Icons.search),
-              ),
-            ),
+        return const Expanded(
+          child: Center(
+            child: Text('책 이름으로 검색해보세요'),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  _searchKeyword = _searchController.text;
-                  _startSearch();
-                });
-              },
-              child: Text('Search'),
-            ),
-          )
-        ];
+        );
       case SearchStatus.loading:
-        return [
-          const SpinKitRotatingCircle(
-            size: 30.0,
-            color: AppColors.primaryYellow,
-          )
-        ];
+        return const Expanded(
+          child: Center(
+            child: SpinKitRotatingCircle(
+              size: 30.0,
+              color: AppColors.primaryYellow,
+            ),
+          ),
+        );
       case SearchStatus.results:
-        return [
-          TextButton(
-              onPressed: () {
-                setState(() {
-                  _searchKeyword = '';
-                  setState(() {
-                    _currentStatus = SearchStatus.initial;
-                  });
-                });
-              },
-              child: Text('back')
+        return const Expanded(
+          child: Center(
+            child: Text('results'),
           ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: _searchResults.length,
-              itemBuilder: (context, index) {
-                Book book = _searchResults[index];
-                return ListTile(
-                  title: Text(book.title),
-                  subtitle: Text(book.author),
-                  leading: ClipRect(
-                    child: Image.network(
-                      book.coverImageUrl,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  trailing: IconButton(
-                    icon: Icon(Icons.add),
-                    onPressed: () {
-                      Provider.of<SharedListState>(context, listen: false).addItem(book);
-                      const snackBar = SnackBar(
-                        content: Text('책장에 책이 추가되었습니다.'),
-                        duration: Duration(seconds: 1),
-                        padding: EdgeInsets.all(20.0),
-                      );
-                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                    },
-                  ),
-                );
-              },
-            ),
-          )
-        ];
+        );
       case SearchStatus.error:
-        return [
-          Text('SearchStatus is error'),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  _currentStatus = SearchStatus.loading;
-                  _searchBookByTitle();
-                });
-              },
-              child: Text('Retry')
+        return Column(
+          children: [
+            const Text('SearchStatus is error'),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      _currentStatus = SearchStatus.loading;
+                      _searchBookByTitle();
+                    });
+                  },
+                  child: const Text('Retry')),
             ),
-          ),
-        ];
+          ],
+        );
       default:
-        print('WARNING: Encountered an unexpected search status: $_currentStatus in search.dart');
-        return [
-          Text('SearchStatus is unknown')
-        ];
+        print(
+            'WARNING: Encountered an unexpected search status: $_currentStatus in search.dart');
+        return const Text('SearchStatus is unknown');
     }
   }
 }
