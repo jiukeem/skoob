@@ -83,16 +83,80 @@ class _SearchState extends State<Search> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: _buildContentBasedOnSearchStatus(),
+      child: Column(
+        children: [
+          _buildSearchAppBar(),
+          _buildSearchField(),
+          _buildContentBasedOnSearchStatus(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSearchAppBar() {
+    return const SizedBox(
+      height: 60.0,
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              'SEARCH',
+              style: TextStyle(
+                  fontFamily: 'LexendExaMedium',
+                  fontSize: 24.0
+              ),
+            ),
+            Spacer(),
+          ],
         ),
       ),
     );
   }
 
-  List<Widget> _buildContentBasedOnSearchStatus() {
+  Widget _buildSearchField() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20.0, 0, 10.0, 0),
+      child: Row(
+        children: [
+          Expanded(
+              child: Container(
+                // height: 40.0,
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(40.0)),
+                  color: AppColors.gray3
+                ),
+                child: TextField(
+                  controller: _searchController,
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 6.0),
+                    isDense: true,
+                  ),
+                  cursorWidth: 1.2,
+                  style: const TextStyle(
+                    fontSize: 16.0
+                  ),
+                ),
+              )),
+          const SizedBox(width: 2.0),
+          IconButton(
+              onPressed: () {
+                setState(() {
+                  _searchKeyword = _searchController.text;
+                  _startSearch();
+                });
+              },
+              icon: const Icon(FluentIcons.search_16_regular)
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildContentBasedOnSearchStatus() {
     switch (_currentStatus) {
       case SearchStatus.initial:
         return [
