@@ -8,6 +8,7 @@ import 'dart:convert';
 import 'package:skoob/app/controller/shared_list_state.dart';
 import 'package:provider/provider.dart';
 import 'package:skoob/app/utils/app_colors.dart';
+import 'package:skoob/app/views/widgets/search_result_view_list_tile.dart';
 
 class Search extends StatefulWidget {
   const Search({super.key});
@@ -152,7 +153,7 @@ class _SearchState extends State<Search> {
                   _startSearch();
                 });
               },
-              icon: const Icon(FluentIcons.search_16_regular)
+              icon: const Icon(FluentIcons.search_24_regular)
           )
         ],
       ),
@@ -177,9 +178,13 @@ class _SearchState extends State<Search> {
           ),
         );
       case SearchStatus.results:
-        return const Expanded(
-          child: Center(
-            child: Text('results'),
+        return Expanded(
+          child: ListView.builder(
+            itemCount: _searchResults.length,
+            itemBuilder: (context, index) {
+              Book book = _searchResults[index];
+              return SearchResultViewListTile(book: book);
+            }
           ),
         );
       case SearchStatus.error:
