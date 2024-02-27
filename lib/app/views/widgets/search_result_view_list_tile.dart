@@ -1,5 +1,7 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:skoob/app/controller/shared_list_state.dart';
 
 import '../../models/book.dart';
 import '../../utils/app_colors.dart';
@@ -100,6 +102,7 @@ class _SearchResultViewListTileState extends State<SearchResultViewListTile> {
                 onPressed: () {
                   setState(() {
                     isInBookshelf = !isInBookshelf;
+                    Provider.of<SharedListState>(context, listen: false).addItem(book);
                   });
                 },
                 icon: isInBookshelf
