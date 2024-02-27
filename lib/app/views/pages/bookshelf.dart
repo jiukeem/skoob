@@ -219,7 +219,7 @@ class _BookshelfState extends State<Bookshelf> {
                             } else if (_currentViewOption == BookshelfViewOption.table) {
                               return TableViewListTile(book: book, isLast: isLast);
                             } else {
-                              return ListTile(title: Text(book.title));
+                              return ListTile(title: Text(book.basicInfo.title));
                             }
                           },
                         ),

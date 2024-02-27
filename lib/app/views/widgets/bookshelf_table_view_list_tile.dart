@@ -39,7 +39,7 @@ class TableViewListTile extends StatelessWidget with BookshelfListTileMixin {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        book.title,
+                        book.basicInfo.title,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
@@ -49,7 +49,7 @@ class TableViewListTile extends StatelessWidget with BookshelfListTileMixin {
                         ),
                       ),
                       Text(
-                        book.author,
+                        book.basicInfo.author,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(

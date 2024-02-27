@@ -10,6 +10,10 @@ import 'package:provider/provider.dart';
 import 'package:skoob/app/utils/app_colors.dart';
 import 'package:skoob/app/views/widgets/search_result_view_list_tile.dart';
 
+import '../../models/book/basic_info.dart';
+import '../../models/book/custom_info.dart';
+import '../../utils/util_fuctions.dart';
+
 class Search extends StatefulWidget {
   const Search({super.key});
 
@@ -73,17 +77,18 @@ class _SearchState extends State<Search> {
 
   Book _setBookConfiguration(dynamic item) {
     return Book(
-      title: item['title'],
-      author: item['author'],
-      publisher: item['publisher'],
-      pubDate: item['pubDate'],
-      description: item['description'],
-      coverImageUrl: item['cover'],
-      infoUrl: item['link'],
-      category: item['categoryName'],
-      isbn10: item['isbn'],
-      isbn13: item['isbn13'],
-    );
+        basicInfo: BasicInfo(
+            title: item['title'],
+            author: item['author'],
+            publisher: item['publisher'],
+            pubDate: item['pubDate'],
+            description: item['description'],
+            coverImageUrl: item['cover'],
+            infoUrl: item['link'],
+            category: item['categoryName'],
+            isbn10: item['isbn'],
+            isbn13: item['isbn13']),
+        customInfo: CustomInfo(addedDate: getCurrentDateAsString()));
   }
 
   @override

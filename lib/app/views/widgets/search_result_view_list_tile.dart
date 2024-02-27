@@ -37,7 +37,7 @@ class _SearchResultViewListTileState extends State<SearchResultViewListTile> {
                 )
             ),
             child: Image.network(
-              book.coverImageUrl,
+              book.basicInfo.coverImageUrl,
               fit: BoxFit.cover,
             )
           ),
@@ -47,7 +47,7 @@ class _SearchResultViewListTileState extends State<SearchResultViewListTile> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  book.title,
+                  book.basicInfo.title,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
@@ -58,7 +58,7 @@ class _SearchResultViewListTileState extends State<SearchResultViewListTile> {
                 ),
                 const SizedBox(height: 4.0,),
                 Text(
-                  book.author,
+                  book.basicInfo.author,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
@@ -71,7 +71,7 @@ class _SearchResultViewListTileState extends State<SearchResultViewListTile> {
                 Row(
                   children: [
                     Text(
-                      book.publisher,
+                      book.basicInfo.publisher,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
@@ -82,7 +82,7 @@ class _SearchResultViewListTileState extends State<SearchResultViewListTile> {
                     ),
                     const SizedBox(width: 4.0,),
                     Text(
-                      book.pubDate.substring(0,4),
+                      book.basicInfo.pubDate.substring(0,4),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
