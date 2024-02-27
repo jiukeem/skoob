@@ -48,7 +48,7 @@ class DetailViewListTile extends StatelessWidget with BookshelfListTileMixin {
                     height: 168.0,
                     width: 120.0,
                     child: Image.network(
-                      book.coverImageUrl,
+                      book.basicInfo.coverImageUrl,
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -58,7 +58,7 @@ class DetailViewListTile extends StatelessWidget with BookshelfListTileMixin {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          book.title,
+                          book.basicInfo.title,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
@@ -69,7 +69,7 @@ class DetailViewListTile extends StatelessWidget with BookshelfListTileMixin {
                         ),
                         const SizedBox(height: 4.0,),
                         Text(
-                          book.author,
+                          book.basicInfo.author,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
@@ -82,7 +82,7 @@ class DetailViewListTile extends StatelessWidget with BookshelfListTileMixin {
                         Row(
                           children: [
                             Text(
-                              book.publisher,
+                              book.basicInfo.publisher,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
@@ -93,7 +93,7 @@ class DetailViewListTile extends StatelessWidget with BookshelfListTileMixin {
                             ),
                             const SizedBox(width: 4.0,),
                             Text(
-                              book.pubDate.substring(0,4),
+                              book.basicInfo.pubDate.substring(0,4),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
@@ -110,7 +110,7 @@ class DetailViewListTile extends StatelessWidget with BookshelfListTileMixin {
                           child: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 1.0, horizontal: 4.0),
                             child: Text(
-                              book.category.split('>')[1],
+                              book.basicInfo.category.split('>')[1],
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(

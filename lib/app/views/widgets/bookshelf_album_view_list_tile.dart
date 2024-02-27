@@ -49,7 +49,7 @@ class AlbumViewListTile extends StatelessWidget with BookshelfListTileMixin {
               )
             ),
             child: Image.network(
-              book.coverImageUrl,
+              book.basicInfo.coverImageUrl,
               fit: BoxFit.cover,
 
             ),
