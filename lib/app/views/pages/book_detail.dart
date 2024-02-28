@@ -136,12 +136,12 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
                             Tab(text: 'HIGHLIGHT'),
                           ],
                           labelStyle: const TextStyle(
-                            fontFamily: 'LexendSemiBold',
+                            fontFamily: 'LexendMedium',
                             fontSize: 16.0,
                             color: AppColors.primaryGreen
                           ),
                           unselectedLabelStyle: const TextStyle(
-                              fontFamily: 'LexendRegular',
+                              fontFamily: 'LexendLight',
                               fontSize: 16.0,
                           ),
                           unselectedLabelColor: AppColors.gray2,
