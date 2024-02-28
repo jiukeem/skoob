@@ -168,13 +168,13 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12.0),
                     child: ListView.builder(
-                      itemCount: itemCount,
+                      itemCount: 9,
                       itemBuilder: (context, index) {
                         return BookDetailInfoListViewTile(book: book, index: index);
                     }),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
                     child: ListView.builder(
                         itemCount: 1,
                         itemBuilder: (context, index) {
@@ -182,7 +182,7 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
                         }),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
                     child: ListView.builder(
                         itemCount: 1,
                         itemBuilder: (context, index) {
