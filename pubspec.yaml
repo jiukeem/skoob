@@ -98,6 +98,12 @@ flutter:
     - family: LexendRegular
       fonts:
        - asset: fonts/Lexend-Regular.ttf
+    - family: LexendMedium
+      fonts:
+        - asset: fonts/Lexend-Medium.ttf
+    - family: LexendSemiBold
+      fonts:
+        - asset: fonts/Lexend-SemiBold.ttf
     - family: LexendExaMedium
       fonts:
         - asset: fonts/LexendExa-Medium.ttf
