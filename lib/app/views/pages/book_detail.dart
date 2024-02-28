@@ -171,93 +171,6 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
                         return BookDetailInfoListViewTile(book: book, index: index);
                     }),
                   ),
-                  // Padding(
-                  //   padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                  //   child: Column(
-                  //     crossAxisAlignment: CrossAxisAlignment.start,
-                  //     children: [
-                  //       SizedBox(height: 20.0,),
-                  //       Text(
-                  //         'Status',
-                  //         style: TextStyle(
-                  //           fontFamily: 'LexendLight',
-                  //           fontSize: 14.0,
-                  //           color: AppColors.gray1,
-                  //       ),
-                  //       ),
-                  //       SizedBox(height: 4.0),
-                  //       Text('finished',
-                  //         style: TextStyle(
-                  //           fontFamily: 'NotoSansKRRegular',
-                  //           fontSize: 16.0,
-                  //           color: AppColors.softBlack,
-                  //         ),
-                  //       ),
-                  //       GeneralDivider(padding: 16.0),
-                  //       Text('Started reading on',
-                  //         style: TextStyle(
-                  //           fontFamily: 'LexendLight',
-                  //           fontSize: 14.0,
-                  //           color: AppColors.gray1,
-                  //         ),
-                  //       ),
-                  //       SizedBox(height: 4.0),
-                  //       Text('2024.10.11',
-                  //         style: TextStyle(
-                  //           fontFamily: 'NotoSansKRRegular',
-                  //           fontSize: 16.0,
-                  //           color: AppColors.softBlack,
-                  //         ),
-                  //       ),
-                  //       GeneralDivider(padding: 16.0),
-                  //       Text('Title',
-                  //         style: TextStyle(
-                  //           fontFamily: 'LexendLight',
-                  //           fontSize: 14.0,
-                  //           color: AppColors.gray1,
-                  //         ),
-                  //       ),
-                  //       SizedBox(height: 4.0),
-                  //       Text(book.basicInfo.title,
-                  //         style: TextStyle(
-                  //           fontFamily: 'NotoSansKRRegular',
-                  //           fontSize: 16.0,
-                  //           color: AppColors.softBlack,
-                  //         ),),
-                  //       GeneralDivider(padding: 16.0),
-                  //       Text('Author',
-                  //         style: TextStyle(
-                  //           fontFamily: 'LexendLight',
-                  //           fontSize: 14.0,
-                  //           color: AppColors.gray1,
-                  //         ),
-                  //       ),
-                  //       Text(book.basicInfo.author,
-                  //         style: TextStyle(
-                  //           fontFamily: 'NotoSansKRRegular',
-                  //           fontSize: 16.0,
-                  //           color: AppColors.softBlack,
-                  //         ),),
-                  //       GeneralDivider(padding: 16.0),
-                  //       Text('Translator',
-                  //         style: TextStyle(
-                  //           fontFamily: 'LexendLight',
-                  //           fontSize: 14.0,
-                  //           color: AppColors.gray1,
-                  //         ),
-                  //       ),
-                  //       SizedBox(height: 4.0),
-                  //       Text(book.basicInfo.translator,
-                  //         style: TextStyle(
-                  //           fontFamily: 'NotoSansKRRegular',
-                  //           fontSize: 16.0,
-                  //           color: AppColors.softBlack,
-                  //         ),
-                  //       ),
-                  //       GeneralDivider(padding: 16.0)
-                  //     ],
-                  //   ),
-                  // ),
                   Center(child: Text('NOTE CONTENT'),),
                   Center(child: Text('HIGHLIGHT CONTENT'),),
                 ],
@@ -281,7 +194,9 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return Container(child: _tabBar);
+    return Material(
+        color: AppColors.white,
+        child: _tabBar);
   }
 
   @override
