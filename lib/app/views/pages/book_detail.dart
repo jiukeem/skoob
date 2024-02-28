@@ -4,7 +4,9 @@ import 'package:skoob/app/views/widgets/general_divider.dart';
 
 import '../../models/book.dart';
 import '../../utils/app_colors.dart';
+import '../widgets/book_detail_highlight_list_view_tile.dart';
 import '../widgets/book_detail_info_list_view_tile.dart';
+import '../widgets/book_detail_note_list_view_tile.dart';
 
 class BookDetail extends StatefulWidget {
   final Book book;
@@ -171,8 +173,22 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
                         return BookDetailInfoListViewTile(book: book, index: index);
                     }),
                   ),
-                  Center(child: Text('NOTE CONTENT'),),
-                  Center(child: Text('HIGHLIGHT CONTENT'),),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                    child: ListView.builder(
+                        itemCount: 1,
+                        itemBuilder: (context, index) {
+                          return BookDetailNoteListViewTile(book: book);
+                        }),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                    child: ListView.builder(
+                        itemCount: 1,
+                        itemBuilder: (context, index) {
+                          return BookDetailHighlightListViewTile(book: book);
+                        }),
+                  ),
                 ],
               ),
             ),
