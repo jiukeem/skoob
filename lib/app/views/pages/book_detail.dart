@@ -1,8 +1,10 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:skoob/app/views/widgets/general_divider.dart';
 
 import '../../models/book.dart';
 import '../../utils/app_colors.dart';
+import '../widgets/book_detail_info_list_view_tile.dart';
 
 class BookDetail extends StatefulWidget {
   final Book book;
@@ -31,6 +33,7 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) {
     final Book book = widget.book;
+    final int itemCount = book.basicInfo.translator.isEmpty ? 8 : 9;
     return Scaffold(
         backgroundColor: AppColors.white,
         body: Theme(
@@ -160,7 +163,101 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
               body: TabBarView(
                 controller: _tabController,
                 children: [
-                  Center(child: Text('INFO CONTENT'),),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                    child: ListView.builder(
+                      itemCount: itemCount,
+                      itemBuilder: (context, index) {
+                        return BookDetailInfoListViewTile(book: book, index: index);
+                    }),
+                  ),
+                  // Padding(
+                  //   padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                  //   child: Column(
+                  //     crossAxisAlignment: CrossAxisAlignment.start,
+                  //     children: [
+                  //       SizedBox(height: 20.0,),
+                  //       Text(
+                  //         'Status',
+                  //         style: TextStyle(
+                  //           fontFamily: 'LexendLight',
+                  //           fontSize: 14.0,
+                  //           color: AppColors.gray1,
+                  //       ),
+                  //       ),
+                  //       SizedBox(height: 4.0),
+                  //       Text('finished',
+                  //         style: TextStyle(
+                  //           fontFamily: 'NotoSansKRRegular',
+                  //           fontSize: 16.0,
+                  //           color: AppColors.softBlack,
+                  //         ),
+                  //       ),
+                  //       GeneralDivider(padding: 16.0),
+                  //       Text('Started reading on',
+                  //         style: TextStyle(
+                  //           fontFamily: 'LexendLight',
+                  //           fontSize: 14.0,
+                  //           color: AppColors.gray1,
+                  //         ),
+                  //       ),
+                  //       SizedBox(height: 4.0),
+                  //       Text('2024.10.11',
+                  //         style: TextStyle(
+                  //           fontFamily: 'NotoSansKRRegular',
+                  //           fontSize: 16.0,
+                  //           color: AppColors.softBlack,
+                  //         ),
+                  //       ),
+                  //       GeneralDivider(padding: 16.0),
+                  //       Text('Title',
+                  //         style: TextStyle(
+                  //           fontFamily: 'LexendLight',
+                  //           fontSize: 14.0,
+                  //           color: AppColors.gray1,
+                  //         ),
+                  //       ),
+                  //       SizedBox(height: 4.0),
+                  //       Text(book.basicInfo.title,
+                  //         style: TextStyle(
+                  //           fontFamily: 'NotoSansKRRegular',
+                  //           fontSize: 16.0,
+                  //           color: AppColors.softBlack,
+                  //         ),),
+                  //       GeneralDivider(padding: 16.0),
+                  //       Text('Author',
+                  //         style: TextStyle(
+                  //           fontFamily: 'LexendLight',
+                  //           fontSize: 14.0,
+                  //           color: AppColors.gray1,
+                  //         ),
+                  //       ),
+                  //       Text(book.basicInfo.author,
+                  //         style: TextStyle(
+                  //           fontFamily: 'NotoSansKRRegular',
+                  //           fontSize: 16.0,
+                  //           color: AppColors.softBlack,
+                  //         ),),
+                  //       GeneralDivider(padding: 16.0),
+                  //       Text('Translator',
+                  //         style: TextStyle(
+                  //           fontFamily: 'LexendLight',
+                  //           fontSize: 14.0,
+                  //           color: AppColors.gray1,
+                  //         ),
+                  //       ),
+                  //       SizedBox(height: 4.0),
+                  //       Text(book.basicInfo.translator,
+                  //         style: TextStyle(
+                  //           fontFamily: 'NotoSansKRRegular',
+                  //           fontSize: 16.0,
+                  //           color: AppColors.softBlack,
+                  //         ),
+                  //       ),
+                  //       GeneralDivider(padding: 16.0)
+                  //     ],
+                  //   ),
+                  // ),
                   Center(child: Text('NOTE CONTENT'),),
                   Center(child: Text('HIGHLIGHT CONTENT'),),
                 ],
