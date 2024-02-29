@@ -242,7 +242,14 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
       case 'Publisher':
         return _generateTextWidget(widget.book.basicInfo.publisher);
       case 'Publish Date':
-        return _generateTextWidget(widget.book.basicInfo.pubDate.toString().replaceAll('-', '.'));
+        return Text(
+          widget.book.basicInfo.pubDate,
+          style: const TextStyle(
+            fontFamily: 'InriaSansRegular',
+            fontSize: 18.0,
+            color: AppColors.softBlack,
+          ),
+        );
       case 'Category':
         return _generateTextWidget(widget.book.basicInfo.category);
       case 'Link':

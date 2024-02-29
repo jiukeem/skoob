@@ -81,7 +81,7 @@ class _SearchState extends State<Search> {
             title: item['title'],
             author: item['author'],
             publisher: item['publisher'],
-            pubDate: item['pubDate'],
+            pubDate: item['pubDate'].toString().replaceAll('-', '.'),
             description: item['description'],
             coverImageUrl: item['cover'],
             infoUrl: item['link'],
