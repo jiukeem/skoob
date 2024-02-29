@@ -1,4 +1,6 @@
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:skoob/app/utils/util_fuctions.dart';
 import 'package:skoob/app/views/widgets/general_divider.dart';
 
 import '../../models/book.dart';
@@ -43,55 +45,183 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
       case BookReadingStatus.initial:
         return Text('initial');
       case BookReadingStatus.notStarted:
-        return Container(
-          decoration: const BoxDecoration(
-            color: AppColors.gray2,
-            borderRadius: BorderRadius.all(Radius.circular(20.0)),
-          ),
-          child: const Padding(
-            padding: EdgeInsets.symmetric(vertical: 1.0, horizontal: 6.0),
-            child: Text(
-              'not started',
-              style: TextStyle(
-                  fontFamily: 'LexendRegular',
-                  color: AppColors.white,
-                  fontSize: 14.0),
+        return Padding(
+          padding: const EdgeInsets.all(2.0),
+          child: Container(
+            decoration: const BoxDecoration(
+              color: AppColors.gray2,
+              borderRadius: BorderRadius.all(Radius.circular(20.0)),
+            ),
+            child: const Padding(
+              padding: EdgeInsets.symmetric(vertical: 1.0, horizontal: 6.0),
+              child: Text(
+                'not started',
+                style: TextStyle(
+                    fontFamily: 'LexendRegular',
+                    color: AppColors.white,
+                    fontSize: 14.0),
+              ),
             ),
           ),
         );
       case BookReadingStatus.reading:
-        return Container(
-          decoration: const BoxDecoration(
-            color: AppColors.secondaryYellow,
-            borderRadius: BorderRadius.all(Radius.circular(20.0)),
-          ),
-          child: const Padding(
-            padding: EdgeInsets.symmetric(vertical: 1.0, horizontal: 6.0),
-            child: Text(
-              'reading',
-              style: TextStyle(
-                  fontFamily: 'LexendRegular',
-                  color: AppColors.softBlack,
-                  fontSize: 14.0),
+        String startReadingDate = widget.book.customInfo.startReadingDate;
+        if (startReadingDate.isEmpty) {
+          startReadingDate = getCurrentDateAsString();
+        }
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 2.0, 0, 8.0),
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: AppColors.secondaryYellow,
+                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                ),
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 1.0, horizontal: 6.0),
+                  child: Text(
+                    'reading',
+                    style: TextStyle(
+                        fontFamily: 'LexendRegular',
+                        color: AppColors.softBlack,
+                        fontSize: 14.0),
+                  ),
+                ),
+              ),
             ),
-          ),
+            const GeneralDivider(padding: 0),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 8.0, 0, 2.0),
+              child: const Text(
+                'Started reading on',
+                style: TextStyle(
+                  fontFamily: 'LexendLight',
+                  fontSize: 14.0,
+                  color: AppColors.gray1,
+                ),
+              ),
+            ),
+            Row(
+              children: [
+                Text(
+                  startReadingDate,
+                  style: const TextStyle(
+                    fontFamily: 'InriaSansRegular',
+                    fontSize: 18.0,
+                    color: AppColors.softBlack,
+                  ),
+                ),
+                const SizedBox(width: 4.0,),
+                const Icon(FluentIcons.calendar_16_regular)
+              ],
+            ),
+          ],
         );
       case BookReadingStatus.done:
-        return Container(
-          decoration: const BoxDecoration(
-            color: AppColors.softBlack,
-            borderRadius: BorderRadius.all(Radius.circular(20.0)),
-          ),
-          child: const Padding(
-            padding: EdgeInsets.symmetric(vertical: 1.0, horizontal: 6.0),
-            child: Text(
-              'done',
-              style: TextStyle(
-                  fontFamily: 'LexendRegular',
-                  color: AppColors.white,
-                  fontSize: 14.0),
+        String startReadingDate = widget.book.customInfo.startReadingDate;
+        if (startReadingDate.isEmpty) {
+          startReadingDate = getCurrentDateAsString();
+        }
+        String finishedReadingDate = widget.book.customInfo.startReadingDate;
+        if (finishedReadingDate.isEmpty) {
+          finishedReadingDate = getCurrentDateAsString();
+        }
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 2.0, 0, 8.0),
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: AppColors.softBlack,
+                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                ),
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 1.0, horizontal: 6.0),
+                  child: Text(
+                    'done',
+                    style: TextStyle(
+                        fontFamily: 'LexendRegular',
+                        color: AppColors.white,
+                        fontSize: 14.0),
+                  ),
+                ),
+              ),
             ),
-          ),
+            const GeneralDivider(padding: 0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 8.0, 0, 2.0),
+                      child: const Text(
+                        'Started reading on',
+                        style: TextStyle(
+                          fontFamily: 'LexendLight',
+                          fontSize: 14.0,
+                          color: AppColors.gray1,
+                        ),
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          startReadingDate,
+                          style: const TextStyle(
+                            fontFamily: 'InriaSansRegular',
+                            fontSize: 18.0,
+                            color: AppColors.softBlack,
+                          ),
+                        ),
+                        const SizedBox(width: 4.0,),
+                        const Icon(FluentIcons.calendar_16_regular)
+                      ],
+                    ),
+                  ],
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 8.0, 0, 2.0),
+                      child: const Text(
+                        'Finished reading on',
+                        style: TextStyle(
+                          fontFamily: 'LexendLight',
+                          fontSize: 14.0,
+                          color: AppColors.gray1,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 0, 40.0, 0),
+                      child: Row(
+                        children: [
+                          Text(
+                            startReadingDate,
+                            style: const TextStyle(
+                              fontFamily: 'InriaSansRegular',
+                              fontSize: 18.0,
+                              color: AppColors.softBlack,
+                            ),
+                          ),
+                          const SizedBox(width: 4.0,),
+                          const Icon(FluentIcons.calendar_16_regular)
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+
+          ],
         );
       default:
         return Text('default');
@@ -102,7 +232,7 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
     switch (label) {
       case 'Status':
         // final BookReadingStatus status = widget.book.customInfo.status;
-        return _generateStatusWidget(BookReadingStatus.reading);
+        return _generateStatusWidget(BookReadingStatus.done);
       case 'Title':
         return _generateTextWidget(widget.book.basicInfo.title);
       case 'Author':
@@ -129,23 +259,20 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                label,
-                style: const TextStyle(
-                  fontFamily: 'LexendLight',
-                  fontSize: 14.0,
-                  color: AppColors.gray1,
-                ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              label,
+              style: const TextStyle(
+                fontFamily: 'LexendLight',
+                fontSize: 14.0,
+                color: AppColors.gray1,
               ),
-              const SizedBox(height: 4.0),
-              _generateContentWidget(label),
-            ],
-          ),
+            ),
+            const SizedBox(height: 4.0),
+            _generateContentWidget(label),
+          ],
         ),
         const GeneralDivider(padding: 16.0)
       ],
