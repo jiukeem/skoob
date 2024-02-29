@@ -1,5 +1,6 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:skoob/app/views/pages/user_record.dart';
 import 'package:skoob/app/views/widgets/general_divider.dart';
 
 import '../../models/book.dart';
@@ -35,7 +36,6 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) {
     final Book book = widget.book;
-    final int itemCount = book.basicInfo.translator.isEmpty ? 8 : 9;
     return Scaffold(
         backgroundColor: AppColors.white,
         body: Theme(
@@ -116,47 +116,74 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
                             ],
                           ),
                           SizedBox(height: 8.0),
-                          book.customInfo.comment.isEmpty
-                          ? Container(
-                            padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                              border: Border.all(
-                                color: AppColors.gray1,
-                                width: 0.5,
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  '한 줄 소감 남기기',
+                          InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                PageRouteBuilder(
+                                    pageBuilder: (context, animation,
+                                            secondaryAnimation) =>
+                                        UserRecord(book: book),
+                                    transitionsBuilder: (context, animation,
+                                        secondaryAnimation, child) {
+                                      const begin = Offset(0.0, 1.0);
+                                      const end = Offset.zero;
+                                      const curve = Curves.ease;
+
+                                      var tween = Tween(begin: begin, end: end)
+                                          .chain(CurveTween(curve: curve));
+                                      var offsetAnimation =
+                                          animation.drive(tween);
+
+                                      return SlideTransition(
+                                        position: offsetAnimation,
+                                        child: child,
+                                      );
+                                    }));
+                          },
+                          child: book.customInfo.comment.isEmpty
+                              ? Container(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 8.0, vertical: 2.0),
+                                  decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(20.0)),
+                                    border: Border.all(
+                                      color: AppColors.gray1,
+                                      width: 0.5,
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        '한 줄 소감 남기기',
+                                        style: TextStyle(
+                                            fontFamily: 'NotoSansKRLight',
+                                            fontSize: 12.0,
+                                            color: AppColors.gray1),
+                                      ),
+                                      Icon(
+                                        FluentIcons.edit_16_regular,
+                                        color: AppColors.gray1,
+                                        size: 12.0,
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : Text(
+                                  '국민의 모든 자유와 권리는 국가안전보장·질서유지 또는 공공복리를 위하여 필요한 경우에 한하여 법률로써 제한할 수 있으며, 제한하는 경우에도 자유와 권리의 본질적인 내용을 침해할 수 없다.',
+                                  maxLines: 3,
+                                  overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
-                                    fontFamily: 'NotoSansKRLight',
+                                    fontFamily: 'NotoSansKrLight',
                                     fontSize: 12.0,
-                                    color: AppColors.gray1
+                                    color: AppColors.softBlack,
                                   ),
-                                  ),
-                                Icon(
-                                  FluentIcons.edit_16_regular,
-                                  color: AppColors.gray1,
-                                  size: 12.0,
                                 ),
-                              ],
-                            ),
-                          )
-                          : Text(
-                            '국민의 모든 자유와 권리는 국가안전보장·질서유지 또는 공공복리를 위하여 필요한 경우에 한하여 법률로써 제한할 수 있으며, 제한하는 경우에도 자유와 권리의 본질적인 내용을 침해할 수 없다.',
-                            maxLines: 3,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontFamily: 'NotoSansKrLight',
-                              fontSize: 12.0,
-                              color: AppColors.softBlack,
-                            ),
-                          ),
-                          SizedBox(height: 20.0),
+                        ),
+                        SizedBox(height: 20.0),
                         ],
                       ),
                     ),
@@ -200,7 +227,7 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
                     padding: const EdgeInsets.symmetric(horizontal: 12.0),
                     child: ListView.builder(
                       padding: const EdgeInsets.fromLTRB(0, 16.0, 0, 0),
-                      itemCount: 9,
+                      itemCount: 8,
                       itemBuilder: (context, index) {
                         return BookDetailInfoListViewTile(book: book, index: index);
                     }),
