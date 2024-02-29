@@ -76,10 +76,13 @@ class _SearchState extends State<Search> {
   }
 
   Book _setBookConfiguration(dynamic item) {
+    final result = parseJsonDataToAuthorAndTranslator(item['author'].toString());
+
     return Book(
         basicInfo: BasicInfo(
             title: item['title'],
-            author: item['author'],
+            author: result['author'] ?? '',
+            translator: result['translator'] ?? '',
             publisher: item['publisher'],
             pubDate: item['pubDate'].toString().replaceAll('-', '.'),
             description: item['description'],
@@ -89,6 +92,25 @@ class _SearchState extends State<Search> {
             isbn10: item['isbn'],
             isbn13: item['isbn13']),
         customInfo: CustomInfo(addedDate: getCurrentDateAsString()));
+  }
+
+  Map<String, String> parseJsonDataToAuthorAndTranslator(String data) {
+    List<String> parts = data.split(',');
+    List<String> authors = [];
+    String translator = '';
+
+    for (String part in parts) {
+      String trimmedPart = part.trim();
+      if (trimmedPart.contains('(옮긴이)')) {
+        translator = trimmedPart.replaceAll('(옮긴이)', '').trim();
+      } else {
+        authors.add(trimmedPart.replaceAll('(지은이)', '').trim());
+      }
+    }
+    return {
+      'author': authors.join(', '),
+      'translator': translator
+    };
   }
 
   @override
