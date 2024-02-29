@@ -164,6 +164,7 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
               },
               body: TabBarView(
                 controller: _tabController,
+                physics: const NeverScrollableScrollPhysics(),
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12.0),
