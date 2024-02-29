@@ -251,7 +251,24 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
           ),
         );
       case 'Category':
-        return _generateTextWidget(widget.book.basicInfo.category);
+        return Container(
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(4.0)),
+            color: AppColors.gray3,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 1.0, horizontal: 4.0),
+            child: Text(
+              widget.book.basicInfo.category.split('>')[1],
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                  color: AppColors.softBlack,
+                  fontFamily: 'NotoSansKRRegular',
+                  fontSize: 16.0),
+            ),
+          ),
+        );
       case 'Link':
         return _generateTextWidget(widget.book.basicInfo.infoUrl);
       default:
