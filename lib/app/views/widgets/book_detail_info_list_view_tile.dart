@@ -1,5 +1,7 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:skoob/app/controller/shared_list_state.dart';
 import 'package:skoob/app/utils/util_fuctions.dart';
 import 'package:skoob/app/views/widgets/general_divider.dart';
 import 'package:skoob/app/views/widgets/status_label.dart';
@@ -50,13 +52,13 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
     );
   }
 
-  void _showStatusOptionBottomSheet(BuildContext context) {
-    showModalBottomSheet(
+  Future<void> _showStatusOptionBottomSheet(BuildContext context) async {
+    final result = await showModalBottomSheet(
         context: context,
         builder: (context) {
           return Container(
             height: 240,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: AppColors.white,
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(30.0),
@@ -66,17 +68,17 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(height: 12.0),
+                const SizedBox(height: 12.0),
                 Container(
                   width: 64,
                   height: 2,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(20.0)),
                     color: AppColors.gray2,
                   ),
                 ),
-                SizedBox(height: 18.0),
-                Text(
+                const SizedBox(height: 18.0),
+                const Text(
                   'STATUS',
                   style: TextStyle(
                     fontFamily: 'LexendRegular',
@@ -84,25 +86,51 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
                     color: AppColors.softBlack
                   ),
                 ),
-                GeneralDivider(verticalPadding: 32.0),
+                const SizedBox(height: 16.0),
+                const GeneralDivider(verticalPadding: 0),
+                // TODO refactor below
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: StatusLabel(BookReadingStatus.notStarted, 16.0),
+                      InkWell(
+                        onTap: () {
+                          final book = widget.book;
+                          book.customInfo.status = BookReadingStatus.notStarted;
+                          Provider.of<SharedListState>(context, listen: false).replaceWithUpdatedBook(book);
+                          Navigator.pop(context, BookReadingStatus.notStarted);
+                        },
+                        child: const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
+                          child: StatusLabel(BookReadingStatus.notStarted),
+                        ),
                       ),
-                      GeneralDivider(verticalPadding: 32.0),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: StatusLabel(BookReadingStatus.reading, 16.0),
+                      const GeneralDivider(verticalPadding: 0),
+                      InkWell(
+                        onTap: () {
+                          final book = widget.book;
+                          book.customInfo.status = BookReadingStatus.reading;
+                          Provider.of<SharedListState>(context, listen: false).replaceWithUpdatedBook(book);
+                          Navigator.pop(context, BookReadingStatus.reading);
+                        },
+                        child: const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
+                          child: StatusLabel(BookReadingStatus.reading),
+                        ),
                       ),
-                      GeneralDivider(verticalPadding: 32.0),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: StatusLabel(BookReadingStatus.done, 16.0),
+                      const GeneralDivider(verticalPadding: 0),
+                      InkWell(
+                        onTap: () {
+                          final book = widget.book;
+                          book.customInfo.status = BookReadingStatus.done;
+                          Provider.of<SharedListState>(context, listen: false).replaceWithUpdatedBook(book);
+                          Navigator.pop(context, BookReadingStatus.done);
+                        },
+                        child: const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
+                          child: StatusLabel(BookReadingStatus.done),
+                        ),
                       ),
                     ],
                   ),
@@ -112,6 +140,12 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
           );
         }
     );
+
+    if (result != null) {
+      setState(() {
+        widget.book.customInfo.status = result as BookReadingStatus;
+      });
+    }
   }
 
   Widget _buildChildBasedOnStatus(BookReadingStatus status) {
