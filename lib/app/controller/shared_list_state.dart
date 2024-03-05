@@ -14,7 +14,7 @@ class SharedListState with ChangeNotifier {
     return;
   }
 
-  void updateItems(List<Book> Function(List<Book>) updateFunc)  {
+  void _updateItems(List<Book> Function(List<Book>) updateFunc)  {
     _items = updateFunc(_items);
     _removeDuplicates();
     _saveItemInLocal();
@@ -26,11 +26,11 @@ class SharedListState with ChangeNotifier {
   }
 
   void addItem(Book book) {
-    updateItems((items) => [...items, book]);
+    _updateItems((items) => [...items, book]);
   }
 
   void replaceWithLoadedBookList(List<Book> bookList) {
-    updateItems((_) => bookList);
+    _updateItems((_) => bookList);
   }
 
   void replaceWithUpdatedBook(Book updatedBook) {
@@ -45,6 +45,6 @@ class SharedListState with ChangeNotifier {
   }
 
   void deleteItem(Book book) {
-    updateItems((items) => items.where((item) => item != book).toList());
+    _updateItems((items) => items.where((item) => item != book).toList());
   }
 }
