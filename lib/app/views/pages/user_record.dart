@@ -83,7 +83,7 @@ class _UserRecordPageState extends State<UserRecord> {
             color: Colors.white,
             child: Column(
               children: [
-                GeneralDivider(padding: 0.0),
+                GeneralDivider(verticalPadding: 0.0),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [

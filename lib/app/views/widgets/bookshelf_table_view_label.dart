@@ -45,7 +45,7 @@ class TableViewLabel extends StatelessWidget {
         ),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.0),
-          child: GeneralDivider(padding: 12.0,),
+          child: GeneralDivider(verticalPadding: 12.0,),
         ),
       ],
     );

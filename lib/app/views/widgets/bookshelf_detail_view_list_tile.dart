@@ -190,7 +190,7 @@ class DetailViewListTile extends StatelessWidget with BookshelfListTileMixin {
               height: 92.0,
             )
           else
-            const GeneralDivider(padding: 20.0,)
+            const GeneralDivider(verticalPadding: 20.0,)
         ],
       ),
     );

@@ -108,7 +108,7 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
                 ),
               ),
             ),
-            const GeneralDivider(padding: 0),
+            const GeneralDivider(verticalPadding: 0),
             Padding(
               padding: const EdgeInsets.fromLTRB(0, 8.0, 0, 2.0),
               child: const Text(
@@ -168,7 +168,7 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
                 ),
               ),
             ),
-            const GeneralDivider(padding: 0),
+            const GeneralDivider(verticalPadding: 0),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -315,7 +315,7 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
             _generateContentWidget(label),
           ],
         ),
-        const GeneralDivider(padding: 16.0)
+        const GeneralDivider(verticalPadding: 16.0)
       ],
     );
   }
