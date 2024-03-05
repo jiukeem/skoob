@@ -41,24 +41,139 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
   }
 
   Widget _generateStatusWidget(BookReadingStatus status) {
+    return InkWell(
+      onTap: () {
+        _showStatusOptionBottomSheet(context);
+      },
+      child: _buildChildBasedOnStatus(status),
+    );
+  }
+
+  void _showStatusOptionBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return Container(
+            height: 240,
+            decoration: BoxDecoration(
+              color: AppColors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(30.0),
+                topRight: Radius.circular(30.0)
+              )
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(height: 12.0),
+                Container(
+                  width: 64,
+                  height: 2,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                    color: AppColors.gray2,
+                  ),
+                ),
+                SizedBox(height: 18.0),
+                Text(
+                  'STATUS',
+                  style: TextStyle(
+                    fontFamily: 'LexendRegular',
+                    fontSize: 16.0,
+                    color: AppColors.softBlack
+                  ),
+                ),
+                GeneralDivider(verticalPadding: 32.0),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            color: AppColors.gray2,
+                            borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                          ),
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 1.0, horizontal: 6.0),
+                            child: Text(
+                              'not started',
+                              style: TextStyle(
+                                  fontFamily: 'LexendRegular',
+                                  color: AppColors.white,
+                                  fontSize: 14.0),
+                            ),
+                          ),
+                        ),
+                      ),
+                      GeneralDivider(verticalPadding: 32.0),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            color: AppColors.secondaryYellow,
+                            borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                          ),
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 1.0, horizontal: 6.0),
+                            child: Text(
+                              'reading',
+                              style: TextStyle(
+                                  fontFamily: 'LexendRegular',
+                                  color: AppColors.softBlack,
+                                  fontSize: 14.0),
+                            ),
+                          ),
+                        ),
+                      ),
+                      GeneralDivider(verticalPadding: 32.0),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            color: AppColors.softBlack,
+                            borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                          ),
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 1.0, horizontal: 6.0),
+                            child: Text(
+                              'done',
+                              style: TextStyle(
+                                  fontFamily: 'LexendRegular',
+                                  color: AppColors.white,
+                                  fontSize: 14.0),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+    );
+  }
+
+  Widget _buildChildBasedOnStatus(BookReadingStatus status) {
     switch (status) {
       case BookReadingStatus.initial:
-        return InkWell(
-          onTap: () {},
-          child: Container(
-            width: 50.0,
-            height: 22.0,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(20.0)),
-              border: Border.all(
-                color: AppColors.gray2,
-              ),
+        return Container(
+          width: 50.0,
+          height: 22.0,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(20.0)),
+            border: Border.all(
+              color: AppColors.gray2,
             ),
-            child: Icon(
-                FluentIcons.add_16_regular,
-                color: AppColors.gray2,
-              size: 16.0,
-            ),
+          ),
+          child: Icon(
+              FluentIcons.add_16_regular,
+              color: AppColors.gray2,
+            size: 16.0,
           ),
         );
       case BookReadingStatus.notStarted:
