@@ -43,7 +43,24 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
   Widget _generateStatusWidget(BookReadingStatus status) {
     switch (status) {
       case BookReadingStatus.initial:
-        return Text('initial');
+        return InkWell(
+          onTap: () {},
+          child: Container(
+            width: 50.0,
+            height: 22.0,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(20.0)),
+              border: Border.all(
+                color: AppColors.gray2,
+              ),
+            ),
+            child: Icon(
+                FluentIcons.add_16_regular,
+                color: AppColors.gray2,
+              size: 16.0,
+            ),
+          ),
+        );
       case BookReadingStatus.notStarted:
         return Padding(
           padding: const EdgeInsets.all(2.0),
@@ -231,8 +248,8 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
   Widget _generateContentWidget(String label) {
     switch (label) {
       case 'Status':
-        // final BookReadingStatus status = widget.book.customInfo.status;
-        return _generateStatusWidget(BookReadingStatus.done);
+        final BookReadingStatus status = widget.book.customInfo.status;
+        return _generateStatusWidget(status);
       case 'Title':
         return _generateTextWidget(widget.book.basicInfo.title);
       case 'Author':
