@@ -33,6 +33,17 @@ class SharedListState with ChangeNotifier {
     updateItems((_) => bookList);
   }
 
+  void replaceWithUpdatedBook(Book updatedBook) {
+    _updateItems((items) {
+      int index = items.indexWhere((book) => book.basicInfo.isbn13 == updatedBook.basicInfo.isbn13);
+      if (index != -1) {
+        items[index] = updatedBook;
+        return items;
+      }
+      return items;
+    });
+  }
+
   void deleteItem(Book book) {
     updateItems((items) => items.where((item) => item != book).toList());
   }
