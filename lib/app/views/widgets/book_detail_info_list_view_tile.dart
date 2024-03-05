@@ -2,6 +2,7 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:skoob/app/utils/util_fuctions.dart';
 import 'package:skoob/app/views/widgets/general_divider.dart';
+import 'package:skoob/app/views/widgets/status_label.dart';
 
 import '../../models/book.dart';
 import '../../models/book/custom_info.dart';
@@ -91,62 +92,17 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
                     children: [
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Container(
-                          decoration: const BoxDecoration(
-                            color: AppColors.gray2,
-                            borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                          ),
-                          child: const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 1.0, horizontal: 6.0),
-                            child: Text(
-                              'not started',
-                              style: TextStyle(
-                                  fontFamily: 'LexendRegular',
-                                  color: AppColors.white,
-                                  fontSize: 14.0),
-                            ),
-                          ),
-                        ),
+                        child: StatusLabel(BookReadingStatus.notStarted, 16.0),
                       ),
                       GeneralDivider(verticalPadding: 32.0),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Container(
-                          decoration: const BoxDecoration(
-                            color: AppColors.secondaryYellow,
-                            borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                          ),
-                          child: const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 1.0, horizontal: 6.0),
-                            child: Text(
-                              'reading',
-                              style: TextStyle(
-                                  fontFamily: 'LexendRegular',
-                                  color: AppColors.softBlack,
-                                  fontSize: 14.0),
-                            ),
-                          ),
-                        ),
+                        child: StatusLabel(BookReadingStatus.reading, 16.0),
                       ),
                       GeneralDivider(verticalPadding: 32.0),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Container(
-                          decoration: const BoxDecoration(
-                            color: AppColors.softBlack,
-                            borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                          ),
-                          child: const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 1.0, horizontal: 6.0),
-                            child: Text(
-                              'done',
-                              style: TextStyle(
-                                  fontFamily: 'LexendRegular',
-                                  color: AppColors.white,
-                                  fontSize: 14.0),
-                            ),
-                          ),
-                        ),
+                        child: StatusLabel(BookReadingStatus.done, 16.0),
                       ),
                     ],
                   ),
@@ -179,22 +135,7 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
       case BookReadingStatus.notStarted:
         return Padding(
           padding: const EdgeInsets.all(2.0),
-          child: Container(
-            decoration: const BoxDecoration(
-              color: AppColors.gray2,
-              borderRadius: BorderRadius.all(Radius.circular(20.0)),
-            ),
-            child: const Padding(
-              padding: EdgeInsets.symmetric(vertical: 1.0, horizontal: 6.0),
-              child: Text(
-                'not started',
-                style: TextStyle(
-                    fontFamily: 'LexendRegular',
-                    color: AppColors.white,
-                    fontSize: 14.0),
-              ),
-            ),
-          ),
+          child: StatusLabel(status),
         );
       case BookReadingStatus.reading:
         String startReadingDate = widget.book.customInfo.startReadingDate;
@@ -206,22 +147,7 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
           children: [
             Padding(
               padding: const EdgeInsets.fromLTRB(0, 2.0, 0, 8.0),
-              child: Container(
-                decoration: const BoxDecoration(
-                  color: AppColors.secondaryYellow,
-                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                ),
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 1.0, horizontal: 6.0),
-                  child: Text(
-                    'reading',
-                    style: TextStyle(
-                        fontFamily: 'LexendRegular',
-                        color: AppColors.softBlack,
-                        fontSize: 14.0),
-                  ),
-                ),
-              ),
+              child: StatusLabel(status),
             ),
             const GeneralDivider(verticalPadding: 0),
             Padding(
@@ -266,22 +192,7 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
           children: [
             Padding(
               padding: const EdgeInsets.fromLTRB(0, 2.0, 0, 8.0),
-              child: Container(
-                decoration: const BoxDecoration(
-                  color: AppColors.softBlack,
-                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                ),
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 1.0, horizontal: 6.0),
-                  child: Text(
-                    'done',
-                    style: TextStyle(
-                        fontFamily: 'LexendRegular',
-                        color: AppColors.white,
-                        fontSize: 14.0),
-                  ),
-                ),
-              ),
+              child: StatusLabel(status),
             ),
             const GeneralDivider(verticalPadding: 0),
             Row(
@@ -356,7 +267,7 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
           ],
         );
       default:
-        return Text('default');
+        return const Text('default');
     }
   }
 

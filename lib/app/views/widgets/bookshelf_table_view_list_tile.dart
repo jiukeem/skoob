@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:skoob/app/models/book.dart';
+import 'package:skoob/app/models/book/custom_info.dart';
 import 'package:skoob/app/utils/app_colors.dart';
+import 'package:skoob/app/views/widgets/status_label.dart';
 import '../../services/bookshelf_list_tile_mixin.dart';
 import '../pages/book_detail.dart';
 
@@ -87,23 +89,9 @@ class TableViewListTile extends StatelessWidget with BookshelfListTileMixin {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Container(
-                      decoration: const BoxDecoration(
-                        color: AppColors.secondaryYellow,
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      ),
-                      child: const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 1.0, horizontal: 6.0),
-                        child: Text(
-                          'reading',
-                          style: TextStyle(
-                              fontFamily: 'LexendRegular',
-                              color: AppColors.softBlack,
-                              fontSize: 11.0
-                          ),
-                        ),
-                      ),
-                    ),
+                    book.customInfo.status == BookReadingStatus.initial
+                    ? const SizedBox(height: 20.0)
+                    : StatusLabel(book.customInfo.status, 11.0),
                     const SizedBox(height: 2.0,),
                     const Text(
                       '02.06~02.25',

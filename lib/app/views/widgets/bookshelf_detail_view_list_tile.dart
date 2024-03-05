@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:skoob/app/models/book.dart';
+import 'package:skoob/app/models/book/custom_info.dart';
 import 'package:skoob/app/utils/app_colors.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:skoob/app/views/pages/book_detail.dart';
 import 'package:skoob/app/views/widgets/general_divider.dart';
+import 'package:skoob/app/views/widgets/status_label.dart';
 import '../../services/bookshelf_list_tile_mixin.dart';
 
 class DetailViewListTile extends StatelessWidget with BookshelfListTileMixin {
@@ -125,24 +127,10 @@ class DetailViewListTile extends StatelessWidget with BookshelfListTileMixin {
                         // TODO below is dummy
                         Row(
                           children: [
-                            Container(
-                              decoration: const BoxDecoration(
-                                color: AppColors.secondaryYellow,
-                                borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                              ),
-                              child: const Padding(
-                                padding: EdgeInsets.symmetric(vertical: 1.0, horizontal: 6.0),
-                                child: Text(
-                                  'reading',
-                                  style: TextStyle(
-                                      fontFamily: 'LexendRegular',
-                                      color: AppColors.softBlack,
-                                      fontSize: 11.0
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 8.0),
+                            StatusLabel(book.customInfo.status, 11.0),
+                            book.customInfo.status != BookReadingStatus.initial
+                            ? SizedBox(width: 8.0)
+                            : SizedBox.shrink(),
                             const Text(
                               '2024.02.14 ~',
                               style: TextStyle(
