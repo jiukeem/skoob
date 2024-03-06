@@ -87,7 +87,7 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
             child: NestedScrollView(
               headerSliverBuilder: (context, innerBoxIsScrolled) {
                 return [
-                  SliverAppBar(
+                  const SliverAppBar(
                     backgroundColor: AppColors.white,
                     surfaceTintColor: AppColors.white,
                     pinned: true,
@@ -95,7 +95,7 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
                   ),
                   SliverToBoxAdapter(
                     child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
@@ -113,10 +113,10 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
                               fit: BoxFit.cover,
                             ),
                           ),
-                          SizedBox(height: 8.0),
+                          const SizedBox(height: 8.0),
                           Text(
                             book.basicInfo.title,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontFamily: 'NotoSansKRMedium',
                               fontSize: 16.0,
                               color: AppColors.softBlack
@@ -163,17 +163,17 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
                           },
                           child: book.customInfo.comment.isEmpty
                               ? Container(
-                                  padding: EdgeInsets.symmetric(
+                                  padding: const EdgeInsets.symmetric(
                                       horizontal: 8.0, vertical: 2.0),
                                   decoration: BoxDecoration(
                                     borderRadius:
-                                        BorderRadius.all(Radius.circular(20.0)),
+                                        const BorderRadius.all(Radius.circular(20.0)),
                                     border: Border.all(
                                       color: AppColors.gray1,
                                       width: 0.5,
                                     ),
                                   ),
-                                  child: Row(
+                                  child: const Row(
                                     mainAxisSize: MainAxisSize.min,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
@@ -197,14 +197,14 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
                                   maxLines: 3,
                                   textAlign: TextAlign.center,
                                   overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontFamily: 'NotoSansKrRegular',
                                     fontSize: 12.0,
                                     color: AppColors.softBlack,
                                   ),
                                 ),
                         ),
-                        SizedBox(height: 20.0),
+                        const SizedBox(height: 20.0),
                         ],
                       ),
                     ),
