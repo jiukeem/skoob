@@ -1,7 +1,9 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:provider/provider.dart';
+import 'package:skoob/app/controller/shared_list_state.dart';
 import 'package:skoob/app/views/pages/user_record.dart';
-import 'package:skoob/app/views/widgets/general_divider.dart';
 
 import '../../models/book.dart';
 import '../../utils/app_colors.dart';
@@ -21,12 +23,14 @@ class BookDetail extends StatefulWidget {
 class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateMixin {
   TabController? _tabController;
   late final Book book;
+  late double _currentRating;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
     book = widget.book;
+    _currentRating = double.tryParse(book.customInfo.rate) ?? 0.0;
   }
 
   @override
@@ -118,38 +122,41 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
                               color: AppColors.softBlack
                             ),
                           ),
-                          SizedBox(height: 4.0),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                FluentIcons.star_20_filled,
-                                color: AppColors.secondaryYellow,
-                                size: 32.0,
+                          const SizedBox(height: 4.0),
+                          RatingBar(
+                            initialRating: _currentRating,
+                            unratedColor: AppColors.gray3,
+                            direction: Axis.horizontal,
+                            allowHalfRating: true,
+                            itemCount: 5,
+                            ratingWidget: RatingWidget(
+                              full: Icon(
+                                  FluentIcons.star_20_filled,
+                                  color: _currentRating > 0 ? AppColors.secondaryYellow : AppColors.gray3
                               ),
-                              Icon(
-                                FluentIcons.star_20_filled,
-                                color: AppColors.secondaryYellow,
-                                size: 32.0,
+                              half: Icon(
+                                  FluentIcons.star_half_20_regular,
+                                  color: _currentRating > 0 ? AppColors.secondaryYellow : AppColors.gray3
                               ),
-                              Icon(
-                                FluentIcons.star_20_filled,
-                                color: AppColors.secondaryYellow,
-                                size: 32.0,
+                              empty: Icon(
+                                  FluentIcons.star_48_regular,
+                                  color: _currentRating > 0 ? AppColors.secondaryYellow : AppColors.gray3
                               ),
-                              Icon(
-                                FluentIcons.star_20_filled,
-                                color: AppColors.secondaryYellow,
-                                size: 32.0,
-                              ),
-                              Icon(
-                                FluentIcons.star_half_20_regular,
-                                color: AppColors.secondaryYellow,
-                                size: 32.0,
-                              ),
-                            ],
+                            ),
+                            onRatingUpdate: (rating) {
+                              setState(() {
+                                if (rating == _currentRating) {
+                                  _currentRating = 0.0;
+                                } else {
+                                  _currentRating = rating;
+                                }
+                              });
+                              book.customInfo.rate = rating.toString();
+                              Provider.of<SharedListState>(context, listen: false).replaceWithUpdatedBook(book);
+                            },
+                            glow: false,
                           ),
-                          SizedBox(height: 8.0),
+                          const SizedBox(height: 8.0),
                           InkWell(
                           onTap: () {
                             navigateAndUpdateComment(context, book.customInfo.comment);
