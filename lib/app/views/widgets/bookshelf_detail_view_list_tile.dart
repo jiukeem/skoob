@@ -5,6 +5,7 @@ import 'package:skoob/app/utils/app_colors.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:skoob/app/views/pages/book_detail.dart';
 import 'package:skoob/app/views/widgets/general_divider.dart';
+import 'package:skoob/app/views/widgets/rate_star.dart';
 import 'package:skoob/app/views/widgets/status_label.dart';
 import '../../services/bookshelf_list_tile_mixin.dart';
 
@@ -142,30 +143,7 @@ class DetailViewListTile extends StatelessWidget with BookshelfListTileMixin {
                           ],
                         ),
                         const SizedBox(height: 4.0,),
-                        const Row(
-                          children: [
-                            Icon(
-                              FluentIcons.star_20_filled,
-                              color: AppColors.secondaryYellow,
-                            ),
-                            Icon(
-                              FluentIcons.star_20_filled,
-                              color: AppColors.secondaryYellow,
-                            ),
-                            Icon(
-                              FluentIcons.star_20_filled,
-                              color: AppColors.secondaryYellow,
-                            ),
-                            Icon(
-                              FluentIcons.star_20_filled,
-                              color: AppColors.secondaryYellow,
-                            ),
-                            Icon(
-                              FluentIcons.star_half_20_regular,
-                              color: AppColors.secondaryYellow,
-                            ),
-                          ],
-                        ),
+                        RateStar(rateAsString: book.customInfo.rate, size: 20.0)
                       ],
                     ),
                   ),

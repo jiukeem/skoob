@@ -2,6 +2,7 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:skoob/app/models/book.dart';
 import 'package:skoob/app/utils/app_colors.dart';
+import 'package:skoob/app/views/widgets/rate_star.dart';
 import '../../services/bookshelf_list_tile_mixin.dart';
 import '../pages/book_detail.dart';
 
@@ -54,38 +55,13 @@ class AlbumViewListTile extends StatelessWidget with BookshelfListTileMixin {
 
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.fromLTRB(0, 2.0, 0, 0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0, 2.0, 0, 0),
+            child: Wrap(
               children: [
-                Icon(
-                  FluentIcons.star_20_filled,
-                  color: AppColors.secondaryYellow,
-                  size: 13.0,
-                ),
-                Icon(
-                  FluentIcons.star_20_filled,
-                  color: AppColors.secondaryYellow,
-                  size: 13.0,
-                ),
-                Icon(
-                  FluentIcons.star_20_filled,
-                  color: AppColors.secondaryYellow,
-                  size: 13.0,
-                ),
-                Icon(
-                  FluentIcons.star_20_filled,
-                  color: AppColors.secondaryYellow,
-                  size: 13.0,
-                ),
-                Icon(
-                  FluentIcons.star_half_20_regular,
-                  color: AppColors.secondaryYellow,
-                  size: 13.0,
-                ),
+              RateStar(rateAsString: book.customInfo.rate, size: 14.0),
               ],
-            ),
+            )
           ),
         ],
       ),

@@ -12,6 +12,12 @@ class TableViewListTile extends StatelessWidget with BookshelfListTileMixin {
     this.isLast = isLast;
   }
 
+  String _getCurrentRate() {
+    double rate = double.tryParse(book.customInfo.rate) ?? 0.0;
+    rate = rate * 2;
+    return rate.toInt().toString();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -42,20 +48,23 @@ class TableViewListTile extends StatelessWidget with BookshelfListTileMixin {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                SizedBox(
+                    width: 32.0,
+                    child: _getCurrentRate() != '0'
+                        ? Center(
+                            child: Text(
+                              _getCurrentRate(),
+                              style: const TextStyle(
+                                fontFamily: 'InriaSansBold',
+                                fontSize: 15.0,
+                                color: AppColors.softBlack,
+                              ),
+                            ),
+                          )
+                        : const SizedBox.shrink()),
                 const SizedBox(
-                  width: 32.0,
-                  child: Center(
-                    child: Text(
-                      '7',
-                      style: TextStyle(
-                        fontFamily: 'InriaSansBold',
-                        fontSize: 15.0,
-                        color: AppColors.softBlack,
-                      ),
-                    ),
-                  ),
+                  width: 12.0,
                 ),
-                const SizedBox(width: 12.0,),
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(0.0, 0.0, 16.0, 0.0),
