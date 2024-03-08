@@ -2,6 +2,7 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:skoob/app/controller/shared_list_state.dart';
+import 'package:skoob/app/utils/util_fuctions.dart';
 import 'package:skoob/app/views/widgets/general_divider.dart';
 import 'package:skoob/app/views/widgets/status_label.dart';
 
@@ -77,21 +78,32 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
             ),
             InkWell(
               splashColor: startReadingDateOn ? AppColors.gray3 : Colors.transparent,
-              onTap: () {},
+              onTap: () async {
+                if (status == BookReadingStatus.reading || status == BookReadingStatus.done) {
+                  final DateTime? pickedDate = await _selectDate(context, finishDate: DateTime.now());
+                  if (pickedDate != null) {
+                    _checkIfNeedToResetFinishDate(pickedDate);
+                    setState(() {
+                      widget.book.customInfo.startReadingDate = dateTimeToString(pickedDate);
+                    });
+                    Provider.of<SharedListState>(context, listen: false).replaceWithUpdatedBook(widget.book);
+                  }
+                }
+              },
               child: Row(
                 children: [
                   Text(
                     startReadingDate.isEmpty ? 'YYYY.MM.DD' : startReadingDate,
                     style: TextStyle(
-                      fontFamily: 'InriaSansRegular',
+                      fontFamily: 'NotoSansKRRegular',
                       fontSize: 18.0,
-                      color: startReadingDateOn ? AppColors.gray1 : AppColors.gray3,
+                      color: startReadingDateOn ? AppColors.softBlack : AppColors.gray3,
                     ),
                   ),
                   const SizedBox(width: 4.0,),
                   Icon(
                     FluentIcons.calendar_48_regular,
-                    color: startReadingDateOn ? AppColors.gray1 : AppColors.gray3,
+                    color: startReadingDateOn ? AppColors.softBlack : AppColors.gray3,
                   )
                 ],
               ),
@@ -116,21 +128,32 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
               ),
               InkWell(
                 splashColor: finishReadingDateOn ? AppColors.gray3 : Colors.transparent,
-                onTap: () {},
+                onTap: () async {
+                  if (status == BookReadingStatus.done) {
+                    final startDate = DateTime.parse(widget.book.customInfo.startReadingDate.replaceAll('.', '-'));
+                    final DateTime? pickedDate = await _selectDate(context, startDate: startDate);
+                    if (pickedDate != null) {
+                      setState(() {
+                        widget.book.customInfo.finishReadingDate = dateTimeToString(pickedDate);
+                      });
+                      Provider.of<SharedListState>(context, listen: false).replaceWithUpdatedBook(widget.book);
+                    }
+                  }
+                },
                 child: Row(
                   children: [
                     Text(
                       finishReadingDate.isEmpty ? 'YYYY.MM.DD' : finishReadingDate,
                       style: TextStyle(
-                        fontFamily: 'InriaSansRegular',
+                        fontFamily: 'NotoSansKRRegular',
                         fontSize: 18.0,
-                        color: finishReadingDateOn ? AppColors.gray1 : AppColors.gray3,
+                        color: finishReadingDateOn ? AppColors.softBlack : AppColors.gray3,
                       ),
                     ),
                     const SizedBox(width: 4.0,),
                     Icon(
                       FluentIcons.calendar_48_regular,
-                      color: finishReadingDateOn ? AppColors.gray1 : AppColors.gray3,
+                      color: finishReadingDateOn ? AppColors.softBlack : AppColors.gray3,
                     )
                   ],
                 ),
@@ -140,6 +163,36 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
         ),
       ],
     );
+  }
+
+  void _checkIfNeedToResetFinishDate(DateTime startDate) {
+    if (widget.book.customInfo.finishReadingDate.isEmpty) return;
+
+    final finishDate = DateTime.parse(widget.book.customInfo.finishReadingDate.replaceAll('.', '-'));
+    if (finishDate.isBefore(startDate)) {
+      widget.book.customInfo.finishReadingDate = '';
+    }
+  }
+
+  Future<DateTime?> _selectDate(BuildContext context, {DateTime? startDate, DateTime? finishDate}) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      firstDate: startDate?? DateTime(2000),
+      lastDate: finishDate ?? DateTime(2100),
+      initialDate: DateTime.now(),
+      builder: (context, Widget? child) {
+        return Theme(data: ThemeData.light().copyWith(
+          colorScheme: const ColorScheme.light(
+            primary: AppColors.softBlack,
+            onPrimary: AppColors.primaryYellow,
+            onSurface: AppColors.softBlack,
+            onBackground: AppColors.white,
+            surfaceTint: AppColors.white
+          )
+        ), child: child!);
+      },
+    );
+    return picked;
   }
 
   Future<void> _showStatusOptionBottomSheet(BuildContext context) async {
