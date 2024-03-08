@@ -8,6 +8,7 @@ import 'package:skoob/app/views/widgets/general_divider.dart';
 import 'package:skoob/app/views/widgets/rate_star.dart';
 import 'package:skoob/app/views/widgets/status_label.dart';
 import '../../services/bookshelf_list_tile_mixin.dart';
+import 'date_widget_accroding_to_status.dart';
 
 class DetailViewListTile extends StatelessWidget with BookshelfListTileMixin {
   DetailViewListTile({super.key, required Book book, required bool isLast}) {
@@ -125,20 +126,17 @@ class DetailViewListTile extends StatelessWidget with BookshelfListTileMixin {
                           ),
                         ),
                         const SizedBox(height: 8.0,),
-                        // TODO below is dummy
                         Row(
                           children: [
                             StatusLabel(book.customInfo.status, 11.0),
                             book.customInfo.status != BookReadingStatus.initial
-                            ? SizedBox(width: 8.0)
-                            : SizedBox.shrink(),
-                            const Text(
-                              '2024.02.14 ~',
-                              style: TextStyle(
-                                  fontFamily: 'InriaSansRegular',
-                                  color: AppColors.gray1,
-                                  fontSize: 12.0
-                              ),
+                            ? const SizedBox(width: 8.0)
+                            : const SizedBox.shrink(),
+                            dateWidgetAccordingToStatus(
+                              12.0,
+                              book.customInfo.status,
+                              startDate: book.customInfo.startReadingDate,
+                              finishDate: book.customInfo.finishReadingDate
                             )
                           ],
                         ),

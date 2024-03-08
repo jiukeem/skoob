@@ -5,6 +5,7 @@ import 'package:skoob/app/utils/app_colors.dart';
 import 'package:skoob/app/views/widgets/status_label.dart';
 import '../../services/bookshelf_list_tile_mixin.dart';
 import '../pages/book_detail.dart';
+import 'date_widget_accroding_to_status.dart';
 
 class TableViewListTile extends StatelessWidget with BookshelfListTileMixin {
   TableViewListTile({super.key, required Book book, required bool isLast}) {
@@ -102,14 +103,12 @@ class TableViewListTile extends StatelessWidget with BookshelfListTileMixin {
                     ? const SizedBox(height: 20.0)
                     : StatusLabel(book.customInfo.status, 11.0),
                     const SizedBox(height: 2.0,),
-                    const Text(
-                      '02.06~02.25',
-                      style: TextStyle(
-                        fontSize: 10.0,
-                        fontFamily: 'InriaSansLight',
-                        color: AppColors.gray1,
-                      ),
-                    ),
+                    dateWidgetAccordingToStatus(
+                        11.0,
+                        book.customInfo.status,
+                        startDate: book.customInfo.startReadingDate,
+                        finishDate: book.customInfo.finishReadingDate
+                    )
                   ],
                 ),
               ],
