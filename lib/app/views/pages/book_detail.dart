@@ -68,7 +68,6 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
       setState(() {
         book.customInfo.comment = result.toString();
       });
-
     }
   }
 
@@ -253,23 +252,87 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
                         return BookDetailInfoListViewTile(book: book, index: index);
                     }),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                    child: ListView.builder(
-                        padding: const EdgeInsets.fromLTRB(0, 16.0, 0, 0),
-                        itemCount: 1,
-                        itemBuilder: (context, index) {
-                          return BookDetailNoteListViewTile(book: book);
-                        }),
+                  Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 0),
+                        child: InkWell(
+                          onTap: () {},
+                          child: Container(
+                            height: 28.0,
+                            decoration: const BoxDecoration(
+                              borderRadius: BorderRadius.all(Radius.circular(5)),
+                              color: AppColors.gray3,
+                            ),
+                            child: const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  '노트 추가하기',
+                                  style: TextStyle(
+                                    fontSize: 12.0,
+                                    fontFamily: 'NotoSansKRRegular',
+                                    color: AppColors.gray1,
+                                  ),
+                                ),
+                                Icon(FluentIcons.add_circle_16_regular,
+                                color: AppColors.gray1,
+                                size: 16.0,)
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: ListView.builder(
+                            padding: const EdgeInsets.fromLTRB(0, 16.0, 0, 0),
+                            itemCount: 1,
+                            itemBuilder: (context, index) {
+                              return BookDetailNoteListViewTile(book: book);
+                            }),
+                      ),
+                    ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                    child: ListView.builder(
-                        padding: const EdgeInsets.fromLTRB(0, 16.0, 0, 0),
-                        itemCount: 1,
-                        itemBuilder: (context, index) {
-                          return BookDetailHighlightListViewTile(book: book);
-                        }),
+                  Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 0),
+                        child: InkWell(
+                          onTap: () {},
+                          child: Container(
+                            height: 28.0,
+                            decoration: const BoxDecoration(
+                              borderRadius: BorderRadius.all(Radius.circular(5)),
+                              color: AppColors.gray3,
+                            ),
+                            child: const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  '노트 추가하기',
+                                  style: TextStyle(
+                                    fontSize: 12.0,
+                                    fontFamily: 'NotoSansKRRegular',
+                                    color: AppColors.gray1,
+                                  ),
+                                ),
+                                Icon(FluentIcons.add_circle_16_regular,
+                                  color: AppColors.gray1,
+                                  size: 16.0,)
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: ListView.builder(
+                            padding: const EdgeInsets.fromLTRB(0, 16.0, 0, 0),
+                            itemCount: 1,
+                            itemBuilder: (context, index) {
+                              return BookDetailHighlightListViewTile(book: book);
+                            }),
+                      ),
+                    ],
                   ),
                 ],
               ),
