@@ -88,7 +88,7 @@ class TableViewListTile extends StatelessWidget with BookshelfListTileMixin {
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
                             fontSize: 10.0,
-                            fontFamily: 'NotoSansKRLight',
+                            fontFamily: 'NotoSansKRRegular',
                             color: AppColors.gray1,
                           ),
                         ),
@@ -99,10 +99,11 @@ class TableViewListTile extends StatelessWidget with BookshelfListTileMixin {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
+                    const SizedBox(height: 1.0,),
                     book.customInfo.status == BookReadingStatus.initial
                     ? const SizedBox(height: 20.0)
                     : StatusLabel(book.customInfo.status, 11.0),
-                    const SizedBox(height: 2.0,),
+                    const SizedBox(height: 4.0,),
                     dateWidgetAccordingToStatus(
                         11.0,
                         book.customInfo.status,
