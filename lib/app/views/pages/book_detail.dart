@@ -248,7 +248,7 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
                     padding: const EdgeInsets.symmetric(horizontal: 12.0),
                     child: ListView.builder(
                       padding: const EdgeInsets.fromLTRB(0, 16.0, 0, 0),
-                      itemCount: 8,
+                      itemCount: infoLabelList.length,
                       itemBuilder: (context, index) {
                         return BookDetailInfoListViewTile(book: book, index: index);
                     }),
@@ -302,3 +302,14 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
     return false;
   }
 }
+
+final List<String> infoLabelList = [
+  'Status',
+  'Title',
+  'Author',
+  'Translator',
+  'Publisher',
+  'Publish Date',
+  'Category',
+  'Link',
+];

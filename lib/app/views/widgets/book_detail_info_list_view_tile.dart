@@ -2,13 +2,13 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:skoob/app/controller/shared_list_state.dart';
-import 'package:skoob/app/utils/util_fuctions.dart';
 import 'package:skoob/app/views/widgets/general_divider.dart';
 import 'package:skoob/app/views/widgets/status_label.dart';
 
 import '../../models/book.dart';
 import '../../models/book/custom_info.dart';
 import '../../utils/app_colors.dart';
+import '../pages/book_detail.dart';
 
 class BookDetailInfoListViewTile extends StatefulWidget {
   final Book book;
@@ -21,16 +21,7 @@ class BookDetailInfoListViewTile extends StatefulWidget {
 }
 
 class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile> {
-  final List<String>labels = [
-    'Status',
-    'Title',
-    'Author',
-    'Translator',
-    'Publisher',
-    'Publish Date',
-    'Category',
-    'Link',
-  ];
+  final List<String> labels = infoLabelList;
 
   Widget _generateTextWidget(String data) {
     return Text(
@@ -44,11 +35,110 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
   }
 
   Widget _generateStatusWidget(BookReadingStatus status) {
-    return InkWell(
-      onTap: () {
-        _showStatusOptionBottomSheet(context);
-      },
-      child: _buildChildBasedOnStatus(status),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        InkWell(
+          onTap: () {
+            _showStatusOptionBottomSheet(context);
+          },
+          child: _buildChildBasedOnStatus(status),
+        ),
+        const GeneralDivider(verticalPadding: 16.0),
+        _generateCalendarWidget(),
+      ],
+    );
+  }
+
+  Widget _generateCalendarWidget() {
+    final status = widget.book.customInfo.status;
+    final startReadingDate = widget.book.customInfo.startReadingDate;
+    final finishReadingDate = widget.book.customInfo.finishReadingDate;
+
+    bool startReadingDateOn = status == BookReadingStatus.reading || status == BookReadingStatus.done ? true : false;
+    bool finishReadingDateOn = status == BookReadingStatus.done ? true : false;
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Padding(
+              padding: EdgeInsets.fromLTRB(0, 0, 0, 2.0),
+              child: Text(
+                'Started reading on',
+                style: TextStyle(
+                  fontFamily: 'LexendLight',
+                  fontSize: 14.0,
+                  color: AppColors.gray1,
+                ),
+              ),
+            ),
+            InkWell(
+              splashColor: startReadingDateOn ? AppColors.gray3 : Colors.transparent,
+              onTap: () {},
+              child: Row(
+                children: [
+                  Text(
+                    startReadingDate.isEmpty ? 'YYYY.MM.DD' : startReadingDate,
+                    style: TextStyle(
+                      fontFamily: 'InriaSansRegular',
+                      fontSize: 18.0,
+                      color: startReadingDateOn ? AppColors.gray1 : AppColors.gray3,
+                    ),
+                  ),
+                  const SizedBox(width: 4.0,),
+                  Icon(
+                    FluentIcons.calendar_48_regular,
+                    color: startReadingDateOn ? AppColors.gray1 : AppColors.gray3,
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0, 0, 20.0, 0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Padding(
+                padding: EdgeInsets.fromLTRB(0, 0, 0, 2.0),
+                child: Text(
+                  'Finished reading on',
+                  style: TextStyle(
+                    fontFamily: 'LexendLight',
+                    fontSize: 14.0,
+                    color: AppColors.gray1,
+                  ),
+                ),
+              ),
+              InkWell(
+                splashColor: finishReadingDateOn ? AppColors.gray3 : Colors.transparent,
+                onTap: () {},
+                child: Row(
+                  children: [
+                    Text(
+                      finishReadingDate.isEmpty ? 'YYYY.MM.DD' : finishReadingDate,
+                      style: TextStyle(
+                        fontFamily: 'InriaSansRegular',
+                        fontSize: 18.0,
+                        color: finishReadingDateOn ? AppColors.gray1 : AppColors.gray3,
+                      ),
+                    ),
+                    const SizedBox(width: 4.0,),
+                    Icon(
+                      FluentIcons.calendar_48_regular,
+                      color: finishReadingDateOn ? AppColors.gray1 : AppColors.gray3,
+                    )
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -149,159 +239,27 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
   }
 
   Widget _buildChildBasedOnStatus(BookReadingStatus status) {
-    switch (status) {
-      case BookReadingStatus.initial:
-        return Container(
-          width: 50.0,
-          height: 22.0,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(20.0)),
-            border: Border.all(
-              color: AppColors.gray2,
-            ),
+    if (status == BookReadingStatus.initial) {
+      return Container(
+        width: 50.0,
+        height: 22.0,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+          border: Border.all(
+            color: AppColors.gray2,
           ),
-          child: Icon(
-              FluentIcons.add_16_regular,
-              color: AppColors.gray2,
-            size: 16.0,
-          ),
-        );
-      case BookReadingStatus.notStarted:
-        return Padding(
-          padding: const EdgeInsets.all(2.0),
-          child: StatusLabel(status),
-        );
-      case BookReadingStatus.reading:
-        String startReadingDate = widget.book.customInfo.startReadingDate;
-        if (startReadingDate.isEmpty) {
-          startReadingDate = getCurrentDateAsString();
-        }
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 2.0, 0, 8.0),
-              child: StatusLabel(status),
-            ),
-            const GeneralDivider(verticalPadding: 0),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 8.0, 0, 2.0),
-              child: const Text(
-                'Started reading on',
-                style: TextStyle(
-                  fontFamily: 'LexendLight',
-                  fontSize: 14.0,
-                  color: AppColors.gray1,
-                ),
-              ),
-            ),
-            Row(
-              children: [
-                Text(
-                  startReadingDate,
-                  style: const TextStyle(
-                    fontFamily: 'InriaSansRegular',
-                    fontSize: 18.0,
-                    color: AppColors.softBlack,
-                  ),
-                ),
-                const SizedBox(width: 4.0,),
-                const Icon(FluentIcons.calendar_16_regular)
-              ],
-            ),
-          ],
-        );
-      case BookReadingStatus.done:
-        String startReadingDate = widget.book.customInfo.startReadingDate;
-        if (startReadingDate.isEmpty) {
-          startReadingDate = getCurrentDateAsString();
-        }
-        String finishedReadingDate = widget.book.customInfo.startReadingDate;
-        if (finishedReadingDate.isEmpty) {
-          finishedReadingDate = getCurrentDateAsString();
-        }
-
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 2.0, 0, 8.0),
-              child: StatusLabel(status),
-            ),
-            const GeneralDivider(verticalPadding: 0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 8.0, 0, 2.0),
-                      child: const Text(
-                        'Started reading on',
-                        style: TextStyle(
-                          fontFamily: 'LexendLight',
-                          fontSize: 14.0,
-                          color: AppColors.gray1,
-                        ),
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          startReadingDate,
-                          style: const TextStyle(
-                            fontFamily: 'InriaSansRegular',
-                            fontSize: 18.0,
-                            color: AppColors.softBlack,
-                          ),
-                        ),
-                        const SizedBox(width: 4.0,),
-                        const Icon(FluentIcons.calendar_16_regular)
-                      ],
-                    ),
-                  ],
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 8.0, 0, 2.0),
-                      child: const Text(
-                        'Finished reading on',
-                        style: TextStyle(
-                          fontFamily: 'LexendLight',
-                          fontSize: 14.0,
-                          color: AppColors.gray1,
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 0, 40.0, 0),
-                      child: Row(
-                        children: [
-                          Text(
-                            startReadingDate,
-                            style: const TextStyle(
-                              fontFamily: 'InriaSansRegular',
-                              fontSize: 18.0,
-                              color: AppColors.softBlack,
-                            ),
-                          ),
-                          const SizedBox(width: 4.0,),
-                          const Icon(FluentIcons.calendar_16_regular)
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-
-          ],
-        );
-      default:
-        return const Text('default');
+        ),
+        child: const Icon(
+          FluentIcons.add_16_regular,
+          color: AppColors.gray2,
+          size: 16.0,
+        ),
+      );
+    } else {
+      return Padding(
+        padding: const EdgeInsets.all(2.0),
+        child: StatusLabel(status),
+      );
     }
   }
 
@@ -355,28 +313,28 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
 
   @override
   Widget build(BuildContext context) {
-    final label = labels[widget.index];
+    final String label = labels[widget.index];
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              label,
-              style: const TextStyle(
-                fontFamily: 'LexendLight',
-                fontSize: 14.0,
-                color: AppColors.gray1,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: const TextStyle(
+                  fontFamily: 'LexendLight',
+                  fontSize: 14.0,
+                  color: AppColors.gray1,
+                ),
               ),
-            ),
-            const SizedBox(height: 4.0),
-            _generateContentWidget(label),
-          ],
-        ),
-        const GeneralDivider(verticalPadding: 16.0)
-      ],
+              const SizedBox(height: 4.0),
+              _generateContentWidget(label),
+            ],
+          ),
+          const GeneralDivider(verticalPadding: 16.0)
+        ],
     );
   }
 }
