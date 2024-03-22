@@ -96,6 +96,9 @@ flutter:
     - family: NotoSansKRSemiBold
       fonts:
         - asset: fonts/NotoSansKR-SemiBold.ttf
+    - family: NotoSansKRBold
+      fonts:
+        - asset: fonts/NotoSansKR-Bold.ttf
     - family: LexendLight
       fonts:
         - asset: fonts/Lexend-Light.ttf
