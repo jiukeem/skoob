@@ -79,7 +79,7 @@ class TableViewListTile extends StatelessWidget with BookshelfListTileMixin {
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
                             fontSize: 15.0,
-                            fontFamily: 'NotoSansKRSemiBold',
+                            fontFamily: 'NotoSansKRMedium',
                             color: AppColors.softBlack,
                           ),
                         ),

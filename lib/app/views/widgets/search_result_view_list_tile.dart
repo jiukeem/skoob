@@ -51,7 +51,7 @@ class _SearchResultViewListTileState extends State<SearchResultViewListTile> {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
-                    fontFamily: 'NotoSansKRBold',
+                    fontFamily: 'NotoSansKRMedium',
                     fontSize: 16.0,
                     color: AppColors.softBlack
                   ),
