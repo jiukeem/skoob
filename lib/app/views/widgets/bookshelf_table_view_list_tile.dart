@@ -48,6 +48,7 @@ class TableViewListTile extends StatelessWidget with BookshelfListTileMixin {
             },
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
+
               children: [
                 SizedBox(
                     width: 32.0,
@@ -78,7 +79,7 @@ class TableViewListTile extends StatelessWidget with BookshelfListTileMixin {
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
                             fontSize: 15.0,
-                            fontFamily: 'NotoSansKRBold',
+                            fontFamily: 'NotoSansKRSemiBold',
                             color: AppColors.softBlack,
                           ),
                         ),
@@ -98,18 +99,12 @@ class TableViewListTile extends StatelessWidget with BookshelfListTileMixin {
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const SizedBox(height: 1.0,),
+                    const SizedBox(height: 3.0,),
                     book.customInfo.status == BookReadingStatus.initial
                     ? const SizedBox(height: 20.0)
                     : StatusLabel(book.customInfo.status, 11.0),
-                    const SizedBox(height: 4.0,),
-                    dateWidgetAccordingToStatus(
-                        11.0,
-                        book.customInfo.status,
-                        startDate: book.customInfo.startReadingDate,
-                        finishDate: book.customInfo.finishReadingDate
-                    )
                   ],
                 ),
               ],
