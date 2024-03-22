@@ -71,6 +71,81 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
     }
   }
 
+  Future<void> _showDeleteDialog(BuildContext context) async {
+    Widget cancelButton = InkWell(
+      child: const Padding(
+        padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
+        child: Text(
+          '취소',
+          style: TextStyle(
+            fontFamily: 'NotoSansKRMedium',
+            fontSize: 14.0,
+            color: AppColors.softBlack,
+          ),
+        ),
+      ),
+      onTap: () {
+        Navigator.of(context).pop();
+      },
+    );
+
+    Widget deleteButton = InkWell(
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+          color: Colors.red[700],
+        ),
+        child: const Padding(
+          padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
+          child: Text(
+            '삭제',
+            style: TextStyle(
+              fontFamily: 'NotoSansKRMedium',
+              fontSize: 14.0,
+              color: AppColors.white,
+            ),
+          ),
+        ),
+      ),
+      onTap: () {
+        Navigator.of(context).pop(true);
+      },
+    );
+
+    AlertDialog alert = AlertDialog(
+      backgroundColor: AppColors.white,
+      surfaceTintColor: AppColors.white,
+      title: Text(
+          book.basicInfo.title,
+        overflow: TextOverflow.ellipsis,
+        style: const TextStyle(
+          fontFamily: 'NotoSansKRBold',
+          fontSize: 16.0,
+          color: AppColors.softBlack,
+        ),
+      ),
+      content: const Text('해당 도서를 목록에서 삭제할까요?\n이 작업은 돌이킬 수 없습니다'),
+      actions: [
+        cancelButton,
+        deleteButton,
+      ],
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+      ),
+    );
+
+    final bool? shouldDelete = await showDialog(
+        context: context,
+        builder: (context) {
+          return alert;
+        });
+
+    if (mounted && shouldDelete == true) {
+      Navigator.of(context).pop();
+      Provider.of<SharedListState>(context, listen: false).deleteItem(book);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -86,11 +161,19 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
             child: NestedScrollView(
               headerSliverBuilder: (context, innerBoxIsScrolled) {
                 return [
-                  const SliverAppBar(
+                  SliverAppBar(
                     backgroundColor: AppColors.white,
                     surfaceTintColor: AppColors.white,
                     pinned: true,
                     floating: false,
+                    actions: [
+                      IconButton(
+                        icon: const Icon(FluentIcons.more_vertical_16_regular),
+                        onPressed: () {
+                          _showDeleteDialog(context);
+                        },
+                      )
+                    ],
                   ),
                   SliverToBoxAdapter(
                     child: Padding(
