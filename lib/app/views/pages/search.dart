@@ -172,6 +172,13 @@ class _SearchState extends State<Search> {
                   style: const TextStyle(
                     fontSize: 16.0
                   ),
+                  onSubmitted: (value) {
+                    setState(() {
+                      _searchKeyword = _searchController.text;
+                      _startSearch();
+                    });
+                    FocusScope.of(context).requestFocus(FocusNode());
+                  },
                 ),
               )),
           const SizedBox(width: 2.0),
@@ -181,6 +188,7 @@ class _SearchState extends State<Search> {
                   _searchKeyword = _searchController.text;
                   _startSearch();
                 });
+                FocusScope.of(context).requestFocus(FocusNode());
               },
               icon: const Icon(FluentIcons.search_24_regular)
           )
