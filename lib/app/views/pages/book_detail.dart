@@ -340,7 +340,9 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
                       Padding(
                         padding: const EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 0),
                         child: InkWell(
-                          onTap: () {},
+                          onTap: () {
+                            navigateAndUpdateComment(context, book.customInfo.comment);
+                          },
                           child: Container(
                             height: 28.0,
                             decoration: const BoxDecoration(
@@ -381,7 +383,9 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
                       Padding(
                         padding: const EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 0),
                         child: InkWell(
-                          onTap: () {},
+                          onTap: () {
+                            navigateAndUpdateComment(context, book.customInfo.comment);
+                          },
                           child: Container(
                             height: 28.0,
                             decoration: const BoxDecoration(
@@ -392,7 +396,7 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  '노트 추가하기',
+                                  '하이라이트 추가하기',
                                   style: TextStyle(
                                     fontSize: 12.0,
                                     fontFamily: 'NotoSansKRRegular',

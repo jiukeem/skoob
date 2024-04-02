@@ -75,9 +75,9 @@ class _UserRecordPageState extends State<UserRecord> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     IconButton(onPressed: () {
+                      book.customInfo.comment = _textController.text;
                       Provider.of<SharedListState>(context, listen: false).replaceWithUpdatedBook(book);
                       Navigator.pop(context, _textController.text);
-                      print(_textController.text);
                     }, icon: Icon(FluentIcons.checkmark_16_filled))
                   ],
                 ),
