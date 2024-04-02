@@ -6,12 +6,14 @@ import 'package:skoob/app/views/widgets/general_divider.dart';
 import '../../controller/shared_list_state.dart';
 import '../../models/book.dart';
 import '../../utils/app_colors.dart';
+import '../../utils/util_fuctions.dart';
 
 class UserRecord extends StatefulWidget {
   final Book book;
-  final String existingComment;
+  final String existingRecord;
+  final UserRecordOption userRecordOption;
 
-  const UserRecord({super.key, required this.book, required this.existingComment});
+  const UserRecord({super.key, required this.book, required this.existingRecord, required this.userRecordOption});
 
   @override
   State<UserRecord> createState() => _UserRecordPageState();
@@ -23,7 +25,20 @@ class _UserRecordPageState extends State<UserRecord> {
   @override
   void initState() {
     super.initState();
-    _textController = TextEditingController(text: widget.existingComment);
+    _textController = TextEditingController(text: widget.existingRecord);
+  }
+
+  void saveUserRecord(String record, Book book) {
+    switch (widget.userRecordOption) {
+      case UserRecordOption.comment:
+        book.customInfo.comment = _textController.text;
+      case UserRecordOption.note:
+        book.customInfo.note[getCurrentDateAndTimeAsString()] = _textController.text;
+      case UserRecordOption.highlight:
+        book.customInfo.highlight[getCurrentDateAndTimeAsString()] = _textController.text;
+      default:
+        return;
+    }
   }
 
   @override
@@ -54,12 +69,12 @@ class _UserRecordPageState extends State<UserRecord> {
                 controller: _textController,
                 maxLines: null,
                 expands: true,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   border: InputBorder.none,
                 ),
                 cursorWidth: 1.2,
                 autofocus: true,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 14.0
                 ),
                 keyboardType: TextInputType.multiline,
@@ -70,15 +85,15 @@ class _UserRecordPageState extends State<UserRecord> {
             color: Colors.white,
             child: Column(
               children: [
-                GeneralDivider(verticalPadding: 0.0),
+                const GeneralDivider(verticalPadding: 0.0),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     IconButton(onPressed: () {
-                      book.customInfo.comment = _textController.text;
+                      saveUserRecord(_textController.text, book);
                       Provider.of<SharedListState>(context, listen: false).replaceWithUpdatedBook(book);
-                      Navigator.pop(context, _textController.text);
-                    }, icon: Icon(FluentIcons.checkmark_16_filled))
+                      Navigator.pop(context, book);
+                    }, icon: const Icon(FluentIcons.checkmark_16_filled))
                   ],
                 ),
               ],
@@ -89,3 +104,5 @@ class _UserRecordPageState extends State<UserRecord> {
     );
   }
 }
+
+enum UserRecordOption {comment, note, highlight}

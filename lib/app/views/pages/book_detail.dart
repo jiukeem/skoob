@@ -22,7 +22,7 @@ class BookDetail extends StatefulWidget {
 
 class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateMixin {
   TabController? _tabController;
-  late final Book book;
+  late Book book;
   late double _currentRating;
 
   @override
@@ -39,13 +39,13 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
     super.dispose();
   }
 
-  void navigateAndUpdateComment(BuildContext context, String existingComment) async {
+  void navigateAndUpdateUserRecord(BuildContext context, String existingComment, UserRecordOption userRecordOption) async {
     final result = await Navigator.push(
         context,
         PageRouteBuilder(
             pageBuilder: (context, animation,
                 secondaryAnimation) =>
-                UserRecord(book: book, existingComment: existingComment),
+                UserRecord(book: book, existingRecord: existingComment, userRecordOption: userRecordOption,),
             transitionsBuilder: (context, animation,
                 secondaryAnimation, child) {
               const begin = Offset(0.0, 1.0);
@@ -66,7 +66,7 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
     // back from UserRecord page, with result
     if (result != null) {
       setState(() {
-        book.customInfo.comment = result.toString();
+        book = result as Book;
       });
     }
   }
@@ -241,7 +241,7 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
                           const SizedBox(height: 8.0),
                           InkWell(
                           onTap: () {
-                            navigateAndUpdateComment(context, book.customInfo.comment);
+                            navigateAndUpdateUserRecord(context, book.customInfo.comment, UserRecordOption.comment);
                           },
                           child: book.customInfo.comment.isEmpty
                               ? Container(
@@ -341,7 +341,7 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
                         padding: const EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 0),
                         child: InkWell(
                           onTap: () {
-                            navigateAndUpdateComment(context, book.customInfo.comment);
+                            navigateAndUpdateUserRecord(context, '', UserRecordOption.note);
                           },
                           child: Container(
                             height: 28.0,
@@ -371,9 +371,10 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
                       Expanded(
                         child: ListView.builder(
                             padding: const EdgeInsets.fromLTRB(0, 16.0, 0, 0),
-                            itemCount: 1,
+                            itemCount: book.customInfo.note.length,
                             itemBuilder: (context, index) {
-                              return BookDetailNoteListViewTile(book: book);
+                              MapEntry<String, String> item = book.customInfo.note.entries.elementAt(index);
+                              return BookDetailNoteListViewTile(note: item);
                             }),
                       ),
                     ],
@@ -384,7 +385,7 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
                         padding: const EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 0),
                         child: InkWell(
                           onTap: () {
-                            navigateAndUpdateComment(context, book.customInfo.comment);
+                            navigateAndUpdateUserRecord(context, '', UserRecordOption.highlight);
                           },
                           child: Container(
                             height: 28.0,
@@ -414,9 +415,10 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
                       Expanded(
                         child: ListView.builder(
                             padding: const EdgeInsets.fromLTRB(0, 16.0, 0, 0),
-                            itemCount: 1,
+                            itemCount: book.customInfo.highlight.length,
                             itemBuilder: (context, index) {
-                              return BookDetailHighlightListViewTile(book: book);
+                              MapEntry<String, String> item = book.customInfo.highlight.entries.elementAt(index);
+                              return BookDetailHighlightListViewTile(highlight: item);
                             }),
                       ),
                     ],

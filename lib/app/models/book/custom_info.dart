@@ -5,8 +5,8 @@ class CustomInfo {
   String finishReadingDate;
   String rate;
   String comment;
-  List<Map<String, String>> note;
-  List<Map<String, String>> highlight;
+  Map<String, String> note;
+  Map<String, String> highlight;
 
   CustomInfo({
     required this.addedDate,
@@ -15,10 +15,10 @@ class CustomInfo {
     this.finishReadingDate = '',
     this.rate = '',
     this.comment = '',
-    List<Map<String, String>>? note,
-    List<Map<String, String>>? highlight
-  }) : note = note ?? [],
-      highlight = highlight ?? [];
+    Map<String, String>? note,
+    Map<String, String>? highlight
+  }) : note = note ?? {},
+      highlight = highlight ?? {};
 
   Map<String, dynamic> toJson() {
     return {
@@ -28,8 +28,8 @@ class CustomInfo {
       'finishReadingDate': finishReadingDate,
       'rate': rate,
       'comment': comment,
-      'note': note.map((item) => item).toList(),
-      'highlight': highlight.map((item) => item).toList()
+      'note': note,
+      'highlight': highlight
     };
   }
 
@@ -41,12 +41,8 @@ class CustomInfo {
       finishReadingDate: json['finishReadingDate'] ?? '',
       rate: json['rate'] ?? '',
       comment: json['comment'] ?? '',
-      note: (json['note'] as List<dynamic>?)
-              ?.map((item) => Map<String, String>.from(item))
-              .toList() ?? [],
-      highlight: (json['highlight'] as List<dynamic>?)
-              ?.map((item) => Map<String, String>.from(item))
-              .toList() ?? [],
+      note: Map<String, String>.from(json['note'] as Map),
+      highlight: Map<String, String>.from(json['highlight'] as Map),
     );
   }
 
