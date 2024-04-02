@@ -36,26 +36,13 @@ class _UserRecordPageState extends State<UserRecord> {
       appBar: AppBar(
         backgroundColor: AppColors.white,
         centerTitle: true,
-        title: Column(
-          children: [
-            Text(
-                book.basicInfo.title,
-              style: TextStyle(
-                fontFamily: 'NotoSansKRMedium',
-                fontSize: 16.0,
-                color: AppColors.softBlack,
-              ),
-            ),
-            SizedBox(height: 4.0,),
-            Text(
-              'comment',
-              style: TextStyle(
-                fontFamily: 'LexendLight',
-                fontSize: 18.0,
-                color: AppColors.gray2
-              ),
-            ),
-          ],
+        title: Text(
+            book.basicInfo.title,
+          style: const TextStyle(
+            fontFamily: 'NotoSansKRMedium',
+            fontSize: 16.0,
+            color: AppColors.softBlack,
+          ),
         ),
       ),
       body: Column(
