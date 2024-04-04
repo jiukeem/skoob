@@ -74,7 +74,7 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
   Future<void> _showDeleteDialog(BuildContext context) async {
     Widget cancelButton = InkWell(
       child: const Padding(
-        padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
+        padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
         child: Text(
           '취소',
           style: TextStyle(
@@ -96,7 +96,7 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
           color: AppColors.warningRed,
         ),
         child: const Padding(
-          padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
+          padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
           child: Text(
             '삭제',
             style: TextStyle(
