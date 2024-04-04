@@ -85,15 +85,15 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
         ),
       ),
       onTap: () {
-        Navigator.of(context).pop();
+        Navigator.of(context).pop(false);
       },
     );
 
     Widget deleteButton = InkWell(
       child: Container(
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-          color: Colors.red[700],
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(5.0)),
+          color: AppColors.warningRed,
         ),
         child: const Padding(
           padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
@@ -167,12 +167,39 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
                     pinned: true,
                     floating: false,
                     actions: [
-                      IconButton(
-                        icon: const Icon(FluentIcons.more_vertical_16_regular),
-                        onPressed: () {
-                          _showDeleteDialog(context);
+                      PopupMenuButton<int>(
+                        surfaceTintColor: AppColors.white,
+                        icon: const Icon(FluentIcons.more_vertical_24_regular), // Menu icon
+                        itemBuilder: (context) => [
+                          const PopupMenuItem(
+                            padding: EdgeInsets.symmetric(horizontal: 20.0),
+                            value: 1,
+                            child: Row(
+                              children: [
+                                Text(
+                                  '책 삭제하기',
+                                  style: TextStyle(
+                                    color: AppColors.warningRed,
+                                    fontSize: 14.0,
+                                    fontFamily: 'NotoSansKRRegular'
+                                  ),
+                                ),
+                                SizedBox(width: 8.0,),
+                                Icon(
+                                  FluentIcons.delete_24_regular,
+                                  color: AppColors.warningRed,
+                                  size: 16.0,
+                                )
+                              ],
+                            ),
+                          ),
+                        ],
+                        onSelected: (value) {
+                          if (value == 1) {
+                            _showDeleteDialog(context);
+                          }
                         },
-                      )
+                      ),
                     ],
                   ),
                   SliverToBoxAdapter(
