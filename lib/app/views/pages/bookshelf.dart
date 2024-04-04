@@ -157,23 +157,23 @@ class _BookshelfState extends State<Bookshelf> {
                               ),
                               borderRadius: const BorderRadius.all(Radius.circular(20.0))
                           ),
-                          child: const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 8.0),
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(9, 3, 8, 4),
                             child: Row(
                               children: [
-                                Icon(
-                                  FluentIcons.arrow_sort_16_regular,
-                                  color: AppColors.gray1,
-                                  size: 14.0,
-                                ),
-                                SizedBox(width: 4.0,),
                                 Text(
-                                  'sort',
-                                  style: TextStyle(
+                                  sortOptionMapSortIcon[_currentSortOption]!,
+                                  style: const TextStyle(
                                       color: AppColors.gray1,
-                                      fontFamily: 'LexendRegular',
-                                      fontSize: 16.0
+                                      fontFamily: 'NotoSansKRRegular',
+                                      fontSize: 14.0
                                   ),
+                                ),
+                                // const SizedBox(width: 4.0,),
+                                Icon(
+                                  _isAscending ? FluentIcons.chevron_up_16_regular : FluentIcons.chevron_down_16_regular,
+                                  color: AppColors.gray1,
+                                  size: 16.0,
                                 )
                               ],
                             ),
@@ -322,7 +322,7 @@ class _BookshelfState extends State<Bookshelf> {
                 const GeneralDivider(verticalPadding: 0),
                 Expanded(
                   child: ListView.builder(
-                    itemCount: sortOptionMap.keys.length,
+                    itemCount: sortOptionMapBottomSheet.keys.length,
                     itemBuilder: (context, index) {
                       return SortOptionListTile(
                           index: index,
@@ -350,7 +350,7 @@ enum BookshelfStatus { loading, complete }
 enum BookshelfViewOption { detail, table, album }
 enum SortOption { title, rate, status, startReadingDate, finishReadingDate, category, addedDate }
 
-final Map<String, SortOption> sortOptionMap = {
+final Map<String, SortOption> sortOptionMapBottomSheet = {
   '제목순': SortOption.title,
   '평점순': SortOption.rate,
   '상태순': SortOption.status,
@@ -358,5 +358,15 @@ final Map<String, SortOption> sortOptionMap = {
   '완독한 날짜순': SortOption.finishReadingDate,
   '카테고리순': SortOption.category,
   '추가한 날짜순': SortOption.addedDate
+};
+
+final Map<SortOption, String> sortOptionMapSortIcon = {
+  SortOption.title: '제목',
+  SortOption.rate: '평점',
+  SortOption.status: '상태',
+  SortOption.startReadingDate: '시작일',
+  SortOption.finishReadingDate: '완독일',
+  SortOption.category: '카테고리',
+  SortOption.addedDate: '추가일'
 };
 

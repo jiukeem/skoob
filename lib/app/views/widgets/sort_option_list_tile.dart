@@ -17,11 +17,11 @@ class SortOptionListTile extends StatefulWidget {
 }
 
 class _SortOptionListTileState extends State<SortOptionListTile> {
-  final Map<String, SortOption> labelMap = sortOptionMap;
+  final Map<String, SortOption> labelMap = sortOptionMapBottomSheet;
 
   @override
   Widget build(BuildContext context) {
-    final label = sortOptionMap.keys.toList()[widget.index];
+    final label = sortOptionMapBottomSheet.keys.toList()[widget.index];
     final isCurrentOption = labelMap[label] == widget.currentSortOption;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -39,7 +39,7 @@ class _SortOptionListTileState extends State<SortOptionListTile> {
               children: [
                 Text(label),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 12.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
                   child: isCurrentOption
                       ? widget.isAscending ? const Icon(FluentIcons.chevron_up_24_regular) : const Icon(FluentIcons.chevron_down_24_regular)
                       : const SizedBox.shrink(),
