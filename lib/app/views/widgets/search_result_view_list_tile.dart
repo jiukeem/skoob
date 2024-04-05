@@ -1,5 +1,6 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:skoob/app/controller/shared_list_state.dart';
 
@@ -16,8 +17,8 @@ class SearchResultViewListTile extends StatefulWidget {
 }
 
 class _SearchResultViewListTileState extends State<SearchResultViewListTile> {
-  bool isInBookshelf = false;
-  bool isInWishlist = false;
+  // bool isInBookshelf = false;
+  // bool isInWishlist = false;
 
   @override
   Widget build(BuildContext context) {
@@ -100,25 +101,30 @@ class _SearchResultViewListTileState extends State<SearchResultViewListTile> {
             children: [
               IconButton(
                 onPressed: () {
-                  setState(() {
-                    isInBookshelf = !isInBookshelf;
-                    Provider.of<SharedListState>(context, listen: false).addItem(book);
-                  });
+                  Provider.of<SharedListState>(context, listen: false).addItem(book);
+                  Fluttertoast.showToast(
+                    msg: '책을 추가하였습니다: ${book.basicInfo.title}',
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.TOP,
+                    timeInSecForIosWeb: 1,
+                    backgroundColor: AppColors.gray1,
+                    textColor: AppColors.white,
+                    fontSize: 14.0,
+                  );
                 },
-                icon: isInBookshelf
-                    ? const Icon(FluentIcons.add_square_multiple_20_filled)
-                    : const Icon(FluentIcons.add_square_multiple_20_regular),
+                icon: const Icon(FluentIcons.add_square_multiple_20_regular),
               ),
-              IconButton(
-                onPressed: () {
-                  setState(() {
-                    isInWishlist = !isInWishlist;
-                  });
-                },
-                icon: isInWishlist
-                    ? const Icon(FluentIcons.heart_20_filled)
-                    : const Icon(FluentIcons.heart_20_regular),
-              )
+              // TODO wishlist
+              // IconButton(
+              //   onPressed: () {
+              //     setState(() {
+              //       isInWishlist = !isInWishlist;
+              //     });
+              //   },
+              //   icon: isInWishlist
+              //       ? const Icon(FluentIcons.heart_20_filled)
+              //       : const Icon(FluentIcons.heart_20_regular),
+              // )
             ],
           ),
         ],
