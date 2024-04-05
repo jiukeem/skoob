@@ -87,8 +87,12 @@ class _UserRecordPageState extends State<UserRecord> {
               children: [
                 const GeneralDivider(verticalPadding: 0.0),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    IconButton(
+                        onPressed: () {},
+                        icon: const Icon(FluentIcons.image_16_regular)
+                    ),
                     IconButton(onPressed: () {
                       saveUserRecord(_textController.text, book);
                       Provider.of<SharedListState>(context, listen: false).replaceWithUpdatedBook(book);
