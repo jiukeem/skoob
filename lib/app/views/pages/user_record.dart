@@ -89,15 +89,20 @@ class _UserRecordPageState extends State<UserRecord> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    IconButton(
+                    widget.userRecordOption == UserRecordOption.comment
+                    ? const SizedBox.shrink()
+                    : IconButton(
                         onPressed: () {},
                         icon: const Icon(FluentIcons.image_16_regular)
                     ),
-                    IconButton(onPressed: () {
-                      saveUserRecord(_textController.text, book);
-                      Provider.of<SharedListState>(context, listen: false).replaceWithUpdatedBook(book);
-                      Navigator.pop(context, book);
-                    }, icon: const Icon(FluentIcons.checkmark_16_filled))
+                    IconButton(
+                        onPressed: () {
+                          saveUserRecord(_textController.text, book);
+                          Provider.of<SharedListState>(context, listen: false).replaceWithUpdatedBook(book);
+                          Navigator.pop(context, book);
+                          },
+                        icon: const Icon(FluentIcons.checkmark_16_filled)
+                    )
                   ],
                 ),
               ],
