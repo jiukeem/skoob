@@ -29,6 +29,10 @@ class _UserRecordPageState extends State<UserRecord> {
   }
 
   void saveUserRecord(String record, Book book) {
+    if (record.isEmpty) {
+      return;
+    }
+
     switch (widget.userRecordOption) {
       case UserRecordOption.comment:
         book.customInfo.comment = _textController.text;
