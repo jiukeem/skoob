@@ -1,12 +1,15 @@
+import 'dart:io';
+
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:skoob/app/views/widgets/general_divider.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../controller/shared_list_state.dart';
 import '../../models/book.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/util_fuctions.dart';
+import '../widgets/general_divider.dart';
 
 class UserRecord extends StatefulWidget {
   final Book book;
@@ -21,6 +24,7 @@ class UserRecord extends StatefulWidget {
 
 class _UserRecordPageState extends State<UserRecord> {
   late TextEditingController _textController;
+  File? _image;
 
   @override
   void initState() {
@@ -42,6 +46,16 @@ class _UserRecordPageState extends State<UserRecord> {
         book.customInfo.highlight[getCurrentDateAndTimeAsString()] = _textController.text;
       default:
         return;
+    }
+  }
+
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
     }
   }
 
@@ -85,6 +99,8 @@ class _UserRecordPageState extends State<UserRecord> {
               ),
             ),
           ),
+          if (_image != null)
+            Image.file(_image!),
           Container(
             color: Colors.white,
             child: Column(
@@ -96,7 +112,9 @@ class _UserRecordPageState extends State<UserRecord> {
                     widget.userRecordOption == UserRecordOption.comment
                     ? const SizedBox.shrink()
                     : IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          _pickImage();
+                        },
                         icon: const Icon(FluentIcons.image_16_regular)
                     ),
                     IconButton(
