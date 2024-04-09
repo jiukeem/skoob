@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "263080703449",
+    "project_id": "skoob-d5938",
+    "storage_bucket": "skoob-d5938.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:263080703449:android:300871cd477e7c31f5d5c8",
+        "android_client_info": {
+          "package_name": "com.example.skoob"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBmtblrPK0lBqrVCRC_ZQofd7g7-lDyVrc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
