@@ -5,20 +5,28 @@ import 'package:skoob/app/views/pages/search.dart';
 import 'package:skoob/app/views/widgets/skoob_bottom_nav_bar.dart';
 import 'package:skoob/app/utils/app_colors.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() => runApp(ChangeNotifierProvider(
-    create: (context) => SharedListState(),
-    child: MaterialApp(
-      theme: ThemeData(
-        primaryColor: AppColors.primaryYellow,
-        textSelectionTheme: const TextSelectionThemeData(
-          selectionHandleColor: AppColors.primaryYellow,
-          selectionColor: AppColors.gray2,
-          cursorColor: AppColors.gray2
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform
+  );
+
+  runApp(ChangeNotifierProvider(
+      create: (context) => SharedListState(),
+      child: MaterialApp(
+        theme: ThemeData(
+          primaryColor: AppColors.primaryYellow,
+          textSelectionTheme: const TextSelectionThemeData(
+              selectionHandleColor: AppColors.primaryYellow,
+              selectionColor: AppColors.gray2,
+              cursorColor: AppColors.gray2),
         ),
-      ),
-      home: const Skoob(),
-    )));
+        home: const Skoob(),
+      )));
+}
 
 class Skoob extends StatefulWidget {
   const Skoob({super.key});
