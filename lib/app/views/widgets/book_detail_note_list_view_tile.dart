@@ -31,7 +31,7 @@ class _BookDetailNoteListViewTileState extends State<BookDetailNoteListViewTile>
           ),
           const SizedBox(height: 4.0,),
           Text(
-            widget.note.value,
+            widget.note.value['text'] ?? '',
             style: const TextStyle(
                 fontFamily: 'NotoSansKRRegular',
                 fontSize: 14.0,

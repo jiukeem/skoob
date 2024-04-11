@@ -41,9 +41,17 @@ class _UserRecordPageState extends State<UserRecord> {
       case UserRecordOption.comment:
         book.customInfo.comment = _textController.text;
       case UserRecordOption.note:
-        book.customInfo.note[getCurrentDateAndTimeAsString()] = _textController.text;
+        book.customInfo.note[getCurrentDateAndTimeAsString()] =
+        {
+          'text': _textController.text,
+          'images': []
+        };
       case UserRecordOption.highlight:
-        book.customInfo.highlight[getCurrentDateAndTimeAsString()] = _textController.text;
+        book.customInfo.highlight[getCurrentDateAndTimeAsString()] =
+        {
+          'text': _textController.text,
+          'images': []
+        };
       default:
         return;
     }

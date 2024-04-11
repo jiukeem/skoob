@@ -31,7 +31,7 @@ class _BookDetailHighlightListViewTileState extends State<BookDetailHighlightLis
           ),
           const SizedBox(height: 4.0,),
           Text(
-            widget.highlight.value,
+            widget.highlight.value['text'] ?? '',
             style: const TextStyle(
                 fontFamily: 'NotoSansKRRegular',
                 fontSize: 14.0,

@@ -400,7 +400,7 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
                             padding: const EdgeInsets.fromLTRB(0, 16.0, 0, 0),
                             itemCount: book.customInfo.note.length,
                             itemBuilder: (context, index) {
-                              MapEntry<String, String> item = book.customInfo.note.entries.elementAt(index);
+                              MapEntry<String, Map<String, dynamic>> item = book.customInfo.note.entries.elementAt(index);
                               return BookDetailNoteListViewTile(note: item);
                             }),
                       ),
@@ -444,7 +444,7 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
                             padding: const EdgeInsets.fromLTRB(0, 16.0, 0, 0),
                             itemCount: book.customInfo.highlight.length,
                             itemBuilder: (context, index) {
-                              MapEntry<String, String> item = book.customInfo.highlight.entries.elementAt(index);
+                              MapEntry<String, Map<String, dynamic>> item = book.customInfo.highlight.entries.elementAt(index);
                               return BookDetailHighlightListViewTile(highlight: item);
                             }),
                       ),
