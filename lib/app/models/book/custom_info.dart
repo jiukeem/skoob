@@ -5,8 +5,8 @@ class CustomInfo {
   String finishReadingDate;
   String rate;
   String comment;
-  Map<String, String> note;
-  Map<String, String> highlight;
+  Map<String, Map<String, dynamic>> note;
+  Map<String, Map<String, dynamic>> highlight;
 
   CustomInfo({
     required this.addedDate,
@@ -15,8 +15,8 @@ class CustomInfo {
     this.finishReadingDate = '',
     this.rate = '',
     this.comment = '',
-    Map<String, String>? note,
-    Map<String, String>? highlight
+    Map<String, Map<String, dynamic>>? note,
+    Map<String, Map<String, dynamic>>? highlight
   }) : note = note ?? {},
       highlight = highlight ?? {};
 
@@ -28,8 +28,14 @@ class CustomInfo {
       'finishReadingDate': finishReadingDate,
       'rate': rate,
       'comment': comment,
-      'note': note,
-      'highlight': highlight
+      'note': note.map((date, content) => MapEntry(date, {
+        'text': content['text'],
+        'images': List<String>.from(content['images'] ?? []),
+      })),
+      'highlight': highlight.map((date, content) => MapEntry(date, {
+        'text': content['text'],
+        'images': List<String>.from(content['images'] ?? []),
+      })),
     };
   }
 
@@ -41,8 +47,16 @@ class CustomInfo {
       finishReadingDate: json['finishReadingDate'] ?? '',
       rate: json['rate'] ?? '',
       comment: json['comment'] ?? '',
-      note: Map<String, String>.from(json['note'] as Map),
-      highlight: Map<String, String>.from(json['highlight'] as Map),
+      note: (json['note'] as Map<String, dynamic>?)?.map((date, content) =>
+      MapEntry(date, {
+        'text': content['text'],
+        'images': List<String>.from(content['images'] ?? []),
+      })) ?? {},
+      highlight: (json['highlight'] as Map<String, dynamic>?)?.map((date, content) =>
+          MapEntry(date, {
+            'text': content['text'],
+            'images': List<String>.from(content['images'] ?? []),
+          })) ?? {},
     );
   }
 
