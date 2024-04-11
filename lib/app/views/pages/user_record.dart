@@ -81,22 +81,22 @@ class _UserRecordPageState extends State<UserRecord> {
     return status.isGranted;
   }
 
-  Future<String> saveImagePermanently(String imagePath) async {
-    final Directory dir = await getApplicationDocumentsDirectory(); // Get the documents directory
+  Future<String> saveImagePermanently(String currentImagePath) async {
+    final Directory dir = await getApplicationDocumentsDirectory();
     final Directory skoobDir = Directory('${dir.path}/SKOOB');
-    print('skoob Dir: ${skoobDir}');
 
     if (!await skoobDir.exists()) {
       await skoobDir.create(recursive: true);
     }
 
-    final String fileName = Path.basename(imagePath); // Use the path package to get the file name
-    final File tempFile = File(imagePath); // The current file
-    final File newFile = File('${skoobDir.path}/$fileName'); // The new file location within 'skoob' directory
+    final String fileName = Path.basename(currentImagePath);
+    final File tempFile = File(currentImagePath);
+    final File newFile = File('${skoobDir.path}/$fileName');
 
-    await tempFile.copy(newFile.path); // Copy the file to 'skoob' directory
+    await tempFile.copy(newFile.path);
+    await tempFile.delete();
 
-    return newFile.path; // Return the new file path
+    return newFile.path;
   }
 
   @override
