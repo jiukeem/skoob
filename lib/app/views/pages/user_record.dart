@@ -24,7 +24,7 @@ class UserRecord extends StatefulWidget {
 
 class _UserRecordPageState extends State<UserRecord> {
   late TextEditingController _textController;
-  File? _image;
+  final List<File?> _image = [];
 
   @override
   void initState() {
@@ -32,8 +32,8 @@ class _UserRecordPageState extends State<UserRecord> {
     _textController = TextEditingController(text: widget.existingRecord);
   }
 
-  void saveUserRecord(String record, Book book) {
-    if (record.isEmpty) {
+  void saveUserRecord(Book book) {
+    if (_textController.text.isEmpty && _image.isEmpty) {
       return;
     }
 
@@ -44,13 +44,13 @@ class _UserRecordPageState extends State<UserRecord> {
         book.customInfo.note[getCurrentDateAndTimeAsString()] =
         {
           'text': _textController.text,
-          'images': []
+          'images': _image.map((file) => file?.path).toList()
         };
       case UserRecordOption.highlight:
         book.customInfo.highlight[getCurrentDateAndTimeAsString()] =
         {
           'text': _textController.text,
-          'images': []
+          'images': _image.map((file) => file!.path).toList()
         };
       default:
         return;
@@ -59,10 +59,11 @@ class _UserRecordPageState extends State<UserRecord> {
 
   Future<void> _pickImage() async {
     final picker = ImagePicker();
-    final XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    final XFile? pickedFile = await picker.pickImage(source: ImageSource.camera);
+    print('pickedFile path: ${pickedFile?.path}');
     if (pickedFile != null) {
       setState(() {
-        _image = File(pickedFile.path);
+        _image.add(File(pickedFile.path));
       });
     }
   }
@@ -107,8 +108,23 @@ class _UserRecordPageState extends State<UserRecord> {
               ),
             ),
           ),
-          if (_image != null)
-            Image.file(_image!),
+          if (_image.isNotEmpty)
+            SizedBox(
+              height: 80.0,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                child: ListView.builder(
+                  itemCount: _image.length,
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 8.0),
+                      child: Image.file(_image[index]!, width: 64, fit: BoxFit.fill,),
+                    );
+                  }
+                ),
+              ),
+            ),
           Container(
             color: Colors.white,
             child: Column(
@@ -127,7 +143,7 @@ class _UserRecordPageState extends State<UserRecord> {
                     ),
                     IconButton(
                         onPressed: () {
-                          saveUserRecord(_textController.text, book);
+                          saveUserRecord(book);
                           Provider.of<SharedListState>(context, listen: false).replaceWithUpdatedBook(book);
                           Navigator.pop(context, book);
                           },

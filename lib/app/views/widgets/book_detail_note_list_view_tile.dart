@@ -1,6 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
-import '../../models/book.dart';
 import '../../utils/app_colors.dart';
 
 class BookDetailNoteListViewTile extends StatefulWidget {
@@ -16,6 +17,8 @@ class _BookDetailNoteListViewTileState extends State<BookDetailNoteListViewTile>
   @override
   Widget build(BuildContext context) {
     final String date = widget.note.key.toString().substring(0, 16);
+    final String text = widget.note.value['text'] ?? '';
+    final List<String> images = widget.note.value['images'] ?? [];
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: Column(
@@ -30,15 +33,29 @@ class _BookDetailNoteListViewTileState extends State<BookDetailNoteListViewTile>
             ),
           ),
           const SizedBox(height: 4.0,),
-          Text(
-            widget.note.value['text'] ?? '',
-            style: const TextStyle(
-                fontFamily: 'NotoSansKRRegular',
-                fontSize: 14.0,
-                color: AppColors.softBlack
+          if (images.isNotEmpty)
+            ListView.builder(
+                padding: EdgeInsets.zero,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: images.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+                    child: Image.file(File(images[index])),
+                  );
+                }
             ),
-          ),
-          const SizedBox(height: 16.0,)
+          if (text.isNotEmpty)
+            Text(
+              text,
+              style: const TextStyle(
+                  fontFamily: 'NotoSansKRRegular',
+                  fontSize: 14.0,
+                  color: AppColors.softBlack
+              ),
+            ),
+          const SizedBox(height: 20.0,)
         ],
       ),
     );
