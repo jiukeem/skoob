@@ -2,8 +2,11 @@ import 'dart:io';
 
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' as Path;
 
 import '../../controller/shared_list_state.dart';
 import '../../models/book.dart';
@@ -44,7 +47,7 @@ class _UserRecordPageState extends State<UserRecord> {
         book.customInfo.note[getCurrentDateAndTimeAsString()] =
         {
           'text': _textController.text,
-          'images': _image.map((file) => file?.path).toList()
+          'images': _image.map((file) => file!.path).toList()
         };
       case UserRecordOption.highlight:
         book.customInfo.highlight[getCurrentDateAndTimeAsString()] =
@@ -58,14 +61,42 @@ class _UserRecordPageState extends State<UserRecord> {
   }
 
   Future<void> _pickImage() async {
-    final picker = ImagePicker();
-    final XFile? pickedFile = await picker.pickImage(source: ImageSource.camera);
-    print('pickedFile path: ${pickedFile?.path}');
-    if (pickedFile != null) {
-      setState(() {
-        _image.add(File(pickedFile.path));
-      });
+    if (await requestStoragePermission()) {
+      final picker = ImagePicker();
+      final XFile? pickedFile = await picker.pickImage(source: ImageSource.camera);
+      if (pickedFile != null) {
+        final String imagePath = await saveImagePermanently(pickedFile.path);
+        setState(() {
+          _image.add(File(imagePath));
+        });
+      }
     }
+  }
+
+  Future<bool> requestStoragePermission() async {
+    var status = await Permission.storage.status;
+    if (!status.isGranted) {
+      status = await Permission.storage.request();
+    }
+    return status.isGranted;
+  }
+
+  Future<String> saveImagePermanently(String imagePath) async {
+    final Directory dir = await getApplicationDocumentsDirectory(); // Get the documents directory
+    final Directory skoobDir = Directory('${dir.path}/SKOOB');
+    print('skoob Dir: ${skoobDir}');
+
+    if (!await skoobDir.exists()) {
+      await skoobDir.create(recursive: true);
+    }
+
+    final String fileName = Path.basename(imagePath); // Use the path package to get the file name
+    final File tempFile = File(imagePath); // The current file
+    final File newFile = File('${skoobDir.path}/$fileName'); // The new file location within 'skoob' directory
+
+    await tempFile.copy(newFile.path); // Copy the file to 'skoob' directory
+
+    return newFile.path; // Return the new file path
   }
 
   @override
