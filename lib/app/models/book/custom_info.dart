@@ -5,8 +5,8 @@ class CustomInfo {
   String finishReadingDate;
   String rate;
   String comment;
-  Map<String, String> note;
-  Map<String, String> highlight;
+  // Map<String, String> note;
+  // Map<String, String> highlight;
 
   CustomInfo({
     required this.addedDate,
@@ -15,10 +15,11 @@ class CustomInfo {
     this.finishReadingDate = '',
     this.rate = '',
     this.comment = '',
-    Map<String, String>? note,
-    Map<String, String>? highlight
-  }) : note = note ?? {},
-      highlight = highlight ?? {};
+    // Map<String, String>? note,
+    // Map<String, String>? highlight
+  });
+      // : note = note ?? {},
+      // highlight = highlight ?? {};
 
   Map<String, dynamic> toJson() {
     return {
@@ -28,8 +29,8 @@ class CustomInfo {
       'finishReadingDate': finishReadingDate,
       'rate': rate,
       'comment': comment,
-      'note': note,
-      'highlight': highlight
+      // 'note': note,
+      // 'highlight': highlight
     };
   }
 
@@ -41,8 +42,8 @@ class CustomInfo {
       finishReadingDate: json['finishReadingDate'] ?? '',
       rate: json['rate'] ?? '',
       comment: json['comment'] ?? '',
-      note: Map<String, String>.from(json['note'] as Map),
-      highlight: Map<String, String>.from(json['highlight'] as Map),
+      // note: Map<String, String>.from(json['note'] as Map),
+      // highlight: Map<String, String>.from(json['highlight'] as Map),
     );
   }
 

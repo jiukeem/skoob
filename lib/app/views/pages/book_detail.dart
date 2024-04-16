@@ -324,8 +324,8 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
                           controller: _tabController,
                           tabs: const [
                             Tab(text: 'INFO'),
-                            Tab(text: 'NOTE'),
-                            Tab(text: 'HIGHLIGHT'),
+                            // Tab(text: 'NOTE'),
+                            // Tab(text: 'HIGHLIGHT'),
                           ],
                           labelStyle: const TextStyle(
                             fontFamily: 'LexendMedium',
@@ -362,94 +362,94 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
                         return BookDetailInfoListViewTile(book: book, index: index);
                     }),
                   ),
-                  Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 0),
-                        child: InkWell(
-                          onTap: () {
-                            navigateAndUpdateUserRecord(context, '', UserRecordOption.note);
-                          },
-                          child: Container(
-                            height: 28.0,
-                            decoration: const BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(5)),
-                              color: AppColors.gray3,
-                            ),
-                            child: const Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  '노트 추가하기',
-                                  style: TextStyle(
-                                    fontSize: 12.0,
-                                    fontFamily: 'NotoSansKRRegular',
-                                    color: AppColors.gray1,
-                                  ),
-                                ),
-                                Icon(FluentIcons.add_circle_16_regular,
-                                color: AppColors.gray1,
-                                size: 16.0,)
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: ListView.builder(
-                            padding: const EdgeInsets.fromLTRB(0, 16.0, 0, 0),
-                            itemCount: book.customInfo.note.length,
-                            itemBuilder: (context, index) {
-                              MapEntry<String, String> item = book.customInfo.note.entries.elementAt(index);
-                              return BookDetailNoteListViewTile(note: item);
-                            }),
-                      ),
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 0),
-                        child: InkWell(
-                          onTap: () {
-                            navigateAndUpdateUserRecord(context, '', UserRecordOption.highlight);
-                          },
-                          child: Container(
-                            height: 28.0,
-                            decoration: const BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(5)),
-                              color: AppColors.gray3,
-                            ),
-                            child: const Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  '하이라이트 추가하기',
-                                  style: TextStyle(
-                                    fontSize: 12.0,
-                                    fontFamily: 'NotoSansKRRegular',
-                                    color: AppColors.gray1,
-                                  ),
-                                ),
-                                Icon(FluentIcons.add_circle_16_regular,
-                                  color: AppColors.gray1,
-                                  size: 16.0,)
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: ListView.builder(
-                            padding: const EdgeInsets.fromLTRB(0, 16.0, 0, 0),
-                            itemCount: book.customInfo.highlight.length,
-                            itemBuilder: (context, index) {
-                              MapEntry<String, String> item = book.customInfo.highlight.entries.elementAt(index);
-                              return BookDetailHighlightListViewTile(highlight: item);
-                            }),
-                      ),
-                    ],
-                  ),
+                  // Column(
+                  //   children: [
+                  //     Padding(
+                  //       padding: const EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 0),
+                  //       child: InkWell(
+                  //         onTap: () {
+                  //           navigateAndUpdateUserRecord(context, '', UserRecordOption.note);
+                  //         },
+                  //         child: Container(
+                  //           height: 28.0,
+                  //           decoration: const BoxDecoration(
+                  //             borderRadius: BorderRadius.all(Radius.circular(5)),
+                  //             color: AppColors.gray3,
+                  //           ),
+                  //           child: const Row(
+                  //             mainAxisAlignment: MainAxisAlignment.center,
+                  //             children: [
+                  //               Text(
+                  //                 '노트 추가하기',
+                  //                 style: TextStyle(
+                  //                   fontSize: 12.0,
+                  //                   fontFamily: 'NotoSansKRRegular',
+                  //                   color: AppColors.gray1,
+                  //                 ),
+                  //               ),
+                  //               Icon(FluentIcons.add_circle_16_regular,
+                  //               color: AppColors.gray1,
+                  //               size: 16.0,)
+                  //             ],
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //     Expanded(
+                  //       child: ListView.builder(
+                  //           padding: const EdgeInsets.fromLTRB(0, 16.0, 0, 0),
+                  //           itemCount: book.customInfo.note.length,
+                  //           itemBuilder: (context, index) {
+                  //             MapEntry<String, String> item = book.customInfo.note.entries.elementAt(index);
+                  //             return BookDetailNoteListViewTile(note: item);
+                  //           }),
+                  //     ),
+                  //   ],
+                  // ),
+                  // Column(
+                  //   children: [
+                  //     Padding(
+                  //       padding: const EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 0),
+                  //       child: InkWell(
+                  //         onTap: () {
+                  //           navigateAndUpdateUserRecord(context, '', UserRecordOption.highlight);
+                  //         },
+                  //         child: Container(
+                  //           height: 28.0,
+                  //           decoration: const BoxDecoration(
+                  //             borderRadius: BorderRadius.all(Radius.circular(5)),
+                  //             color: AppColors.gray3,
+                  //           ),
+                  //           child: const Row(
+                  //             mainAxisAlignment: MainAxisAlignment.center,
+                  //             children: [
+                  //               Text(
+                  //                 '하이라이트 추가하기',
+                  //                 style: TextStyle(
+                  //                   fontSize: 12.0,
+                  //                   fontFamily: 'NotoSansKRRegular',
+                  //                   color: AppColors.gray1,
+                  //                 ),
+                  //               ),
+                  //               Icon(FluentIcons.add_circle_16_regular,
+                  //                 color: AppColors.gray1,
+                  //                 size: 16.0,)
+                  //             ],
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //     Expanded(
+                  //       child: ListView.builder(
+                  //           padding: const EdgeInsets.fromLTRB(0, 16.0, 0, 0),
+                  //           itemCount: book.customInfo.highlight.length,
+                  //           itemBuilder: (context, index) {
+                  //             MapEntry<String, String> item = book.customInfo.highlight.entries.elementAt(index);
+                  //             return BookDetailHighlightListViewTile(highlight: item);
+                  //           }),
+                  //     ),
+                  //   ],
+                  // ),
                 ],
               ),
             ),
