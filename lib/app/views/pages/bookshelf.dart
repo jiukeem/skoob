@@ -1,14 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:skoob/app/controller/book_list_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:skoob/app/models/book.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:skoob/app/utils/app_colors.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
+import 'package:skoob/app/views/pages/sign_in.dart';
 import 'package:skoob/app/views/widgets/bookshelf_detail_view_list_tile.dart';
 import 'package:skoob/app/views/widgets/bookshelf_table_view_label.dart';
 
@@ -130,6 +129,13 @@ class _BookshelfState extends State<Bookshelf> {
                   padding: const EdgeInsets.fromLTRB(20.0, 4.0, 20.0, 20.0),
                   child: Row(
                     children: [
+                      ElevatedButton(
+                        onPressed: () async {
+                          await FirebaseAuth.instance.signOut();
+                          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const SignIn()));
+                        },
+                        child: Text("Sign out"),
+                      ),
                       InkWell(
                         onTap: () {
                           _showSortOptionBottomSheet(context);
