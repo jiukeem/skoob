@@ -3,7 +3,7 @@ import 'package:skoob/app/models/book.dart';
 import 'package:skoob/app/models/book/custom_info.dart';
 import 'package:skoob/app/utils/app_colors.dart';
 import 'package:skoob/app/views/widgets/status_label.dart';
-import '../../services/bookshelf_list_tile_mixin.dart';
+import 'bookshelf_list_tile_mixin.dart';
 import '../pages/book_detail.dart';
 import 'date_widget_accroding_to_status.dart';
 

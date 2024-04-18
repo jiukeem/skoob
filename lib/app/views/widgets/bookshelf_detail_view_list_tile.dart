@@ -7,7 +7,7 @@ import 'package:skoob/app/views/pages/book_detail.dart';
 import 'package:skoob/app/views/widgets/general_divider.dart';
 import 'package:skoob/app/views/widgets/rate_star.dart';
 import 'package:skoob/app/views/widgets/status_label.dart';
-import '../../services/bookshelf_list_tile_mixin.dart';
+import 'bookshelf_list_tile_mixin.dart';
 import 'date_widget_accroding_to_status.dart';
 
 class DetailViewListTile extends StatelessWidget with BookshelfListTileMixin {
