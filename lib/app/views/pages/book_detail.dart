@@ -28,7 +28,7 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 1, vsync: this);
     book = widget.book;
     _currentRating = double.tryParse(book.customInfo.rate) ?? 0.0;
   }
@@ -157,7 +157,7 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
             )
           ),
           child: DefaultTabController(
-            length: 3,
+            length: 1,
             child: NestedScrollView(
               headerSliverBuilder: (context, innerBoxIsScrolled) {
                 return [
