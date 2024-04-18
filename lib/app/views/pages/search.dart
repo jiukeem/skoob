@@ -5,8 +5,6 @@ import 'package:skoob/app/models/book.dart';
 import 'package:skoob/app/models/aladin.dart';
 import 'package:http/http.dart';
 import 'dart:convert';
-import 'package:skoob/app/controller/shared_list_state.dart';
-import 'package:provider/provider.dart';
 import 'package:skoob/app/utils/app_colors.dart';
 import 'package:skoob/app/views/widgets/search_result_view_list_tile.dart';
 

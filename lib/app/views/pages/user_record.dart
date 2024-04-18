@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:skoob/app/views/widgets/general_divider.dart';
 
-import '../../controller/shared_list_state.dart';
+import '../../controller/book_list_manager.dart';
 import '../../models/book.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/util_fuctions.dart';
@@ -91,7 +91,7 @@ class _UserRecordPageState extends State<UserRecord> {
                   children: [
                     IconButton(onPressed: () {
                       saveUserRecord(_textController.text, book);
-                      Provider.of<SharedListState>(context, listen: false).replaceWithUpdatedBook(book);
+                      Provider.of<BookListManager>(context, listen: false).replaceWithUpdatedBook(book);
                       Navigator.pop(context, book);
                     }, icon: const Icon(FluentIcons.checkmark_16_filled))
                   ],

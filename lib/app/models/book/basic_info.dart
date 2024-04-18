@@ -1,14 +1,28 @@
+import 'package:hive/hive.dart';
+
+@HiveType(typeId: 1)
 class BasicInfo {
-  final String title;
-  final String author;
-  final String publisher;
-  final String pubDate;
-  final String description;
-  final String coverImageUrl;
-  final String infoUrl;
-  final String category;
-  final String isbn13;
-  final String isbn10;
+  @HiveField(0)
+  String title;
+  @HiveField(1)
+  String author;
+  @HiveField(2)
+  String publisher;
+  @HiveField(3)
+  String pubDate;
+  @HiveField(4)
+  String description;
+  @HiveField(5)
+  String coverImageUrl;
+  @HiveField(6)
+  String infoUrl;
+  @HiveField(7)
+  String category;
+  @HiveField(8)
+  String isbn13;
+  @HiveField(9)
+  String isbn10;
+  @HiveField(10)
   String translator;
 
   BasicInfo({
@@ -24,36 +38,41 @@ class BasicInfo {
     required this.isbn10,
     this.translator = '',
   });
+}
 
-  Map<String, dynamic> toJson() {
-    return {
-      'title': title,
-      'author': author,
-      'publisher': publisher,
-      'pubDate': pubDate,
-      'description': description,
-      'coverImageUrl': coverImageUrl,
-      'infoUrl': infoUrl,
-      'category': category,
-      'isbn13': isbn13,
-      'isbn10': isbn10,
-      'translator': translator,
-    };
+class BasicInfoAdapter extends TypeAdapter<BasicInfo> {
+  @override
+  final typeId = 1;
+
+  @override
+  BasicInfo read(BinaryReader reader) {
+    return BasicInfo(
+      title: reader.readString(),
+      author: reader.readString(),
+      publisher: reader.readString(),
+      pubDate: reader.readString(),
+      description: reader.readString(),
+      coverImageUrl: reader.readString(),
+      infoUrl: reader.readString(),
+      category: reader.readString(),
+      isbn13: reader.readString(),
+      isbn10: reader.readString(),
+      translator: reader.readString(),
+    );
   }
 
-  factory BasicInfo.fromJson(Map<String, dynamic> json) {
-    return BasicInfo(
-      title: json['title'] ?? '',
-      author: json['author'] ?? '',
-      publisher: json['publisher'] ?? '',
-      pubDate: json['pubDate'] ?? '',
-      description: json['description'] ?? '',
-      coverImageUrl: json['coverImageUrl'] ?? '',
-      infoUrl: json['infoUrl'] ?? '',
-      category: json['category'] ?? '',
-      isbn13: json['isbn13'] ?? '',
-      isbn10: json['isbn10'] ?? '',
-      translator: json['translator'] ?? '',
-    );
+  @override
+  void write(BinaryWriter writer, BasicInfo obj) {
+    writer.writeString(obj.title);
+    writer.writeString(obj.author);
+    writer.writeString(obj.publisher);
+    writer.writeString(obj.pubDate);
+    writer.writeString(obj.description);
+    writer.writeString(obj.coverImageUrl);
+    writer.writeString(obj.infoUrl);
+    writer.writeString(obj.category);
+    writer.writeString(obj.isbn13);
+    writer.writeString(obj.isbn10);
+    writer.writeString(obj.translator);
   }
 }

@@ -1,12 +1,19 @@
+import 'package:hive/hive.dart';
+
+@HiveType(typeId: 2)
 class CustomInfo {
-  final String addedDate;
+  @HiveField(0)
+  String addedDate;
+  @HiveField(1)
   BookReadingStatus status;
+  @HiveField(2)
   String startReadingDate;
+  @HiveField(3)
   String finishReadingDate;
+  @HiveField(4)
   String rate;
+  @HiveField(5)
   String comment;
-  // Map<String, String> note;
-  // Map<String, String> highlight;
 
   CustomInfo({
     required this.addedDate,
@@ -15,53 +22,50 @@ class CustomInfo {
     this.finishReadingDate = '',
     this.rate = '',
     this.comment = '',
-    // Map<String, String>? note,
-    // Map<String, String>? highlight
   });
-      // : note = note ?? {},
-      // highlight = highlight ?? {};
+}
 
-  Map<String, dynamic> toJson() {
-    return {
-      'addedDate': addedDate,
-      'status': status.toString().split('.').last,
-      'startReadingDate': startReadingDate,
-      'finishReadingDate': finishReadingDate,
-      'rate': rate,
-      'comment': comment,
-      // 'note': note,
-      // 'highlight': highlight
-    };
-  }
+class CustomInfoAdapter extends TypeAdapter<CustomInfo> {
+  @override
+  final typeId = 2;
 
-  factory CustomInfo.fromJson(Map<String, dynamic> json) {
+  @override
+  CustomInfo read(BinaryReader reader) {
     return CustomInfo(
-      addedDate: json['addedDate'] ?? '',
-      status: stringToBookReadingStatus(json['status'] as String? ?? ''),
-      startReadingDate: json['startReadingDate'] ?? '',
-      finishReadingDate: json['finishReadingDate'] ?? '',
-      rate: json['rate'] ?? '',
-      comment: json['comment'] ?? '',
-      // note: Map<String, String>.from(json['note'] as Map),
-      // highlight: Map<String, String>.from(json['highlight'] as Map),
+      addedDate: reader.readString(),
+      status: reader.read(),  // Automatically uses BookReadingStatusAdapter
+      startReadingDate: reader.readString(),
+      finishReadingDate: reader.readString(),
+      rate: reader.readString(),
+      comment: reader.readString(),
     );
   }
 
-  static BookReadingStatus stringToBookReadingStatus(dynamic) {
-    final String value = dynamic.toString();
-    switch (value) {
-      case 'initial':
-        return BookReadingStatus.initial;
-      case 'notStarted':
-        return BookReadingStatus.notStarted;
-      case 'reading':
-        return BookReadingStatus.reading;
-      case 'done':
-        return BookReadingStatus.done;
-      default:
-        return BookReadingStatus.initial;
-    }
+  @override
+  void write(BinaryWriter writer, CustomInfo obj) {
+    writer.writeString(obj.addedDate);
+    writer.write(obj.status);  // Automatically uses BookReadingStatusAdapter
+    writer.writeString(obj.startReadingDate);
+    writer.writeString(obj.finishReadingDate);
+    writer.writeString(obj.rate);
+    writer.writeString(obj.comment);
   }
 }
 
 enum BookReadingStatus { initial, notStarted, reading, done }
+
+@HiveType(typeId: 3)
+class BookReadingStatusAdapter extends TypeAdapter<BookReadingStatus> {
+  @override
+  final typeId = 3;
+
+  @override
+  BookReadingStatus read(BinaryReader reader) {
+    return BookReadingStatus.values[reader.readByte()];
+  }
+
+  @override
+  void write(BinaryWriter writer, BookReadingStatus obj) {
+    writer.writeByte(obj.index);
+  }
+}

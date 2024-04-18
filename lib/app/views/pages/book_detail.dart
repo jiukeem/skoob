@@ -2,7 +2,7 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
-import 'package:skoob/app/controller/shared_list_state.dart';
+import 'package:skoob/app/controller/book_list_manager.dart';
 import 'package:skoob/app/views/pages/user_record.dart';
 
 import '../../models/book.dart';
@@ -142,7 +142,7 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
 
     if (mounted && shouldDelete == true) {
       Navigator.of(context).pop();
-      Provider.of<SharedListState>(context, listen: false).deleteItem(book);
+      Provider.of<BookListManager>(context, listen: false).deleteItem(book);
     }
   }
 
@@ -261,7 +261,7 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
                                 }
                               });
                               book.customInfo.rate = rating.toString();
-                              Provider.of<SharedListState>(context, listen: false).replaceWithUpdatedBook(book);
+                              Provider.of<BookListManager>(context, listen: false).replaceWithUpdatedBook(book);
                             },
                             glow: false,
                           ),

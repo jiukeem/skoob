@@ -1,7 +1,7 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:skoob/app/controller/shared_list_state.dart';
+import 'package:skoob/app/controller/book_list_manager.dart';
 import 'package:skoob/app/utils/util_fuctions.dart';
 import 'package:skoob/app/views/widgets/general_divider.dart';
 import 'package:skoob/app/views/widgets/status_label.dart';
@@ -86,7 +86,7 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
                     setState(() {
                       widget.book.customInfo.startReadingDate = dateTimeToString(pickedDate);
                     });
-                    Provider.of<SharedListState>(context, listen: false).replaceWithUpdatedBook(widget.book);
+                    Provider.of<BookListManager>(context, listen: false).replaceWithUpdatedBook(widget.book);
                   }
                 }
               },
@@ -136,7 +136,7 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
                       setState(() {
                         widget.book.customInfo.finishReadingDate = dateTimeToString(pickedDate);
                       });
-                      Provider.of<SharedListState>(context, listen: false).replaceWithUpdatedBook(widget.book);
+                      Provider.of<BookListManager>(context, listen: false).replaceWithUpdatedBook(widget.book);
                     }
                   }
                 },
@@ -241,7 +241,7 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
                         onTap: () {
                           final book = widget.book;
                           book.customInfo.status = BookReadingStatus.notStarted;
-                          Provider.of<SharedListState>(context, listen: false).replaceWithUpdatedBook(book);
+                          Provider.of<BookListManager>(context, listen: false).replaceWithUpdatedBook(book);
                           Navigator.pop(context, BookReadingStatus.notStarted);
                         },
                         child: const Padding(
@@ -254,7 +254,7 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
                         onTap: () {
                           final book = widget.book;
                           book.customInfo.status = BookReadingStatus.reading;
-                          Provider.of<SharedListState>(context, listen: false).replaceWithUpdatedBook(book);
+                          Provider.of<BookListManager>(context, listen: false).replaceWithUpdatedBook(book);
                           Navigator.pop(context, BookReadingStatus.reading);
                         },
                         child: const Padding(
@@ -267,7 +267,7 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
                         onTap: () {
                           final book = widget.book;
                           book.customInfo.status = BookReadingStatus.done;
-                          Provider.of<SharedListState>(context, listen: false).replaceWithUpdatedBook(book);
+                          Provider.of<BookListManager>(context, listen: false).replaceWithUpdatedBook(book);
                           Navigator.pop(context, BookReadingStatus.done);
                         },
                         child: const Padding(

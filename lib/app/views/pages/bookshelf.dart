@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:skoob/app/controller/shared_list_state.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
+import 'package:skoob/app/controller/book_list_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:skoob/app/models/book.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -24,7 +26,7 @@ class Bookshelf extends StatefulWidget{
 }
 
 class _BookshelfState extends State<Bookshelf> {
-  BookshelfStatus _currentStatus = BookshelfStatus.loading;
+  BookshelfStatus _currentStatus = BookshelfStatus.complete;
   BookshelfViewOption _currentViewOption = BookshelfViewOption.detail;
   SortOption _currentSortOption = SortOption.addedDate;
   bool _isAscending = true;
@@ -32,42 +34,25 @@ class _BookshelfState extends State<Bookshelf> {
   @override
   void initState() {
     super.initState();
-    _loadLocalBookList();
-  }
-
-  Future<void> _loadLocalBookList() async {
-    final SharedPreferences localPrefs = await SharedPreferences.getInstance();
-    final String? booksJson = localPrefs.getString('books');
-    if (booksJson == null) {
-      setState(() {
-        _currentStatus = BookshelfStatus.complete;
-      });
-      return;
-    }
-
-    List<dynamic> bookMaps = jsonDecode(booksJson);
-    List<Book> localBookList = bookMaps.map((bookMap) => Book.fromJson(bookMap))
-        .toList();
-    Future.microtask(() => Provider.of<SharedListState>(context, listen: false)
-        .replaceWithLoadedBookList(localBookList));
-    setState(() {
-      _currentStatus = BookshelfStatus.complete;
-    });
   }
 
   void _deleteSelectedBook(Book book) {
-    Provider.of<SharedListState>(context, listen: false).deleteItem(book);
+    Provider.of<BookListManager>(context, listen: false).deleteItem(book);
   }
 
   @override
   Widget build(BuildContext context) {
-    final SharedListState listener = Provider.of<SharedListState>(context);
-
     return SafeArea(
         child: Column(
           children: [
             _buildBookshelfAppBar(),
-            _buildContentBasedOnBookshelfStatus(listener),
+            ValueListenableBuilder(
+              valueListenable: Hive.box<Book>('bookshelfBox').listenable(),
+                builder: (context, Box<Book> box, _) {
+                  var books = box.values.toList();
+                  return _buildContentBasedOnBookshelfStatus(books);
+                },
+            ),
           ],
         )
     );
@@ -123,7 +108,7 @@ class _BookshelfState extends State<Bookshelf> {
     );
   }
 
-  Widget _buildContentBasedOnBookshelfStatus(SharedListState listener) {
+  Widget _buildContentBasedOnBookshelfStatus(List<Book> books) {
     switch (_currentStatus) {
       case BookshelfStatus.loading:
         return const SpinKitRotatingCircle(
@@ -131,7 +116,7 @@ class _BookshelfState extends State<Bookshelf> {
           color: AppColors.primaryYellow,
         );
       case BookshelfStatus.complete:
-        if (listener.items.isEmpty) {
+        if (books.isEmpty) {
           return const Expanded(
             child: Center(
               child: Text('추가한 책이 없습니다'),
@@ -219,11 +204,11 @@ class _BookshelfState extends State<Bookshelf> {
                   const TableViewLabel(),
                 Expanded(
                   child: _currentViewOption == BookshelfViewOption.album
-                      ? BookshelfAlbumViewBuilder(items: _sortBookshelf(listener.items))
+                      ? BookshelfAlbumViewBuilder(items: _sortBookshelf(books))
                       : ListView.builder(
-                          itemCount: listener.items.length,
+                          itemCount: books.length,
                           itemBuilder: (context, index) {
-                            List<Book> sortedList = _sortBookshelf(listener.items);
+                            List<Book> sortedList = _sortBookshelf(books);
                             Book book = sortedList[index];
                             bool isLast = index + 1 == sortedList.length;
                             if (_currentViewOption == BookshelfViewOption.detail) {
