@@ -2,9 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:hive/hive.dart';
 import 'package:skoob/app/utils/app_colors.dart';
 import 'package:skoob/app/views/pages/skoob.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import '../../models/skoob_user.dart';
 
 class Intro extends StatefulWidget {
   const Intro({Key? key}) : super(key: key);
@@ -47,7 +49,16 @@ class _IntroState extends State<Intro> {
       final User? user = userCredential.user;
 
       if (user != null) {
-        _saveUserInfoToFirestore(user);
+        final userData = SkoobUser(
+          uid: user.uid,
+          createdAt: DateTime.now().toIso8601String(),
+          name: user.displayName ?? '',
+          email: user.email ?? '',
+          photoUrl: user.photoURL ?? '',
+          phoneNumber: user.phoneNumber ?? '',
+        );
+        _saveUserInfoToFirestore(userData);
+        _saveUserInfoToLocalHive(userData);
         Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const Skoob()));
       }
     } catch (e) {
@@ -57,22 +68,18 @@ class _IntroState extends State<Intro> {
     }
   }
 
-  Future<void> _saveUserInfoToFirestore(User user) async {
-    Map<String, dynamic> userData = {
-      'uid': user.uid,
-      'createdAt': DateTime.now().toIso8601String(),
-      'name': user.displayName ?? '',
-      'email': user.email ?? '',
-      'photoUrl': user.photoURL ?? '',
-      'phoneNumber': user.phoneNumber ?? '',
-    };
-
-    await _firestore
+  Future<void> _saveUserInfoToFirestore(SkoobUser userData) async {
+        await _firestore
         .collection('user')
-        .doc(user.uid)
+        .doc(userData.uid)
         .collection('profile')
         .doc('info')
-        .set(userData, SetOptions(merge: true));
+        .set(userData.toMap(), SetOptions(merge: true));
+  }
+
+  Future<void> _saveUserInfoToLocalHive(SkoobUser userData) async {
+    var box = Hive.box<SkoobUser>('userBox');
+    await box.put(userData.uid, userData);
   }
 
   @override

@@ -8,6 +8,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'app/models/book.dart';
 import 'app/models/book/basic_info.dart';
 import 'app/models/book/custom_info.dart';
+import 'app/models/skoob_user.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -21,9 +22,11 @@ void main() async {
   Hive.registerAdapter(BasicInfoAdapter());
   Hive.registerAdapter(CustomInfoAdapter());
   Hive.registerAdapter(BookAdapter());
+  Hive.registerAdapter(UserAdapter());
 
   var manager = BookListManager();
   await manager.initBox();
+  await Hive.openBox<SkoobUser>('userBox');
 
   runApp(MultiProvider(
     providers: [
