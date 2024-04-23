@@ -129,6 +129,9 @@ flutter:
     - family: LexendExaLight
       fonts:
         - asset: fonts/LexendExa-Light.ttf
+    - family: LexendExaExtraBold
+      fonts:
+        - asset: fonts/LexendExa-ExtraBold.ttf
     - family: InriaSansRegular
       fonts:
         - asset: fonts/InriaSans-Regular.ttf

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:skoob/app/utils/app_colors.dart';
 import 'package:skoob/app/views/pages/skoob.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -76,18 +77,16 @@ class _IntroState extends State<Intro> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
+    return const Scaffold(
+      backgroundColor: AppColors.primaryGreen,
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Image.asset('assets/temp_logo.png', height: 160),
-            const SizedBox(height: 50),
-            const CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
-            ),
-          ],
+        child: Text(
+          'SKOOB',
+          style: TextStyle(
+            fontFamily: 'LexendExaExtraBold',
+            fontSize: 48.0,
+            color: AppColors.white
+          ),
         ),
       ),
     );
