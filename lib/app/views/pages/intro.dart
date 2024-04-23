@@ -1,9 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:skoob/app/views/pages/sign_in.dart';
 import 'package:skoob/app/views/pages/skoob.dart';
-import '../../utils/app_colors.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class Intro extends StatefulWidget {
   const Intro({Key? key}) : super(key: key);
@@ -13,6 +13,10 @@ class Intro extends StatefulWidget {
 }
 
 class _IntroState extends State<Intro> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   @override
   void initState() {
     super.initState();
@@ -20,21 +24,54 @@ class _IntroState extends State<Intro> {
   }
 
   void _checkAuthentication() async {
-    await Future.wait([
-      FirebaseAuth.instance.authStateChanges().first,
-      Future.delayed(const Duration(milliseconds: 1000)),
-    ]).then((results) {
-      final user = results[0] as User?;
-      if (user == null) {
-        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => SignIn()));
-      } else {
+    final user = _auth.currentUser;
+    if (user != null) {
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const Skoob()));
+    } else {
+      await signInWithGoogle();
+    }
+  }
+
+  Future<void> signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+
+      final OAuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
+      );
+
+      final UserCredential userCredential = await _auth.signInWithCredential(credential);
+      final User? user = userCredential.user;
+
+      if (user != null) {
+        _saveUserInfoToFirestore(user);
         Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const Skoob()));
       }
-    }).catchError((error) {
+    } catch (e) {
       if (kDebugMode) {
-        print('Intro-- Authentication check failed: $error');
+        print('Error signing in with Google: $e');
       }
-    });
+    }
+  }
+
+  Future<void> _saveUserInfoToFirestore(User user) async {
+    Map<String, dynamic> userData = {
+      'uid': user.uid,
+      'createdAt': DateTime.now().toIso8601String(),
+      'name': user.displayName ?? '',
+      'email': user.email ?? '',
+      'photoUrl': user.photoURL ?? '',
+      'phoneNumber': user.phoneNumber ?? '',
+    };
+
+    await _firestore
+        .collection('user')
+        .doc(user.uid)
+        .collection('profile')
+        .doc('info')
+        .set(userData, SetOptions(merge: true));
   }
 
   @override
@@ -45,10 +82,10 @@ class _IntroState extends State<Intro> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Image.asset('assets/temp_logo.png', height: 160,),
+            Image.asset('assets/temp_logo.png', height: 160),
             const SizedBox(height: 50),
             const CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryYellow),
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
             ),
           ],
         ),
