@@ -1,11 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:hive/hive.dart';
 import 'package:skoob/app/utils/app_colors.dart';
 import 'package:skoob/app/views/pages/skoob.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import '../../controller/user_data_manager.dart';
 import '../../models/skoob_user.dart';
 
 class Intro extends StatefulWidget {
@@ -18,7 +17,7 @@ class Intro extends StatefulWidget {
 class _IntroState extends State<Intro> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final UserDataManager _dataManager = UserDataManager();
 
   @override
   void initState() {
@@ -29,15 +28,19 @@ class _IntroState extends State<Intro> {
   }
 
   void _checkAuthentication() async {
-    final user = _auth.currentUser;
+    User? user = _auth.currentUser;
     if (user != null) {
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const Skoob()));
+      _updateSkoobUserInfo(user, false);
     } else {
-      await signInWithGoogle();
+      user = await signInWithGoogle();
+      if (user != null) {
+        _updateSkoobUserInfo(user, true);
+      }
     }
+    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const Skoob()));
   }
 
-  Future<void> signInWithGoogle() async {
+  Future<User?> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
@@ -50,41 +53,32 @@ class _IntroState extends State<Intro> {
       final UserCredential userCredential = await _auth.signInWithCredential(credential);
       final User? user = userCredential.user;
 
-      if (user != null) {
-        final isNewUser = userCredential.additionalUserInfo?.isNewUser ?? false;
-        final userData = SkoobUser(
-          uid: user.uid,
-          name: user.displayName ?? '',
-          email: user.email ?? '',
-          photoUrl: user.photoURL ?? '',
-          phoneNumber: user.phoneNumber ?? '',
-        );
-        _saveUserInfoToFirestore(userData, isNewUser);
-        _saveUserInfoToLocalHive(userData);
-        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const Skoob()));
-      }
+      return user;
     } catch (e) {
         print('Error signing in with Google: $e');
     }
+    return null;
   }
 
-  Future<void> _saveUserInfoToFirestore(SkoobUser userData, bool isNewUser) async {
-    var userDocument = _firestore.collection('user').doc(userData.uid).collection('profile').doc('info');
-    if (isNewUser) {
-      await userDocument.set({
-        'createdAt': DateTime.now().toIso8601String(),
-        ...userData.toMap(),
-      }, SetOptions(merge: true));
-    } else {
-      await userDocument.set({
-        'lastLoggedInAt': DateTime.now().toIso8601String(),
-      }, SetOptions(merge: true));
-    }
+  void _updateSkoobUserInfo(User user, bool isNewUser) {
+    final skoobUser = _createSkoobUser(user);
+    _dataManager.setUser(skoobUser);
+    _dataManager.updateUserProfile(skoobUser, isNewUser).then((success) {
+      if (!success) {
+        print("Failed to update user data synchronously");
+      }
+    });
+    return;
   }
 
-  Future<void> _saveUserInfoToLocalHive(SkoobUser userData) async {
-    var box = Hive.box<SkoobUser>('userBox');
-    await box.put(userData.uid, userData);
+  SkoobUser _createSkoobUser(User user) {
+    return SkoobUser(
+      uid: user.uid,
+      name: user.displayName ?? '',
+      email: user.email ?? '',
+      phoneNumber: user.phoneNumber ?? '',
+      photoUrl: user.photoURL ?? ''
+    );
   }
 
   @override

@@ -10,25 +10,6 @@ class BookListManager {
 
   List<Book> get items => _itemsBox.values.toList();
 
-  // It seems hive box doesnt add same items in its nature.
-  //
-  // void _removeDuplicates() {
-  //   var existingKeys = Set<dynamic>();
-  //   var itemsToKeep = <Book>[];
-  //
-  //   for (var book in _itemsBox.values) {
-  //     if (!existingKeys.contains(book.basicInfo.isbn13)) {
-  //       itemsToKeep.add(book);
-  //       existingKeys.add(book.basicInfo.isbn13);
-  //     }
-  //   }
-  //
-  //   _itemsBox.clear();
-  //   for (var book in itemsToKeep) {
-  //     _itemsBox.add(book);
-  //   }
-  // }
-
   void addItem(Book book) {
     if (_itemsBox.values.any((b) => b.basicInfo.isbn13 == book.basicInfo.isbn13)) {
       return;
