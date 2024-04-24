@@ -49,15 +49,15 @@ class _IntroState extends State<Intro> {
       final User? user = userCredential.user;
 
       if (user != null) {
+        final isNewUser = userCredential.additionalUserInfo?.isNewUser ?? false;
         final userData = SkoobUser(
           uid: user.uid,
-          createdAt: DateTime.now().toIso8601String(),
           name: user.displayName ?? '',
           email: user.email ?? '',
           photoUrl: user.photoURL ?? '',
           phoneNumber: user.phoneNumber ?? '',
         );
-        _saveUserInfoToFirestore(userData);
+        _saveUserInfoToFirestore(userData, isNewUser);
         _saveUserInfoToLocalHive(userData);
         Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const Skoob()));
       }
@@ -68,13 +68,18 @@ class _IntroState extends State<Intro> {
     }
   }
 
-  Future<void> _saveUserInfoToFirestore(SkoobUser userData) async {
-        await _firestore
-        .collection('user')
-        .doc(userData.uid)
-        .collection('profile')
-        .doc('info')
-        .set(userData.toMap(), SetOptions(merge: true));
+  Future<void> _saveUserInfoToFirestore(SkoobUser userData, bool isNewUser) async {
+    var userDocument = _firestore.collection('user').doc(userData.uid).collection('profile').doc('info');
+    if (isNewUser) {
+      await userDocument.set({
+        'createdAt': DateTime.now().toIso8601String(),
+        ...userData.toMap(),
+      }, SetOptions(merge: true));
+    } else {
+      await userDocument.set({
+        'lastLoggedInAt': DateTime.now().toIso8601String(),
+      }, SetOptions(merge: true));
+    }
   }
 
   Future<void> _saveUserInfoToLocalHive(SkoobUser userData) async {

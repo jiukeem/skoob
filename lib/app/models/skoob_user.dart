@@ -5,19 +5,16 @@ class SkoobUser extends HiveObject {
   @HiveField(0)
   final String uid;
   @HiveField(1)
-  final String createdAt;
-  @HiveField(2)
   final String name;
-  @HiveField(3)
+  @HiveField(2)
   final String email;
-  @HiveField(4)
+  @HiveField(3)
   final String photoUrl;
-  @HiveField(5)
+  @HiveField(4)
   final String phoneNumber;
 
   SkoobUser(
       {required this.uid,
-      required this.createdAt,
       required this.name,
       required this.email,
       required this.photoUrl,
@@ -27,7 +24,6 @@ class SkoobUser extends HiveObject {
   Map<String, String> toMap() {
     return {
       'uid': uid,
-      'createdAt': createdAt,
       'name': name,
       'email': email,
       'photoUrl': photoUrl,
@@ -44,7 +40,6 @@ class UserAdapter extends TypeAdapter<SkoobUser> {
   SkoobUser read(BinaryReader reader) {
     return SkoobUser(
         uid: reader.readString(),
-        createdAt: reader.readString(),
         name: reader.readString(),
         email: reader.readString(),
         photoUrl: reader.readString(),
@@ -55,7 +50,6 @@ class UserAdapter extends TypeAdapter<SkoobUser> {
   @override
   void write(BinaryWriter writer, SkoobUser obj) {
     writer.writeString(obj.uid);
-    writer.writeString(obj.createdAt);
     writer.writeString(obj.name);
     writer.writeString(obj.email);
     writer.writeString(obj.phoneNumber);
