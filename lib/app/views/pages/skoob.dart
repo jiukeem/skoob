@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:skoob/app/views/pages/profile.dart';
 
 import '../../utils/app_colors.dart';
 import '../widgets/skoob_bottom_nav_bar.dart';
@@ -18,6 +19,7 @@ class _SkoobState extends State<Skoob> {
   final List<Widget> _pages = [
     const Bookshelf(),
     const Search(),
+    const Profile(),
   ];
 
   void _onItemTapped(int index) {

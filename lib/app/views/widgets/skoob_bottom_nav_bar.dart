@@ -57,7 +57,18 @@ class SkoobBottomNavBar extends StatelessWidget {
                       FluentIcons.book_search_24_filled,
                       color: AppColors.white,
                   )
-              )
+              ),
+              navBarItem(
+                  index: 2,
+                  defaultIcon: const Icon(
+                    FluentIcons.person_24_regular,
+                    color: AppColors.softBlack,
+                  ),
+                  selectedIcon: const Icon(
+                    FluentIcons.person_24_filled,
+                    color: AppColors.white,
+                  )
+              ),
             ],
           ),
         ),
