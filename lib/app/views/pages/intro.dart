@@ -23,7 +23,9 @@ class _IntroState extends State<Intro> {
   @override
   void initState() {
     super.initState();
-    _checkAuthentication();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkAuthentication();
+    });
   }
 
   void _checkAuthentication() async {
@@ -62,9 +64,7 @@ class _IntroState extends State<Intro> {
         Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const Skoob()));
       }
     } catch (e) {
-      if (kDebugMode) {
         print('Error signing in with Google: $e');
-      }
     }
   }
 
