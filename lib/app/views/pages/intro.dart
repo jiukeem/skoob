@@ -6,6 +6,7 @@ import 'package:skoob/app/views/pages/skoob.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../../controller/user_data_manager.dart';
 import '../../models/skoob_user.dart';
+import 'debug_error.dart';
 
 class Intro extends StatefulWidget {
   const Intro({Key? key}) : super(key: key);
@@ -28,36 +29,47 @@ class _IntroState extends State<Intro> {
   }
 
   void _checkAuthentication() async {
-    User? user = _auth.currentUser;
-    if (user != null) {
-      _updateSkoobUserInfo(user, false);
-    } else {
-      user = await signInWithGoogle();
+    try {
+      User? user = _auth.currentUser;
       if (user != null) {
-        _updateSkoobUserInfo(user, true);
+        _updateSkoobUserInfo(user, false);
+      } else {
+        user = await signInWithGoogle();
+        if (user != null) {
+          _updateSkoobUserInfo(user, true);
+        } else {
+          return;
+        }
       }
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const Skoob()));
+    } catch (e) {
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (_) => ErrorPage(errorMessage: 'Error in Intro Page:: _checkAuthentication\n$e')));
     }
-    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const Skoob()));
   }
 
   Future<User?> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+      if (googleAuth == null) {
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (_) => const ErrorPage(errorMessage: 'Error in Intro Page:: signInWithGoogle\ngoogleAuth is returned in null')));
+        return null;
+      }
 
       final OAuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth?.accessToken,
-        idToken: googleAuth?.idToken,
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
       );
 
       final UserCredential userCredential = await _auth.signInWithCredential(credential);
-      final User? user = userCredential.user;
-
-      return user;
+      return userCredential.user;
     } catch (e) {
-        print('Error signing in with Google: $e');
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (_) => ErrorPage(errorMessage: 'Error in Intro Page:: signInWithGoogle\n$e')));
+      return null;
     }
-    return null;
   }
 
   void _updateSkoobUserInfo(User user, bool isNewUser) {
