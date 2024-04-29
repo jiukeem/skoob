@@ -30,19 +30,28 @@ class _IntroState extends State<Intro> {
   }
 
   void _checkAuthentication() async {
+    if (_auth.currentUser != null) {
+      _updateSkoobUserInfo(_auth.currentUser!, isNewUser: false);
+      return;
+    }
+
     try {
-      User? user = _auth.currentUser;
+      User? user = await signInWithGoogle();
       if (user != null) {
-        _updateSkoobUserInfo(user, false);
+        DateTime creationTime = user.metadata.creationTime!;
+        DateTime lastSignInTime = user.metadata.lastSignInTime!;
+        Duration diff = lastSignInTime.difference(creationTime);
+
+        // If the duration is less than a few seconds, treat as new user
+        bool isNewUser = diff < const Duration(seconds: 5);
+        _updateSkoobUserInfo(user, isNewUser: isNewUser);
+
+        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const Skoob()));
       } else {
-        user = await signInWithGoogle();
-        if (user != null) {
-          _updateSkoobUserInfo(user, true);
-        } else {
-          return;
-        }
+        // Handle null user scenario (e.g., user cancelled the sign-in)
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (_) => ErrorPage(errorMessage: 'Sign-in with Google cancelled by user')));
       }
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const Skoob()));
     } catch (e) {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
           builder: (_) => ErrorPage(errorMessage: 'Error in Intro Page:: _checkAuthentication\n$e')));
@@ -52,13 +61,12 @@ class _IntroState extends State<Intro> {
   Future<User?> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
-      if (googleAuth == null) {
-        Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (_) => const ErrorPage(errorMessage: 'Error in Intro Page:: signInWithGoogle\ngoogleAuth is returned in null')));
+      if (googleUser == null) {
+        // User cancelled the sign-in process
         return null;
       }
 
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
       final OAuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
@@ -69,11 +77,11 @@ class _IntroState extends State<Intro> {
     } catch (e) {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
           builder: (_) => ErrorPage(errorMessage: 'Error in Intro Page:: signInWithGoogle\n$e')));
-      return null;
     }
+    return null;
   }
 
-  void _updateSkoobUserInfo(User user, bool isNewUser) {
+  void _updateSkoobUserInfo(User user, {required bool isNewUser}) {
     final skoobUser = _createSkoobUser(user);
     _dataManager.setUser(skoobUser);
     _dataManager.updateUserProfile(skoobUser, isNewUser).then((success) {
