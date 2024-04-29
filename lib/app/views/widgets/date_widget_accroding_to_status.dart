@@ -1,7 +1,7 @@
-import 'package:skoob/app/models/book/custom_info.dart';
 import 'package:flutter/material.dart';
 
-import '../../utils/app_colors.dart';
+import 'package:skoob/app/models/book/custom_info.dart';
+import 'package:skoob/app/utils/app_colors.dart';
 
 Widget dateWidgetAccordingToStatus(double fontSize, BookReadingStatus status, {required String startDate, required String finishDate}) {
   final s = startDate.length > 2 ? startDate.substring(2) : '';

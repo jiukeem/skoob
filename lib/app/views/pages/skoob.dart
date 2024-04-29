@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:skoob/app/views/pages/profile.dart';
 
-import '../../utils/app_colors.dart';
-import '../widgets/skoob_bottom_nav_bar.dart';
-import 'bookshelf.dart';
-import 'search.dart';
+import 'package:skoob/app/utils/app_colors.dart';
+import 'package:skoob/app/views/pages/bookshelf.dart';
+import 'package:skoob/app/views/pages/profile.dart';
+import 'package:skoob/app/views/pages/search.dart';
+import 'package:skoob/app/views/widgets/skoob_bottom_nav_bar.dart';
 
 class Skoob extends StatefulWidget {
   const Skoob({super.key});

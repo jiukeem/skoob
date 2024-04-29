@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hive/hive.dart';
 
-import '../models/book.dart';
-import '../models/skoob_user.dart';
+import 'package:skoob/app/models/book.dart';
+import 'package:skoob/app/models/skoob_user.dart';
 
 class UserDataManager {
   static final UserDataManager _instance = UserDataManager._internal();

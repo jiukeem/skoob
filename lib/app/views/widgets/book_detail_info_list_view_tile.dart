@@ -1,14 +1,14 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+
+import 'package:skoob/app/controller/user_data_manager.dart';
+import 'package:skoob/app/models/book.dart';
+import 'package:skoob/app/models/book/custom_info.dart';
+import 'package:skoob/app/utils/app_colors.dart';
 import 'package:skoob/app/utils/util_fuctions.dart';
+import 'package:skoob/app/views/pages/book_detail.dart';
 import 'package:skoob/app/views/widgets/general_divider.dart';
 import 'package:skoob/app/views/widgets/status_label.dart';
-
-import '../../controller/user_data_manager.dart';
-import '../../models/book.dart';
-import '../../models/book/custom_info.dart';
-import '../../utils/app_colors.dart';
-import '../pages/book_detail.dart';
 
 class BookDetailInfoListViewTile extends StatefulWidget {
   final Book book;

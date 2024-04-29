@@ -1,6 +1,8 @@
+import 'package:hive/hive.dart';
+
 import 'package:skoob/app/models/book/basic_info.dart';
 import 'package:skoob/app/models/book/custom_info.dart';
-import 'package:hive/hive.dart';
+
 
 @HiveType(typeId: 0)
 class Book extends HiveObject{

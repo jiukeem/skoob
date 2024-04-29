@@ -1,20 +1,20 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/adapters.dart';
-import 'package:provider/provider.dart';
-import 'package:skoob/app/models/book.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:skoob/app/utils/app_colors.dart';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:hive_flutter/adapters.dart';
+
+import 'package:skoob/app/models/book.dart';
+import 'package:skoob/app/models/book/custom_info.dart';
+import 'package:skoob/app/utils/app_colors.dart';
 import 'package:skoob/app/views/pages/sign_in.dart';
 import 'package:skoob/app/views/widgets/bookshelf_detail_view_list_tile.dart';
 import 'package:skoob/app/views/widgets/bookshelf_table_view_label.dart';
-
-import '../../models/book/custom_info.dart';
-import '../widgets/bookshelf_album_view_builder.dart';
-import '../widgets/bookshelf_table_view_list_tile.dart';
-import '../widgets/general_divider.dart';
-import '../widgets/sort_option_list_tile.dart';
+import 'package:skoob/app/views/widgets/bookshelf_album_view_builder.dart';
+import 'package:skoob/app/views/widgets/bookshelf_table_view_list_tile.dart';
+import 'package:skoob/app/views/widgets/general_divider.dart';
+import 'package:skoob/app/views/widgets/sort_option_list_tile.dart';
 
 class Bookshelf extends StatefulWidget{
   const Bookshelf({super.key});

@@ -1,11 +1,10 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:skoob/app/views/widgets/general_divider.dart';
 
-import '../../controller/user_data_manager.dart';
-import '../../models/book.dart';
-import '../../utils/app_colors.dart';
+import 'package:skoob/app/controller/user_data_manager.dart';
+import 'package:skoob/app/models/book.dart';
+import 'package:skoob/app/utils/app_colors.dart';
+import 'package:skoob/app/views/widgets/general_divider.dart';
 
 class UserRecord extends StatefulWidget {
   final Book book;

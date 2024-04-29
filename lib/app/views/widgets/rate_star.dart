@@ -2,7 +2,7 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
-import '../../utils/app_colors.dart';
+import 'package:skoob/app/utils/app_colors.dart';
 
 class RateStar extends StatelessWidget {
   final String rateAsString;

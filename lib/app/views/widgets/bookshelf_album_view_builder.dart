@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../models/book.dart';
-import 'bookshelf_album_view_list_tile.dart';
+import 'package:skoob/app/models/book.dart';
+import 'package:skoob/app/views/widgets/bookshelf_album_view_list_tile.dart';
 
 class BookshelfAlbumViewBuilder extends StatefulWidget {
   final List<Book> items;

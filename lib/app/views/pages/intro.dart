@@ -1,12 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
+import 'package:skoob/app/controller/user_data_manager.dart';
+import 'package:skoob/app/models/skoob_user.dart';
 import 'package:skoob/app/utils/app_colors.dart';
 import 'package:skoob/app/views/pages/skoob.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import '../../controller/user_data_manager.dart';
-import '../../models/skoob_user.dart';
-import 'debug_error.dart';
+import 'package:skoob/app/views/pages/debug_error.dart';
 
 class Intro extends StatefulWidget {
   const Intro({Key? key}) : super(key: key);

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:skoob/app/utils/app_colors.dart';
 
 class GeneralDivider extends StatelessWidget {

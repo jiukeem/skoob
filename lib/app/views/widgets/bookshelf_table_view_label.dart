@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+
 import 'package:skoob/app/utils/app_colors.dart';
-import 'general_divider.dart';
+import 'package:skoob/app/views/widgets/general_divider.dart';
 
 class TableViewLabel extends StatelessWidget {
   const TableViewLabel({super.key});
