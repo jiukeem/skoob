@@ -10,17 +10,25 @@ class UserDataManager {
   UserDataManager._internal();
   // code above is for singleton object
 
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  late Box<SkoobUser> _userBox;
+  late Box<Book> _bookBox;
   SkoobUser? currentUser;
+  String? get userId => currentUser?.uid;
+
+  Future<void> initBox() async {
+    _bookBox = await Hive.openBox<Book>('bookshelfBox');
+    _userBox = await Hive.openBox<SkoobUser>('userBox');
+  }
 
   void setUser(SkoobUser user) {
     currentUser = user;
   }
 
-  String? get userId => currentUser?.uid;
-
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final Box<SkoobUser> _userBox = Hive.box<SkoobUser>('userBox');
-  final Box<Book> _bookBox = Hive.box<Book>('bookshelfBox');
+  void dispose() {
+    _bookBox.close();
+    _userBox.close();
+  }
 
   Future<bool> updateUserProfile(SkoobUser user, bool isNewUser) async {
     try {

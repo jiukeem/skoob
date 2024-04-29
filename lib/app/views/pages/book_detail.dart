@@ -1,15 +1,12 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:provider/provider.dart';
-import 'package:skoob/app/controller/book_list_manager.dart';
 import 'package:skoob/app/views/pages/user_record.dart';
 
+import '../../controller/user_data_manager.dart';
 import '../../models/book.dart';
 import '../../utils/app_colors.dart';
-import '../widgets/book_detail_highlight_list_view_tile.dart';
 import '../widgets/book_detail_info_list_view_tile.dart';
-import '../widgets/book_detail_note_list_view_tile.dart';
 
 class BookDetail extends StatefulWidget {
   final Book book;
@@ -24,6 +21,7 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
   TabController? _tabController;
   late Book book;
   late double _currentRating;
+  final UserDataManager _dataManager = UserDataManager();
 
   @override
   void initState() {
@@ -142,7 +140,7 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
 
     if (mounted && shouldDelete == true) {
       Navigator.of(context).pop();
-      Provider.of<BookListManager>(context, listen: false).deleteItem(book);
+      _dataManager.deleteBook(widget.book);
     }
   }
 
@@ -261,7 +259,7 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
                                 }
                               });
                               book.customInfo.rate = rating.toString();
-                              Provider.of<BookListManager>(context, listen: false).replaceWithUpdatedBook(book);
+                              _dataManager.updateBook(book);
                             },
                             glow: false,
                           ),

@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
-import 'package:skoob/app/controller/book_list_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:skoob/app/models/book.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -33,10 +32,6 @@ class _BookshelfState extends State<Bookshelf> {
   @override
   void initState() {
     super.initState();
-  }
-
-  void _deleteSelectedBook(Book book) {
-    Provider.of<BookListManager>(context, listen: false).deleteItem(book);
   }
 
   @override

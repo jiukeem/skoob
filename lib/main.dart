@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
-import 'package:skoob/app/controller/book_list_manager.dart';
+import 'package:skoob/app/controller/user_data_manager.dart';
 import 'package:skoob/app/views/pages/intro.dart';
 import 'package:skoob/app/utils/app_colors.dart';
 import 'package:provider/provider.dart';
@@ -24,15 +24,14 @@ void main() async {
   Hive.registerAdapter(BookAdapter());
   Hive.registerAdapter(UserAdapter());
 
-  var manager = BookListManager();
+  var manager = UserDataManager();
   await manager.initBox();
-  await Hive.openBox<SkoobUser>('userBox');
 
   runApp(MultiProvider(
     providers: [
-      Provider<BookListManager>(
+      Provider<UserDataManager>(
         create: (_) => manager,
-        dispose: (_, BookListManager manager) => manager.dispose()
+        dispose: (_, UserDataManager manager) => manager.dispose()
       )
     ],
     child: MaterialApp(
