@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 
 import 'package:skoob/app/models/skoob_user.dart';
+import 'package:skoob/app/controller/user_data_manager.dart';
+import 'package:skoob/app/views/pages/intro.dart';
 
-import '../../controller/user_data_manager.dart';
-import 'intro.dart';
+import 'friend_search.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -60,22 +62,27 @@ class _ProfileState extends State<Profile> {
   }
 
   Widget _buildProfileAppBar() {
-    return const SizedBox(
+    return SizedBox(
       height: 60.0,
       child: Padding(
         padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 0),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(
+            const Text(
               'PROFILE',
               style: TextStyle(
                   fontFamily: 'LexendExaMedium',
                   fontSize: 24.0
               ),
             ),
-            Spacer(),
+            IconButton(
+                onPressed: () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (_) => FriendSearch()));
+                },
+                icon: const Icon(FluentIcons.person_add_24_regular)),
           ],
         ),
       ),
