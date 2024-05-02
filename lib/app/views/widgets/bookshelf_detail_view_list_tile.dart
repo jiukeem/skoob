@@ -97,7 +97,9 @@ class DetailViewListTile extends StatelessWidget with BookshelfListTileMixin {
                             ),
                             const SizedBox(width: 4.0,),
                             Text(
-                              book.basicInfo.pubDate.substring(0,4),
+                              book.basicInfo.pubDate.length >= 4
+                                  ? book.basicInfo.pubDate.substring(0, 4)
+                                  : "",
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
