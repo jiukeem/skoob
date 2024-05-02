@@ -24,9 +24,6 @@ class _IntroState extends State<Intro> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _checkAuthentication();
-    });
   }
 
   void _checkAuthentication() async {
@@ -105,17 +102,22 @@ class _IntroState extends State<Intro> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       backgroundColor: AppColors.primaryGreen,
       body: Center(
-        child: Text(
-          'SKOOB',
-          style: TextStyle(
-            fontFamily: 'LexendExaExtraBold',
-            fontSize: 48.0,
-            color: AppColors.white
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+            'SKOOB',
+            style: TextStyle(
+              fontFamily: 'LexendExaExtraBold',
+              fontSize: 48.0,
+              color: AppColors.white
+            ),
           ),
-        ),
+            ElevatedButton(onPressed: () {_checkAuthentication();}, child: Text('log in with google'))
+        ]),
       ),
     );
   }

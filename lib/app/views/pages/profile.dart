@@ -4,6 +4,9 @@ import 'package:hive_flutter/adapters.dart';
 
 import 'package:skoob/app/models/skoob_user.dart';
 
+import '../../controller/user_data_manager.dart';
+import 'intro.dart';
+
 class Profile extends StatefulWidget {
   const Profile({super.key});
 
@@ -12,6 +15,8 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  final UserDataManager _userDataManager = UserDataManager();
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -48,6 +53,7 @@ class _ProfileState extends State<Profile> {
                 }
               },
             ),
+            ElevatedButton(onPressed: () {_logout();}, child: Text('로그아웃')),
           ],
         )
     );
@@ -82,5 +88,13 @@ class _ProfileState extends State<Profile> {
     } else {
       return Image.asset('assets/temp_logo.png', fit: BoxFit.cover, height: 150,);
     }
+  }
+
+  void _logout() {
+    _userDataManager.logout();
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (context) => const Intro()),
+          (Route<dynamic> route) => false,
+    );
   }
 }

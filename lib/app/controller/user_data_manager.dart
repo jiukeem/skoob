@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
 
 import 'package:skoob/app/models/book.dart';
@@ -11,6 +13,7 @@ class UserDataManager {
   // code above is for singleton object
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   late Box<SkoobUser> _userBox;
   late Box<Book> _bookBox;
   late Box<String> _settingBox;
@@ -264,5 +267,11 @@ class UserDataManager {
     } catch (e) {
       print("UserDataManager-- Error syncing from server to local: $e");
     }
+  }
+
+  void logout() {
+    _bookBox.clear();
+    _userBox.clear();
+    _settingBox.clear();
   }
 }
