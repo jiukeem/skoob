@@ -32,6 +32,7 @@ class _IntroState extends State<Intro> {
   void _checkAuthentication() async {
     if (_auth.currentUser != null) {
       _updateSkoobUserInfo(_auth.currentUser!, isNewUser: false);
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const Skoob()));
       return;
     }
 
