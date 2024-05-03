@@ -30,6 +30,16 @@ class SkoobUser extends HiveObject {
       'phoneNumber': phoneNumber,
     };
   }
+
+  static SkoobUser fromMap(Map<String, dynamic> map) {
+    return SkoobUser(
+        uid: map['uid'] ?? '',
+        name: map['name'] ?? '',
+        email: map['email'] ?? '',
+        photoUrl: map['photoUrl'] ?? '',
+        phoneNumber: map['phoneNumber'] ?? ''
+    );
+  }
 }
 
 class UserAdapter extends TypeAdapter<SkoobUser> {

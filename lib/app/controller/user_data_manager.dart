@@ -51,6 +51,10 @@ class UserDataManager {
         ...user.toMap(),
       };
       await userDocument.set(dataToUpdate, SetOptions(merge: true));
+
+      if (isNewUser) {
+        _firestore.collection('user').doc('list').set({user.email: user.uid}, SetOptions(merge: true));
+      }
       await _userBox.put(user.uid, user);
 
       return true;
@@ -266,6 +270,53 @@ class UserDataManager {
       await updateLastModifiedTimeHive();
     } catch (e) {
       print("UserDataManager-- Error syncing from server to local: $e");
+    }
+  }
+
+  Future<SkoobUser?> searchUserByEmail(String email) async {
+    String? userId;
+    try {
+      DocumentSnapshot userList = await _firestore
+          .collection('user')
+          .doc('list')
+          .get();
+
+      Map<String, dynamic> userListData = userList.data() as Map<String, dynamic>;
+
+      userListData.forEach((key, value) {
+        print('key: $key, value: $value');
+        if (key == email) {
+          userId = value;
+          print('found userId: $userId');
+        }
+      });
+      print('userID: $userId');
+    } catch (e) {
+      print("Failed to fetch searchUserByEmail--1: $e");
+      return null;
+    }
+
+    if (userId == null) return null;
+
+    try {
+      DocumentSnapshot? user = await _firestore
+          .collection('user')
+          .doc(userId)
+          .collection('profile')
+          .doc('info')
+          .get();
+
+      print('user.data(): ${user.data()}');
+      if (user.data() != null) {
+        Map<String, dynamic> userData = user.data() as Map<String, dynamic>;
+        print('userData: $userData');
+        print('skoobuser: ${SkoobUser.fromMap(userData)}');
+        return SkoobUser.fromMap(userData);
+      }
+      return null;
+    } catch (e) {
+      print("Failed to fetch searchUserByEmail--2: $e");
+      return null;
     }
   }
 
