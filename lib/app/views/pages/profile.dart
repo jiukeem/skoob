@@ -40,18 +40,24 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
       appBar: AppBar(
         surfaceTintColor: AppColors.white,
         backgroundColor: AppColors.white,
-        title: const Text(
-          'MY PAGE',
-          style: TextStyle(
-            fontFamily: 'LexendExaMedium',
-            fontSize: 24.0
-        ),),
+        title: const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 4.0),
+          child: Text(
+            'MY PAGE',
+            style: TextStyle(
+              fontFamily: 'LexendExaMedium',
+              fontSize: 24.0
+          ),),
+        ),
         actions: [
-          IconButton(
-            icon: const Icon(FluentIcons.person_add_24_regular),
-            onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (_) => const FriendSearch()));
-            },
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: IconButton(
+              icon: const Icon(FluentIcons.person_add_24_regular),
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (_) => const FriendSearch()));
+              },
+            ),
           ),
         ],
       ),

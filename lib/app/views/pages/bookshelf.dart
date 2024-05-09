@@ -118,9 +118,9 @@ class _BookshelfState extends State<Bookshelf> {
 
   Widget _buildBookshelfAppBar() {
     return SizedBox(
-      height: 60.0,
+      height: 56.0,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(20.0, 10.0, 8.0, 0),
+        padding: const EdgeInsets.fromLTRB(20.0, 0.0, 8.0, 0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,

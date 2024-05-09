@@ -127,9 +127,9 @@ class _SearchState extends State<Search> {
 
   Widget _buildSearchAppBar() {
     return const SizedBox(
-      height: 60.0,
+      height: 56.0,
       child: Padding(
-        padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 0),
+        padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
