@@ -1,6 +1,7 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:skoob/app/models/skoob_user.dart';
 
 import '../../controller/user_data_manager.dart';
@@ -15,10 +16,13 @@ class FriendSearch extends StatefulWidget {
 
 class _FriendSearchState extends State<FriendSearch> {
   final TextEditingController _searchController = TextEditingController();
-  String _searchKeyword = '';
   final UserDataManager _userDataManager = UserDataManager();
+  String _searchKeyword = '';
   bool _isLoading = false;
+  bool _isFriend = false;
   SkoobUser? _resultUser;
+  List<String> _currentFriendsList = [];
+
 
   Future<void> _startSearch() async {
     print('searchKeyword: $_searchKeyword');
@@ -30,6 +34,16 @@ class _FriendSearchState extends State<FriendSearch> {
       print('resultUser: $_resultUser');
       _isLoading = false;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getCurrentFriendsList();
+  }
+
+  void _getCurrentFriendsList() async {
+    _currentFriendsList = await _userDataManager.getCurrentFriendsList();
   }
 
   @override
@@ -58,7 +72,7 @@ class _FriendSearchState extends State<FriendSearch> {
 
   Widget _buildSearchField() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20.0, 0, 10.0, 12.0),
+      padding: const EdgeInsets.fromLTRB(20.0, 16.0, 8.0, 12.0),
       child: Row(
         children: [
           Expanded(
@@ -108,7 +122,95 @@ class _FriendSearchState extends State<FriendSearch> {
     if (_resultUser == null) {
       return const Text('사용자를 찾을 수 없습니다.');
     } else {
-      return Text(_resultUser!.name);
+      _checkAlreadyFriend();
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                _buildUserImage(_resultUser!.photoUrl),
+                const SizedBox(width: 15.0,),
+                Text(
+                  _resultUser!.name,
+                  style: const TextStyle(
+                    color: AppColors.softBlack,
+                    fontFamily: 'NotoSansKRBold',
+                    fontSize: 16.0,
+                  ),
+                ),
+              ],
+            ),
+            IconButton(
+                onPressed: () async {
+                  if (!_isFriend) {
+                    await _userDataManager.addFriend(_resultUser!);
+                    Fluttertoast.showToast(
+                      msg: '친구를 추가하였습니다',
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.TOP,
+                      timeInSecForIosWeb: 1,
+                      backgroundColor: AppColors.gray1,
+                      textColor: AppColors.white,
+                      fontSize: 14.0,
+                    );
+                    setState(() {
+                      _isFriend = true;
+                    });
+                  }
+                  if (_isFriend) {
+                    Fluttertoast.showToast(
+                      msg: '이미 추가된 사용자입니다',
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.TOP,
+                      timeInSecForIosWeb: 1,
+                      backgroundColor: AppColors.gray1,
+                      textColor: AppColors.white,
+                      fontSize: 14.0,
+                    );
+                  }
+                },
+                icon: _isFriend
+                    ? const Icon(FluentIcons.person_add_24_filled)
+                    : const Icon(FluentIcons.person_add_24_regular)
+            )
+          ],
+        ),
+      );
+    }
+  }
+
+  Widget _buildUserImage(String photoUrl) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(12),
+      child: SizedBox(
+          width: 40,
+          height: 40,
+          child: photoUrl.isNotEmpty
+              ? Image.network(
+            photoUrl,
+            fit: BoxFit.cover,
+          )
+              : Image.asset(
+            'assets/temp_logo.png',
+            fit: BoxFit.cover,
+          )),
+    );
+  }
+
+  void _checkAlreadyFriend() {
+    if (_resultUser == null) {
+      return;
+    }
+
+    final targetUid = _resultUser!.uid;
+    for (String friendUid in _currentFriendsList) {
+      print('friendUid: $friendUid');
+      if (friendUid == targetUid) {
+        _isFriend = true;
+        return;
+      }
     }
   }
 }

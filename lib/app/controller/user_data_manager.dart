@@ -350,6 +350,43 @@ class UserDataManager {
     }
   }
 
+  Future<List<String>> getCurrentFriendsList() async {
+    try {
+      DocumentSnapshot? userDoc = await _firestore
+          .collection('user')
+          .doc(userId)
+          .collection('friend')
+          .doc('list')
+          .get();
+
+      if (userDoc.data() == null) return [];
+
+      final friendDoc = userDoc.data() as Map<String, dynamic>;
+      return List<String>.from(friendDoc['friendsList']);
+    } catch (e) {
+      print("UserDataManager-- failed to getCurrentFriendsList: $e");
+      return [];
+    }
+  }
+  
+  Future<void> addFriend(SkoobUser user) async {
+    final newFriendUid = user.uid;
+
+    DocumentReference documentReference = _firestore
+        .collection('user')
+        .doc(userId)
+        .collection('friend')
+        .doc('list');
+
+    documentReference.set({
+      'friendsList': FieldValue.arrayUnion([newFriendUid])
+    }, SetOptions(merge: true)).then((_) {
+      print('Friend added successfully');
+    }).catchError((error) {
+      print('Error adding friend: $error');
+    });
+  }
+
   void logout() {
     _bookBox.clear();
     _userBox.clear();
