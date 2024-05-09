@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
 
 import 'package:skoob/app/models/book.dart';
+import 'package:skoob/app/models/book/custom_info.dart';
 import 'package:skoob/app/models/skoob_user.dart';
 
 class UserDataManager {
@@ -169,6 +170,35 @@ class UserDataManager {
         print("Error deleting book from Firestore and Hive: $e");
       }
     }
+  }
+
+  Future<void> updateLatestFeed(Book book, BookReadingStatus status) async {
+    if (status == BookReadingStatus.initial || status == BookReadingStatus.notStarted) {
+      return;
+    }
+
+    final title = book.basicInfo.title;
+
+    await _settingBox.put('latestFeedBookTitle', title);
+    await _settingBox.put('latestFeedStatus', status.toString());
+
+    try {
+      await _firestore.collection('user').doc(userId).set({
+        'latestFeed': {
+          'bookTitle': title,
+          'status': status.toString()
+        }
+      }, SetOptions(merge: true));
+    } catch (e) {
+      print("Failed to update Firestore latestFeed: $e");
+    }
+  }
+
+  Map<String, String> getLatestFeed() {
+    return {
+      'title': _settingBox.get('latestFeedBookTitle') ?? '',
+      'status': _settingBox.get('latestFeedStatus') ?? ''
+    };
   }
 
   Future<void> updateLastModifiedTimeHive() async {

@@ -255,6 +255,7 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
                           final book = widget.book;
                           book.customInfo.status = BookReadingStatus.reading;
                           _dataManager.updateBook(widget.book);
+                          _dataManager.updateLatestFeed(widget.book, BookReadingStatus.reading);
                           Navigator.pop(context, BookReadingStatus.reading);
                         },
                         child: const Padding(
@@ -268,6 +269,7 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
                           final book = widget.book;
                           book.customInfo.status = BookReadingStatus.done;
                           _dataManager.updateBook(widget.book);
+                          _dataManager.updateLatestFeed(widget.book, BookReadingStatus.done);
                           Navigator.pop(context, BookReadingStatus.done);
                         },
                         child: const Padding(

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 
@@ -20,6 +19,8 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   final UserDataManager _userDataManager = UserDataManager();
   late TabController _tabController;
+  String _latestFeedTitle = '';
+  String _latestFeedStatus = '';
 
   @override
   void initState() {
@@ -86,38 +87,62 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
       builder: (context, Box<SkoobUser> box, _) {
         if (box.values.isNotEmpty) {
           SkoobUser user = box.values.first;
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 14),
-            child: Row(
-              children: [
-                _buildUserImage(user.photoUrl),
-                const SizedBox(width: 15.0,),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        user.name,
-                        style: const TextStyle(
-                          color: AppColors.softBlack,
-                          fontFamily: 'NotoSansKRRegular',
-                          fontSize: 20.0,
-                        ),
+          return ValueListenableBuilder(
+            valueListenable: Hive.box<String>('settingBox').listenable(),
+            builder: (context, Box<String> settingBox, _) {
+              _getFeedMessage();
+              return Padding(
+                padding: const EdgeInsets.fromLTRB(20.0, 14.0, 28.0, 14.0),
+                child: Row(
+                  children: [
+                    _buildUserImage(user.photoUrl),
+                    const SizedBox(width: 15.0,),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            user.name,
+                            style: const TextStyle(
+                              color: AppColors.softBlack,
+                              fontFamily: 'NotoSansKRRegular',
+                              fontSize: 20.0,
+                            ),
+                          ),
+                          const SizedBox(height: 4,),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  '$_latestFeedTitle  ',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    color: AppColors.softBlack,
+                                    fontFamily: 'NotoSansKRBold',
+                                    fontSize: 14.0,
+                                  ),
+                                ),
+                              ),
+                              // const SizedBox(width: 6.0,),
+                              Text(
+                                _latestFeedStatus,
+                                style: const TextStyle(
+                                  color: AppColors.softBlack,
+                                  fontFamily: 'NotoSansKRRegular',
+                                  fontSize: 14.0,
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
                       ),
-                      const SizedBox(height: 4,),
-                      const Text(
-                        '\'몸은 기억한다\' 읽는 중',
-                        style: TextStyle(
-                          color: AppColors.softBlack,
-                          fontFamily: 'NotoSansKRRegular',
-                          fontSize: 14.0,
-                        ),
-                      )
-                    ],
-                  ),
-                )
-              ],
-            ),
+                    )
+                  ],
+                ),
+              );
+            },
           );
         } else {
           return const Text('No saved user in Hive userBox');
@@ -164,7 +189,35 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
       indicatorColor: AppColors.primaryGreen,
       dividerHeight: 0.5,
       dividerColor: AppColors.gray2,
+      overlayColor: MaterialStateProperty.resolveWith<Color?>(
+            (Set<MaterialState> states) {
+          return Colors.transparent;
+        },
+      ),
     );
+  }
+
+  void _getFeedMessage() {
+    final latestFeedMap = _userDataManager.getLatestFeed();
+    final title = latestFeedMap['title'] ?? '';
+    final status = latestFeedMap['status'] ?? '';
+
+    String verb = '';
+    if (status == 'BookReadingStatus.reading') {
+      verb = '읽는 중';
+    }
+    if (status == 'BookReadingStatus.done') {
+      verb = '완독!';
+    }
+
+    _latestFeedTitle = title;
+    _latestFeedStatus = verb;
+
+    if (_latestFeedTitle.isEmpty || _latestFeedStatus.isEmpty) {
+      _latestFeedTitle = '';
+      _latestFeedStatus = '';
+    }
+    return;
   }
 
   void _logout() {
