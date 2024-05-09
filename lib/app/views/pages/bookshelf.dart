@@ -191,13 +191,6 @@ class _BookshelfState extends State<Bookshelf> {
                 padding: const EdgeInsets.fromLTRB(20.0, 4.0, 20.0, 20.0),
                 child: Row(
                   children: [
-                    ElevatedButton(
-                      onPressed: () async {
-                        await FirebaseAuth.instance.signOut();
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const SignIn()));
-                      },
-                      child: Text("Sign out"),
-                    ),
                     InkWell(
                       onTap: () {
                         _showSortOptionBottomSheet(context);
