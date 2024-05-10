@@ -261,14 +261,14 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                     borderRadius: const BorderRadius.all(
                         Radius.circular(30)
                     ),
-                    boxShadow: const [
+                    boxShadow:  [
                       BoxShadow(
-                        color: AppColors.gray3, // Darker shadow for more depth
-                        spreadRadius: 1,
-                        blurRadius: 2,
+                        color: AppColors.gray2.withOpacity(0.8), // Darker shadow for more depth
+                        spreadRadius: 0.5,
+                        blurRadius: 1,
                         offset: Offset(0, 2), // Vertically lower shadow for a lifted effect
                       ),
-                      BoxShadow(
+                      const BoxShadow(
                         color: AppColors.white, // Soft light from top for a raised effect
                         spreadRadius: 0,
                         blurRadius: 0,
