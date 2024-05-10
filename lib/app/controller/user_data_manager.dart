@@ -273,17 +273,7 @@ class UserDataManager {
 
       for (Book book in localBooks) {
         DocumentReference docRef = _firestore.collection('user').doc(userId).collection('bookshelf').doc(book.basicInfo.isbn13);
-        Map<String, dynamic> bookData = {
-          'title': book.basicInfo.title,
-          'author': book.basicInfo.author,
-          'translator': book.basicInfo.translator,
-          'publisher': book.basicInfo.publisher,
-          'category': book.basicInfo.category,
-          'isbn13': book.basicInfo.isbn13,
-          'comment': book.customInfo.comment,
-          'rate': book.customInfo.rate,
-          'status': book.customInfo.status.toString(),
-        };
+        final bookData = _createMapFromSkoobBook(book);
         batch.set(docRef, bookData);
         listData[book.basicInfo.isbn13] = bookData;
       }
