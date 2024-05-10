@@ -246,112 +246,120 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
               ),
             ),
           )
-        : ListView.builder(
-            itemCount: _friendList.length,
-            itemBuilder: (context, index) {
-              final friend = _friendList[index];
-              final feedMap = _makeFeedMessage(friend);
-              return Padding(
-                padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-                child: InkWell(
-                  onTap: () {
-                    _visitFriendBookshelf(friend);
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: AppColors.gray3,
-                        width: 1.0
-                      ),
-                      borderRadius: const BorderRadius.all(
-                          Radius.circular(30)
-                      ),
-                      boxShadow:  [
-                        BoxShadow(
-                          color: AppColors.gray2.withOpacity(0.8), // Darker shadow for more depth
-                          spreadRadius: 0.5,
-                          blurRadius: 1,
-                          offset: Offset(0, 2), // Vertically lower shadow for a lifted effect
+        : RefreshIndicator(
+          onRefresh: _handleRefresh,
+          child: ListView.builder(
+              itemCount: _friendList.length,
+              itemBuilder: (context, index) {
+                final friend = _friendList[index];
+                final feedMap = _makeFeedMessage(friend);
+                return Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+                  child: InkWell(
+                    onTap: () {
+                      _visitFriendBookshelf(friend);
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: AppColors.gray3,
+                          width: 1.0
                         ),
-                        const BoxShadow(
-                          color: AppColors.white, // Soft light from top for a raised effect
-                          spreadRadius: 0,
-                          blurRadius: 0,
-                          offset: Offset(0, 0),
+                        borderRadius: const BorderRadius.all(
+                            Radius.circular(30)
                         ),
-                      ],
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Row(
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: SizedBox(
-                                width: 54,
-                                height: 54,
-                                child: friend.photoUrl.isNotEmpty
-                                    ? Image.network(
-                                        friend.photoUrl,
-                                        fit: BoxFit.cover,
-                                      )
-                                    : Image.asset(
-                                        'assets/temp_logo.png',
-                                        fit: BoxFit.cover,
-                                      )),
+                        boxShadow:  [
+                          BoxShadow(
+                            color: AppColors.gray2.withOpacity(0.8), // Darker shadow for more depth
+                            spreadRadius: 0.5,
+                            blurRadius: 1,
+                            offset: Offset(0, 2), // Vertically lower shadow for a lifted effect
                           ),
-                          const SizedBox(width: 16,),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  friend.name,
-                                  style: const TextStyle(
-                                    color: AppColors.softBlack,
-                                    fontFamily: 'NotoSansKRRegular',
-                                    fontSize: 18.0,
+                          const BoxShadow(
+                            color: AppColors.white, // Soft light from top for a raised effect
+                            spreadRadius: 0,
+                            blurRadius: 0,
+                            offset: Offset(0, 0),
+                          ),
+                        ],
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Row(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: SizedBox(
+                                  width: 54,
+                                  height: 54,
+                                  child: friend.photoUrl.isNotEmpty
+                                      ? Image.network(
+                                          friend.photoUrl,
+                                          fit: BoxFit.cover,
+                                        )
+                                      : Image.asset(
+                                          'assets/temp_logo.png',
+                                          fit: BoxFit.cover,
+                                        )),
+                            ),
+                            const SizedBox(width: 16,),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    friend.name,
+                                    style: const TextStyle(
+                                      color: AppColors.softBlack,
+                                      fontFamily: 'NotoSansKRRegular',
+                                      fontSize: 18.0,
+                                    ),
                                   ),
-                                ),
-                                Row(
-                                  children: [
-                                    Flexible(
-                                      child: Text(
-                                        '${feedMap['latestFeedBookTitle']}  ',
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
+                                  Row(
+                                    children: [
+                                      Flexible(
+                                        child: Text(
+                                          '${feedMap['latestFeedBookTitle']}  ',
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                            color: AppColors.softBlack,
+                                            fontFamily: 'NotoSansKRBold',
+                                            fontSize: 14.0,
+                                          ),
+                                        ),
+                                      ),
+                                      // const SizedBox(width: 6.0,),
+                                      Text(
+                                        feedMap['latestFeedStatus'],
                                         style: const TextStyle(
                                           color: AppColors.softBlack,
-                                          fontFamily: 'NotoSansKRBold',
+                                          fontFamily: 'NotoSansKRRegular',
                                           fontSize: 14.0,
                                         ),
                                       ),
-                                    ),
-                                    // const SizedBox(width: 6.0,),
-                                    Text(
-                                      feedMap['latestFeedStatus'],
-                                      style: const TextStyle(
-                                        color: AppColors.softBlack,
-                                        fontFamily: 'NotoSansKRRegular',
-                                        fontSize: 14.0,
-                                      ),
-                                    ),
-                                  ],
-                                )
-                              ],
-                            ),
-                          )
-                        ],
+                                    ],
+                                  )
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-              );
-            });
+                );
+              }),
+        );
   }
 
   void _visitFriendBookshelf(SkoobUser friend) {
     Navigator.of(context).push(MaterialPageRoute(builder: (_) => Bookshelf(isVisiting: true, hostUser: friend)));
+  }
+
+  Future<void> _handleRefresh() async {
+    _friendList.clear();
+    await _getFriendsData();
   }
 
   void _logout() {
