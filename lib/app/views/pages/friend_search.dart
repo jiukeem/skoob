@@ -205,6 +205,12 @@ class _FriendSearchState extends State<FriendSearch> {
     }
 
     final targetUid = _resultUser!.uid;
+
+    if (_userDataManager.currentUser?.uid == targetUid) {
+      _isFriend = true;
+      return;
+    }
+
     for (String friendUid in _currentFriendsList) {
       print('friendUid: $friendUid');
       if (friendUid == targetUid) {
