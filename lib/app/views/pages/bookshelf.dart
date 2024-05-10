@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -10,7 +9,6 @@ import 'package:skoob/app/controller/user_data_manager.dart';
 import 'package:skoob/app/models/book.dart';
 import 'package:skoob/app/models/book/custom_info.dart';
 import 'package:skoob/app/utils/app_colors.dart';
-import 'package:skoob/app/views/pages/sign_in.dart';
 import 'package:skoob/app/views/widgets/bookshelf_detail_view_list_tile.dart';
 import 'package:skoob/app/views/widgets/bookshelf_table_view_label.dart';
 import 'package:skoob/app/views/widgets/bookshelf_album_view_builder.dart';
@@ -18,8 +16,12 @@ import 'package:skoob/app/views/widgets/bookshelf_table_view_list_tile.dart';
 import 'package:skoob/app/views/widgets/general_divider.dart';
 import 'package:skoob/app/views/widgets/sort_option_list_tile.dart';
 
+import '../../models/skoob_user.dart';
+
 class Bookshelf extends StatefulWidget{
-  const Bookshelf({super.key});
+  bool isVisiting;
+  SkoobUser? hostUser;
+  Bookshelf({super.key, this.isVisiting = false, this.hostUser});
 
   @override
   State<Bookshelf> createState() => _BookshelfState();
@@ -31,11 +33,17 @@ class _BookshelfState extends State<Bookshelf> {
   SortOption _currentSortOption = SortOption.addedDate;
   bool _isAscending = true;
   final UserDataManager _userDataManager = UserDataManager();
+  List<Book> friendBooks = [];
 
   @override
   void initState() {
     super.initState();
-    _initSync();
+
+    if (!widget.isVisiting) {
+      _initSync();
+    } else {
+      _getFriendBookshelf();
+    }
   }
 
   void _initSync() async {
@@ -100,20 +108,32 @@ class _BookshelfState extends State<Bookshelf> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: Column(
-          children: [
-            _buildBookshelfAppBar(),
-            ValueListenableBuilder(
-              valueListenable: Hive.box<Book>('bookshelfBox').listenable(),
+    if (!widget.isVisiting) {
+      return SafeArea(
+          child: Column(
+            children: [
+              _buildBookshelfAppBar(),
+              ValueListenableBuilder(
+                valueListenable: Hive.box<Book>('bookshelfBox').listenable(),
                 builder: (context, Box<Book> box, _) {
                   var books = box.values.toList();
                   return _buildContentBasedOnBookshelfStatus(books);
                 },
-            ),
-          ],
-        )
-    );
+              ),
+            ],
+          ));
+    } else {
+      return Scaffold(
+        backgroundColor: AppColors.white,
+        body: SafeArea(
+            child: Column(
+              children: [
+                _buildBookshelfAppBar(),
+                _buildContentBasedOnBookshelfStatus(friendBooks)
+              ],
+            )),
+      );
+    }
   }
 
   Widget _buildBookshelfAppBar() {
@@ -291,6 +311,18 @@ class _BookshelfState extends State<Bookshelf> {
         );
       }
     }
+  }
+
+  void _getFriendBookshelf() async {
+    if (widget.hostUser == null) {
+      return;
+    }
+
+    friendBooks = await _userDataManager.getFriendBookshelf(widget.hostUser!.uid);
+    setState(() {
+      _isLoading = false;
+    });
+    return;
   }
 
   List<Book> _sortBookshelf(List<Book> list) {

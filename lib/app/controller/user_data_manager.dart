@@ -291,9 +291,6 @@ class UserDataManager {
 
       print("number of documents in bookshelf: ${querySnapshot.size}");
       for (var doc in querySnapshot.docs) {
-        print("Document: ${doc.id}");
-        print("Document: ${doc.data()}");
-        print("Document: ${doc.data().runtimeType}");
         if (doc.id == "list") continue; // Skip the 'list' document
         if (doc.data() != null && doc.data() is Map<String, dynamic>) {
           Book book = Book.fromFirestore(doc.data()! as Map<String, dynamic>);
@@ -391,6 +388,30 @@ class UserDataManager {
     } catch (e) {
       print("UserDataManager-- failed to getFriendData: $e");
       return null;
+    }
+  }
+
+  Future<List<Book>> getFriendBookshelf(String uid) async {
+    try {
+      DocumentSnapshot doc = await _firestore
+          .collection('user')
+          .doc(uid)
+          .collection('bookshelf')
+          .doc('list')
+          .get();
+
+      List<Book> bookList = [];
+      if (doc.data() != null && doc.data() is Map<String, dynamic>) {
+        final map = doc.data() as Map<String, dynamic>;
+        final books = map.values;
+        for (final value in books) {
+          Book book = Book.fromFirestore(value as Map<String ,dynamic>);
+          bookList.add(book);
+        }
+      }
+      return bookList;
+    } catch (e) {
+      return [];
     }
   }
   

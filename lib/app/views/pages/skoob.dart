@@ -17,7 +17,7 @@ class _SkoobState extends State<Skoob> {
   int _currentPageIndex = 0;
 
   final List<Widget> _pages = [
-    const Bookshelf(),
+    Bookshelf(),
     const Search(),
     const Profile(),
   ];
