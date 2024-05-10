@@ -251,58 +251,94 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
               final friend = _friendList[index];
               final feedMap = _makeFeedMessage(friend);
               return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-                child: Row(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: SizedBox(
-                          width: 54,
-                          height: 54,
-                          child: friend.photoUrl.isNotEmpty
-                              ? Image.network(
-                                  friend.photoUrl,
-                                  fit: BoxFit.cover,
-                                )
-                              : Image.asset(
-                                  'assets/temp_logo.png',
-                                  fit: BoxFit.cover,
-                                )),
+                padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: AppColors.gray3,
+                      width: 1.0
                     ),
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
+                    borderRadius: const BorderRadius.all(
+                        Radius.circular(30)
+                    ),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: AppColors.gray3, // Darker shadow for more depth
+                        spreadRadius: 1,
+                        blurRadius: 2,
+                        offset: Offset(0, 2), // Vertically lower shadow for a lifted effect
+                      ),
+                      BoxShadow(
+                        color: AppColors.white, // Soft light from top for a raised effect
+                        spreadRadius: 0,
+                        blurRadius: 0,
+                        offset: Offset(0, 0),
+                      ),
+                    ],
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Row(
                       children: [
-                        Text(friend.name),
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Flexible(
-                              child: Text(
-                                '${feedMap['latestFeedBookTitle']}  ',
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: SizedBox(
+                              width: 54,
+                              height: 54,
+                              child: friend.photoUrl.isNotEmpty
+                                  ? Image.network(
+                                      friend.photoUrl,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Image.asset(
+                                      'assets/temp_logo.png',
+                                      fit: BoxFit.cover,
+                                    )),
+                        ),
+                        const SizedBox(width: 16,),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                friend.name,
                                 style: const TextStyle(
                                   color: AppColors.softBlack,
-                                  fontFamily: 'NotoSansKRBold',
-                                  fontSize: 14.0,
+                                  fontFamily: 'NotoSansKRRegular',
+                                  fontSize: 18.0,
                                 ),
                               ),
-                            ),
-                            // const SizedBox(width: 6.0,),
-                            Text(
-                              feedMap['latestFeedStatus'],
-                              style: const TextStyle(
-                                color: AppColors.softBlack,
-                                fontFamily: 'NotoSansKRRegular',
-                                fontSize: 14.0,
-                              ),
-                            ),
-                          ],
+                              Row(
+                                children: [
+                                  Flexible(
+                                    child: Text(
+                                      '${feedMap['latestFeedBookTitle']}  ',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        color: AppColors.softBlack,
+                                        fontFamily: 'NotoSansKRBold',
+                                        fontSize: 14.0,
+                                      ),
+                                    ),
+                                  ),
+                                  // const SizedBox(width: 6.0,),
+                                  Text(
+                                    feedMap['latestFeedStatus'],
+                                    style: const TextStyle(
+                                      color: AppColors.softBlack,
+                                      fontFamily: 'NotoSansKRRegular',
+                                      fontSize: 14.0,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
                         )
                       ],
-                    )
-                  ],
+                    ),
+                  ),
                 ),
               );
             });
