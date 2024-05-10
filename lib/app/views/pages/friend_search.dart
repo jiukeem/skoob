@@ -158,6 +158,7 @@ class _FriendSearchState extends State<FriendSearch> {
                     setState(() {
                       _isFriend = true;
                     });
+                    return;
                   }
                   if (_isFriend) {
                     Fluttertoast.showToast(
