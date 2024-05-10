@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import 'package:skoob/app/controller/user_data_manager.dart';
+import 'package:skoob/app/models/book/custom_info.dart';
 import 'package:skoob/app/models/skoob_user.dart';
 import 'package:skoob/app/utils/app_colors.dart';
 import 'package:skoob/app/views/pages/skoob.dart';
@@ -28,7 +29,13 @@ class _IntroState extends State<Intro> {
 
   void _checkAuthentication() async {
     if (_auth.currentUser != null) {
-      _updateSkoobUserInfo(_auth.currentUser!, isNewUser: false);
+      final currentLocalUser = _dataManager.getCurrentLocalUser();
+      if (currentLocalUser != null &&
+          currentLocalUser.uid == _auth.currentUser!.uid) {
+        _dataManager.setUser(currentLocalUser);
+      } else {
+        _updateSkoobUserInfo(_auth.currentUser!, isNewUser: false);
+      }
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const Skoob()));
       return;
     }
