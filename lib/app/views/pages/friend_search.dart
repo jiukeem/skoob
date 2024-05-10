@@ -212,5 +212,6 @@ class _FriendSearchState extends State<FriendSearch> {
         return;
       }
     }
+    _isFriend = false;
   }
 }
