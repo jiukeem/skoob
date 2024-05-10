@@ -34,7 +34,7 @@ class _IntroState extends State<Intro> {
           currentLocalUser.uid == _auth.currentUser!.uid) {
         _dataManager.setUser(currentLocalUser);
       } else {
-        _updateSkoobUserInfo(_auth.currentUser!, isNewUser: false);
+        await _updateSkoobUserInfo(_auth.currentUser!, isNewUser: false);
       }
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const Skoob()));
       return;
@@ -49,7 +49,7 @@ class _IntroState extends State<Intro> {
 
         // If the duration is less than a few seconds, treat as new user
         bool isNewUser = diff < const Duration(seconds: 5);
-        _updateSkoobUserInfo(user, isNewUser: isNewUser);
+        await _updateSkoobUserInfo(user, isNewUser: isNewUser);
 
         Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const Skoob()));
       } else {
@@ -86,27 +86,20 @@ class _IntroState extends State<Intro> {
     return null;
   }
 
-  void _updateSkoobUserInfo(User user, {required bool isNewUser}) {
-    final skoobUser = _createSkoobUser(user);
-    _dataManager.setUser(skoobUser);
-    _dataManager.updateUserProfile(skoobUser, isNewUser).then((success) {
-      if (!success) {
-        print("Failed to update user data synchronously");
-      }
-    });
+  Future<void> _updateSkoobUserInfo(User user, {required bool isNewUser}) async {
+    final Map<String, String> userData = _createIncompleteSkoobUser(user);
+    await _dataManager.updateUserProfile(userData, isNewUser);
     return;
   }
 
-  SkoobUser _createSkoobUser(User user) {
-    return SkoobUser(
-      uid: user.uid,
-      name: user.displayName ?? '',
-      email: user.email ?? '',
-      phoneNumber: user.phoneNumber ?? '',
-      photoUrl: user.photoURL ?? '',
-      latestFeedBookTitle: '',
-      latestFeedStatus: BookReadingStatus.initial,
-    );
+  Map<String, String> _createIncompleteSkoobUser(User user) {
+    return {
+      'uid': user.uid ?? '',
+      'name': user.displayName ?? '',
+      'email': user.email ?? '',
+      'phoneNumber': user.phoneNumber ?? '',
+      'photoUrl': user.photoURL ?? '',
+    };
   }
 
   @override

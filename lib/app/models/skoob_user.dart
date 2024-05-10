@@ -49,7 +49,7 @@ class SkoobUser extends HiveObject {
   };
 
   static SkoobUser fromMap(Map<String, dynamic> map) {
-    String statusString = map['status'] as String? ?? 'BookReadingStatus.initial';
+    String statusString = map['latestFeedStatus'] as String? ?? 'BookReadingStatus.initial';
     BookReadingStatus status = statusMap[statusString] ?? BookReadingStatus.initial;
     return SkoobUser(
         uid: map['uid'] ?? '',

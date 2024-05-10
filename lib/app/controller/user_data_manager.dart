@@ -40,11 +40,11 @@ class UserDataManager {
     _userBox.close();
   }
 
-  Future<bool> updateUserProfile(SkoobUser user, bool isNewUser) async {
+  Future<bool> updateUserProfile(Map<String, String> user, bool isNewUser) async {
     try {
       var userDocument = _firestore
           .collection('user')
-          .doc(user.uid)
+          .doc(user['uid'])
           .collection('profile')
           .doc('info');
 
@@ -53,20 +53,38 @@ class UserDataManager {
           'lastLoggedInAt': DateTime.now().toIso8601String()
         else
           'createdAt': DateTime.now().toIso8601String(),
-        ...user.toMap(),
+        ...user,
       };
       await userDocument.set(dataToUpdate, SetOptions(merge: true));
 
       if (isNewUser) {
-        _firestore.collection('user').doc('list').set({user.email: user.uid}, SetOptions(merge: true));
+        _firestore.collection('user').doc('list').set({user['email']!: user['uid']}, SetOptions(merge: true));
       }
-      await _userBox.put(user.uid, user);
-
-      return true;
     } catch (e) {
       print("Failed to update Firestore or Hive: $e");
       return false;
     }
+
+    try {
+      DocumentSnapshot userDoc = await _firestore
+          .collection('user')
+          .doc(user['uid'])
+          .collection('profile')
+          .doc('info')
+          .get();
+
+      if (userDoc.data() != null) {
+        final data = userDoc.data() as Map<String, dynamic>;
+        SkoobUser skoobUser = SkoobUser.fromMap(data);
+
+        await _userBox.put(user['uid'], skoobUser);
+        setUser(skoobUser);
+      }
+    } catch (e) {
+      print("Failed to update Firestore or Hive: $e");
+      return false;
+    }
+    return true;
   }
 
   Map<String, String> _createMapFromSkoobBook(Book book) {
@@ -294,7 +312,6 @@ class UserDataManager {
         if (doc.id == "list") continue; // Skip the 'list' document
         if (doc.data() != null && doc.data() is Map<String, dynamic>) {
           Book book = Book.fromFirestore(doc.data()! as Map<String, dynamic>);
-          print(book);
           await _bookBox.add(book);
         } else {
           print("Document ${doc.id} is empty or data is not accessible.");
