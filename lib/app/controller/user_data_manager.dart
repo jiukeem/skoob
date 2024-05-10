@@ -31,6 +31,10 @@ class UserDataManager {
     currentUser = user;
   }
 
+  SkoobUser? getCurrentLocalUser() {
+    return _userBox.getAt(0);
+  }
+
   void dispose() {
     _bookBox.close();
     _userBox.close();
@@ -178,28 +182,30 @@ class UserDataManager {
     }
 
     final title = book.basicInfo.title;
-
-    await _settingBox.put('latestFeedBookTitle', title);
-    await _settingBox.put('latestFeedStatus', status.toString());
+    SkoobUser? user = _userBox.get(userId);
+    if (user == null) {
+      return;
+    }
+    user.latestFeedBookTitle = title;
+    user.latestFeedStatus = status;
+    _userBox.put(userId, user);
+    setUser(user);
 
     try {
-      await _firestore.collection('user').doc(userId).set({
-        'latestFeed': {
-          'bookTitle': title,
-          'status': status.toString()
-        }
+      await _firestore
+          .collection('user')
+          .doc(userId)
+          .collection('profile')
+          .doc('info')
+          .set({
+        'latestFeedBookTitle': title,
+        'latestFeedStatus': status.toString(),
       }, SetOptions(merge: true));
     } catch (e) {
       print("Failed to update Firestore latestFeed: $e");
     }
   }
 
-  Map<String, String> getLatestFeed() {
-    return {
-      'title': _settingBox.get('latestFeedBookTitle') ?? '',
-      'status': _settingBox.get('latestFeedStatus') ?? ''
-    };
-  }
 
   Future<void> updateLastModifiedTimeHive() async {
     await _settingBox.put('lastModifiedTime', DateTime.now().toIso8601String());
@@ -366,6 +372,25 @@ class UserDataManager {
     } catch (e) {
       print("UserDataManager-- failed to getCurrentFriendsList: $e");
       return [];
+    }
+  }
+
+  Future<SkoobUser?> getFriendData(String uid) async {
+    try {
+      DocumentSnapshot? userDoc = await _firestore
+          .collection('user')
+          .doc(uid)
+          .collection('profile')
+          .doc('info')
+          .get();
+
+      if (userDoc.data() == null) return null;
+
+      final friendProfile = userDoc.data() as Map<String, dynamic>;
+      return SkoobUser.fromMap(friendProfile);
+    } catch (e) {
+      print("UserDataManager-- failed to getFriendData: $e");
+      return null;
     }
   }
   

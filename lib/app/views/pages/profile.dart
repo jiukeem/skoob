@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 
@@ -6,6 +7,7 @@ import 'package:skoob/app/models/skoob_user.dart';
 import 'package:skoob/app/controller/user_data_manager.dart';
 import 'package:skoob/app/views/pages/intro.dart';
 
+import '../../models/book/custom_info.dart';
 import '../../utils/app_colors.dart';
 import 'friend_search.dart';
 
@@ -19,13 +21,29 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   final UserDataManager _userDataManager = UserDataManager();
   late TabController _tabController;
-  String _latestFeedTitle = '';
-  String _latestFeedStatus = '';
+  bool _isFriendsTabLoading = true;
+  final List<SkoobUser> _friendList = [];
+
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    _getFriendsData();
+  }
+
+  Future<void> _getFriendsData() async {
+    final friendsUidList = await _userDataManager.getCurrentFriendsList();
+    for (String uid in friendsUidList) {
+      final friend = await _userDataManager.getFriendData(uid);
+      if (friend != null) {
+        _friendList.add(friend);
+      }
+    }
+    setState(() {
+      _isFriendsTabLoading = false;
+    });
+    return;
   }
 
   @override
@@ -70,8 +88,8 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
             child: TabBarView(
               controller: _tabController,
               physics: const NeverScrollableScrollPhysics(),
-              children: const [
-                Text('friends tab'),
+              children: [
+                _buildFriendsTab(),
                 Text('feed tab'),
               ],
             ),
@@ -87,62 +105,57 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
       builder: (context, Box<SkoobUser> box, _) {
         if (box.values.isNotEmpty) {
           SkoobUser user = box.values.first;
-          return ValueListenableBuilder(
-            valueListenable: Hive.box<String>('settingBox').listenable(),
-            builder: (context, Box<String> settingBox, _) {
-              _getFeedMessage();
-              return Padding(
-                padding: const EdgeInsets.fromLTRB(20.0, 14.0, 28.0, 14.0),
-                child: Row(
-                  children: [
-                    _buildUserImage(user.photoUrl),
-                    const SizedBox(width: 15.0,),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+          final feedMap = _makeFeedMessage(user);
+          return Padding(
+            padding: const EdgeInsets.fromLTRB(20.0, 14.0, 28.0, 14.0),
+            child: Row(
+              children: [
+                _buildUserImage(user.photoUrl),
+                const SizedBox(width: 15.0,),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        user.name,
+                        style: const TextStyle(
+                          color: AppColors.softBlack,
+                          fontFamily: 'NotoSansKRRegular',
+                          fontSize: 20.0,
+                        ),
+                      ),
+                      const SizedBox(height: 4,),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
+                          Flexible(
+                            child: Text(
+                              '${feedMap['latestFeedBookTitle']}  ',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                color: AppColors.softBlack,
+                                fontFamily: 'NotoSansKRBold',
+                                fontSize: 14.0,
+                              ),
+                            ),
+                          ),
+                          // const SizedBox(width: 6.0,),
                           Text(
-                            user.name,
+                            feedMap['latestFeedStatus'],
                             style: const TextStyle(
                               color: AppColors.softBlack,
                               fontFamily: 'NotoSansKRRegular',
-                              fontSize: 20.0,
+                              fontSize: 14.0,
                             ),
                           ),
-                          const SizedBox(height: 4,),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Flexible(
-                                child: Text(
-                                  '$_latestFeedTitle  ',
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    color: AppColors.softBlack,
-                                    fontFamily: 'NotoSansKRBold',
-                                    fontSize: 14.0,
-                                  ),
-                                ),
-                              ),
-                              // const SizedBox(width: 6.0,),
-                              Text(
-                                _latestFeedStatus,
-                                style: const TextStyle(
-                                  color: AppColors.softBlack,
-                                  fontFamily: 'NotoSansKRRegular',
-                                  fontSize: 14.0,
-                                ),
-                              ),
-                            ],
-                          )
                         ],
-                      ),
-                    )
-                  ],
-                ),
-              );
-            },
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
           );
         } else {
           return const Text('No saved user in Hive userBox');
@@ -197,27 +210,102 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
     );
   }
 
-  void _getFeedMessage() {
-    final latestFeedMap = _userDataManager.getLatestFeed();
-    final title = latestFeedMap['title'] ?? '';
-    final status = latestFeedMap['status'] ?? '';
+  Map<String, dynamic> _makeFeedMessage(SkoobUser user) {
+    final title =  user.latestFeedBookTitle;
+    final status = user.latestFeedStatus;
 
     String verb = '';
-    if (status == 'BookReadingStatus.reading') {
+    if (status == BookReadingStatus.reading) {
       verb = '읽는 중';
     }
-    if (status == 'BookReadingStatus.done') {
+    if (status == BookReadingStatus.done) {
       verb = '완독!';
     }
 
-    _latestFeedTitle = title;
-    _latestFeedStatus = verb;
+    String latestFeedTitle = title;
+    String latestFeedStatus = verb;
 
-    if (_latestFeedTitle.isEmpty || _latestFeedStatus.isEmpty) {
-      _latestFeedTitle = '';
-      _latestFeedStatus = '';
+    if (latestFeedTitle.isEmpty || latestFeedStatus.isEmpty) {
+      latestFeedTitle = '';
+      latestFeedStatus = '';
     }
-    return;
+    return {
+      'latestFeedBookTitle': latestFeedTitle,
+      'latestFeedStatus': latestFeedStatus
+    };
+  }
+
+  Widget _buildFriendsTab() {
+    return _isFriendsTabLoading
+        ? const Expanded(
+            child: Center(
+              child: SpinKitRotatingCircle(
+                size: 30.0,
+                color: AppColors.primaryYellow,
+              ),
+            ),
+          )
+        : ListView.builder(
+            itemCount: _friendList.length,
+            itemBuilder: (context, index) {
+              final friend = _friendList[index];
+              final feedMap = _makeFeedMessage(friend);
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                child: Row(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: SizedBox(
+                          width: 54,
+                          height: 54,
+                          child: friend.photoUrl.isNotEmpty
+                              ? Image.network(
+                                  friend.photoUrl,
+                                  fit: BoxFit.cover,
+                                )
+                              : Image.asset(
+                                  'assets/temp_logo.png',
+                                  fit: BoxFit.cover,
+                                )),
+                    ),
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(friend.name),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Flexible(
+                              child: Text(
+                                '${feedMap['latestFeedBookTitle']}  ',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  color: AppColors.softBlack,
+                                  fontFamily: 'NotoSansKRBold',
+                                  fontSize: 14.0,
+                                ),
+                              ),
+                            ),
+                            // const SizedBox(width: 6.0,),
+                            Text(
+                              feedMap['latestFeedStatus'],
+                              style: const TextStyle(
+                                color: AppColors.softBlack,
+                                fontFamily: 'NotoSansKRRegular',
+                                fontSize: 14.0,
+                              ),
+                            ),
+                          ],
+                        )
+                      ],
+                    )
+                  ],
+                ),
+              );
+            });
   }
 
   void _logout() {

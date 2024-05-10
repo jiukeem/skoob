@@ -96,7 +96,9 @@ class _IntroState extends State<Intro> {
       name: user.displayName ?? '',
       email: user.email ?? '',
       phoneNumber: user.phoneNumber ?? '',
-      photoUrl: user.photoURL ?? ''
+      photoUrl: user.photoURL ?? '',
+      latestFeedBookTitle: '',
+      latestFeedStatus: BookReadingStatus.initial,
     );
   }
 
