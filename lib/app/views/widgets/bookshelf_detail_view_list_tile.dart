@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
+
 import 'package:skoob/app/models/book.dart';
 import 'package:skoob/app/models/book/custom_info.dart';
 import 'package:skoob/app/utils/app_colors.dart';
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:skoob/app/views/pages/book_detail.dart';
 import 'package:skoob/app/views/widgets/general_divider.dart';
 import 'package:skoob/app/views/widgets/rate_star.dart';
 import 'package:skoob/app/views/widgets/status_label.dart';
-import 'bookshelf_list_tile_mixin.dart';
-import 'date_widget_accroding_to_status.dart';
+import 'package:skoob/app/views/widgets/bookshelf_list_tile_mixin.dart';
+import 'package:skoob/app/views/widgets/date_widget_accroding_to_status.dart';
 
 class DetailViewListTile extends StatelessWidget with BookshelfListTileMixin {
   DetailViewListTile({super.key, required Book book, required bool isLast}) {
@@ -97,7 +97,9 @@ class DetailViewListTile extends StatelessWidget with BookshelfListTileMixin {
                             ),
                             const SizedBox(width: 4.0,),
                             Text(
-                              book.basicInfo.pubDate.substring(0,4),
+                              book.basicInfo.pubDate.length >= 4
+                                  ? book.basicInfo.pubDate.substring(0, 4)
+                                  : "",
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(

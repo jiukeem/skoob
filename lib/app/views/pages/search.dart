@@ -1,16 +1,17 @@
+import 'dart:convert';
+
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:http/http.dart';
+
 import 'package:skoob/app/models/book.dart';
 import 'package:skoob/app/models/aladin.dart';
-import 'package:http/http.dart';
-import 'dart:convert';
+import 'package:skoob/app/models/book/basic_info.dart';
+import 'package:skoob/app/models/book/custom_info.dart';
+import 'package:skoob/app/utils/util_fuctions.dart';
 import 'package:skoob/app/utils/app_colors.dart';
 import 'package:skoob/app/views/widgets/search_result_view_list_tile.dart';
-
-import '../../models/book/basic_info.dart';
-import '../../models/book/custom_info.dart';
-import '../../utils/util_fuctions.dart';
 
 class Search extends StatefulWidget {
   const Search({super.key});
@@ -126,9 +127,9 @@ class _SearchState extends State<Search> {
 
   Widget _buildSearchAppBar() {
     return const SizedBox(
-      height: 60.0,
+      height: 56.0,
       child: Padding(
-        padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 0),
+        padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,

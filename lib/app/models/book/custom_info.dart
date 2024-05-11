@@ -23,6 +23,27 @@ class CustomInfo {
     this.rate = '',
     this.comment = '',
   });
+
+  static final Map<String, BookReadingStatus> statusMap = {
+    "BookReadingStatus.initial": BookReadingStatus.initial,
+    "BookReadingStatus.notStarted": BookReadingStatus.notStarted,
+    "BookReadingStatus.reading": BookReadingStatus.reading,
+    "BookReadingStatus.done": BookReadingStatus.done,
+  };
+
+  static CustomInfo fromMap(Map<String, dynamic> map) {
+    print("Creating CustomInfo from map: $map");
+    String statusString = map['status'] as String? ?? 'BookReadingStatus.initial'; // Default to 'initial' if null
+    BookReadingStatus status = statusMap[statusString] ?? BookReadingStatus.initial;
+    return CustomInfo(
+      addedDate: map['addedDate'] ?? '',
+      status: status,
+      startReadingDate: map['startReadingDate'] ?? '',
+      finishReadingDate: map['finishReadingDate'] ?? '',
+      rate: map['rate'] ?? '',
+      comment: map['comment'] ?? '',
+    );
+  }
 }
 
 class CustomInfoAdapter extends TypeAdapter<CustomInfo> {

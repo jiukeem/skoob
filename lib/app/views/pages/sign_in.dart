@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:skoob/app/views/pages/bookshelf.dart';
-import 'package:skoob/app/views/pages/skoob.dart';
 
-import '../../services/sign_in_with_google.dart';
+import 'package:skoob/app/services/sign_in_with_google.dart';
+import 'package:skoob/app/views/pages/skoob.dart';
 
 class SignIn extends StatefulWidget {
   const SignIn({super.key});

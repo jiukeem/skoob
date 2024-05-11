@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
+
 import 'package:skoob/app/utils/app_colors.dart';
 
 class SkoobBottomNavBar extends StatelessWidget {

@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
-import 'package:skoob/app/controller/book_list_manager.dart';
-import 'package:skoob/app/views/pages/intro.dart';
-import 'package:skoob/app/utils/app_colors.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'app/models/book.dart';
-import 'app/models/book/basic_info.dart';
-import 'app/models/book/custom_info.dart';
-import 'app/models/skoob_user.dart';
-import 'firebase_options.dart';
+
+import 'package:skoob/firebase_options.dart';
+import 'package:skoob/app/controller/user_data_manager.dart';
+import 'package:skoob/app/models/book.dart';
+import 'package:skoob/app/models/book/basic_info.dart';
+import 'package:skoob/app/models/book/custom_info.dart';
+import 'package:skoob/app/models/skoob_user.dart';
+import 'package:skoob/app/utils/app_colors.dart';
+import 'package:skoob/app/views/pages/intro.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,15 +25,14 @@ void main() async {
   Hive.registerAdapter(BookAdapter());
   Hive.registerAdapter(UserAdapter());
 
-  var manager = BookListManager();
+  var manager = UserDataManager();
   await manager.initBox();
-  await Hive.openBox<SkoobUser>('userBox');
 
   runApp(MultiProvider(
     providers: [
-      Provider<BookListManager>(
+      Provider<UserDataManager>(
         create: (_) => manager,
-        dispose: (_, BookListManager manager) => manager.dispose()
+        dispose: (_, UserDataManager manager) => manager.dispose()
       )
     ],
     child: MaterialApp(
