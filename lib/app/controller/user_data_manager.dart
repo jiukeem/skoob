@@ -236,19 +236,24 @@ class UserDataManager {
 
 
   Future<void> updateLastModifiedTimeHive() async {
-    await _settingBox.put('lastModifiedTime', DateTime.now().toIso8601String());
+    await _settingBox.put('lastModifiedAt', DateTime.now().toIso8601String());
     print("UserDataManger-- updating last modified time local(hive): ${DateTime.now()}");
   }
 
   Future<DateTime?> getLastModifiedTimeHive() async {
-    String? time = _settingBox.get('lastModifiedTime');
+    String? time = _settingBox.get('lastModifiedAt');
     return time != null ? DateTime.parse(time) : null;
   }
 
   Future<void> updateLastModifiedTimeFirestore() async {
     try {
-      await _firestore.collection('user').doc(userId).set({
-        'lastModifiedTime': FieldValue.serverTimestamp()
+      await _firestore
+          .collection('user')
+          .doc(userId)
+          .collection('profile')
+          .doc('info')
+          .set({
+        'lastModifiedAt': FieldValue.serverTimestamp()
       }, SetOptions(merge: true));
       print("UserDataManger-- updating last modified time server(firestore): ${FieldValue.serverTimestamp()}");
     } catch (e) {
@@ -261,10 +266,12 @@ class UserDataManager {
       DocumentSnapshot userDoc = await _firestore
           .collection('user')
           .doc(userId)
+          .collection('profile')
+          .doc('info')
           .get();
       if (userDoc.data() != null) {
         Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
-        Timestamp? timestamp = userData['lastModifiedTime'] as Timestamp?;
+        Timestamp? timestamp = userData['lastModifiedAt'] as Timestamp?;
         return timestamp?.toDate();
       }
     } catch (e) {
