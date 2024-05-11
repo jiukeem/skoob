@@ -52,6 +52,7 @@ dependencies:
   flutter_dotenv: ^5.1.0
   connectivity: ^3.0.6
   firebase_messaging: ^14.7.19
+  flutter_svg: ^2.0.10+1
 
 dev_dependencies:
   flutter_test:
@@ -82,6 +83,7 @@ flutter:
 #     - temp_logo.png
   assets:
     - assets/temp_logo.png
+    - assets/android_neutral_sq_ctn.svg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
