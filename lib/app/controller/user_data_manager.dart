@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
 
@@ -55,6 +56,10 @@ class UserDataManager {
           'createdAt': DateTime.now().toIso8601String(),
         ...user,
       };
+
+      String? token = await FirebaseMessaging.instance.getToken();
+      dataToUpdate['messageToken'] = token;
+
       await userDocument.set(dataToUpdate, SetOptions(merge: true));
 
       if (isNewUser) {
