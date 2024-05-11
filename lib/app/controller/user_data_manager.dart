@@ -32,7 +32,12 @@ class UserDataManager {
   }
 
   SkoobUser? getCurrentLocalUser() {
-    return _userBox.getAt(0);
+    try {
+      return _userBox.getAt(0);
+    } on RangeError {
+      print('No user found at index 0');
+      return null;
+    }
   }
 
   void dispose() {
