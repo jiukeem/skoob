@@ -445,9 +445,11 @@ class UserDataManager {
     });
   }
 
-  void logout() {
+  Future<void> logout() async {
     _bookBox.clear();
     _userBox.clear();
     _settingBox.clear();
+
+    await _auth.signOut();
   }
 }

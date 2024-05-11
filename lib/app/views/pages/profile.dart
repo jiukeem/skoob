@@ -5,7 +5,7 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 
 import 'package:skoob/app/models/skoob_user.dart';
 import 'package:skoob/app/controller/user_data_manager.dart';
-import 'package:skoob/app/views/pages/intro.dart';
+import 'package:skoob/app/views/pages/setting.dart';
 
 import '../../models/book/custom_info.dart';
 import '../../utils/app_colors.dart';
@@ -70,13 +70,37 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
           ),),
         ),
         actions: [
+          IconButton(
+            icon: const Icon(FluentIcons.person_add_24_regular),
+            onPressed: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const FriendSearch()));
+            },
+          ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            padding: const EdgeInsets.fromLTRB(0, 0, 8.0, 0),
             child: IconButton(
-              icon: const Icon(FluentIcons.person_add_24_regular),
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (_) => const FriendSearch()));
-              },
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                          pageBuilder: (context, animation, secondaryAnimation) => const Setting(),
+                          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                            const begin = Offset(1.0, 0.0);
+                            const end = Offset.zero;
+                            const curve = Curves.ease;
+
+                            var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+                            var offsetAnimation = animation.drive(tween);
+
+                            return SlideTransition(
+                              position: offsetAnimation,
+                              child: child,
+                            );
+                          })
+                  );
+                },
+                icon: const Icon(FluentIcons.settings_24_regular)
             ),
           ),
         ],
@@ -273,7 +297,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                             color: AppColors.gray2.withOpacity(0.8), // Darker shadow for more depth
                             spreadRadius: 0.5,
                             blurRadius: 1,
-                            offset: Offset(0, 2), // Vertically lower shadow for a lifted effect
+                            offset: const Offset(0, 2), // Vertically lower shadow for a lifted effect
                           ),
                           const BoxShadow(
                             color: AppColors.white, // Soft light from top for a raised effect
@@ -362,11 +386,5 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
     await _getFriendsData();
   }
 
-  void _logout() {
-    _userDataManager.logout();
-    Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (context) => const Intro()),
-          (Route<dynamic> route) => false,
-    );
-  }
+
 }
