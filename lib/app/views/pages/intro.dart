@@ -29,13 +29,7 @@ class _IntroState extends State<Intro> {
 
   void _checkAuthentication() async {
     if (_auth.currentUser != null) {
-      final currentLocalUser = _dataManager.getCurrentLocalUser();
-      if (currentLocalUser != null &&
-          currentLocalUser.uid == _auth.currentUser!.uid) {
-        _dataManager.setUser(currentLocalUser);
-      } else {
-        await _updateSkoobUserInfo(_auth.currentUser!, isNewUser: false);
-      }
+      await _updateSkoobUserInfo(_auth.currentUser!, isNewUser: false);
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const Skoob()));
       return;
     }
