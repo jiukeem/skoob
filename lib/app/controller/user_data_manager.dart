@@ -448,6 +448,17 @@ class UserDataManager {
     }).catchError((error) {
       print('Error adding friend: $error');
     });
+
+    // friend is added in two-way for now
+    _firestore
+        .collection('user')
+        .doc(user.uid)
+        .collection('friend')
+        .doc('list').set({
+      'friendsList': FieldValue.arrayUnion([userId])
+    }, SetOptions(merge: true)).then((_) {}).catchError((e) {
+      print('Error adding friend (reverse way): $e');
+    });
   }
 
   Future<void> logout() async {
