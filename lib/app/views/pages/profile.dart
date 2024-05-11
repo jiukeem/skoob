@@ -262,14 +262,12 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
 
   Widget _buildFriendsTab() {
     return _isFriendsTabLoading
-        ? const Expanded(
-            child: Center(
-              child: SpinKitRotatingCircle(
-                size: 30.0,
-                color: AppColors.primaryYellow,
-              ),
-            ),
-          )
+        ? const Center(
+          child: SpinKitRotatingCircle(
+            size: 30.0,
+            color: AppColors.primaryYellow,
+          ),
+        )
         : RefreshIndicator(
           onRefresh: _handleRefresh,
           child: ListView.builder(
