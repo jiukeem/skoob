@@ -442,10 +442,6 @@ class UserDataManager {
   }
   
   Future<void> addFriend(SkoobUser user) async {
-    final Map<String, String> newFriendData = {
-      'uid': user.uid,
-      'messageToken': user.messageToken,
-    };
 
     DocumentReference documentReference = _firestore
         .collection('user')
@@ -454,7 +450,7 @@ class UserDataManager {
         .doc('list');
 
     documentReference.set({
-      'friendsList': FieldValue.arrayUnion([newFriendData])
+      user.uid: {'messageToken': user.messageToken}
     }, SetOptions(merge: true)).then((_) {
       print('Friend added successfully');
     }).catchError((error) {
@@ -462,17 +458,12 @@ class UserDataManager {
     });
 
     // friend is added in two-way for now
-    final myData = {
-      'uid': userId,
-      'messageToken': currentUser?.messageToken ?? '',
-    };
-
     _firestore
         .collection('user')
         .doc(user.uid)
         .collection('friend')
         .doc('list').set({
-      'friendsList': FieldValue.arrayUnion([myData])
+      userId ?? '': {'messageToken': currentUser?.messageToken ?? ''}
     }, SetOptions(merge: true)).then((_) {}).catchError((e) {
       print('Error adding friend (reverse way): $e');
     });
