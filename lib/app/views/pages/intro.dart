@@ -1,11 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import 'package:skoob/app/controller/user_data_manager.dart';
-import 'package:skoob/app/models/book/custom_info.dart';
-import 'package:skoob/app/models/skoob_user.dart';
 import 'package:skoob/app/utils/app_colors.dart';
 import 'package:skoob/app/views/pages/skoob.dart';
 import 'package:skoob/app/views/pages/debug_error.dart';
@@ -29,13 +28,7 @@ class _IntroState extends State<Intro> {
 
   void _checkAuthentication() async {
     if (_auth.currentUser != null) {
-      final currentLocalUser = _dataManager.getCurrentLocalUser();
-      if (currentLocalUser != null &&
-          currentLocalUser.uid == _auth.currentUser!.uid) {
-        _dataManager.setUser(currentLocalUser);
-      } else {
-        await _updateSkoobUserInfo(_auth.currentUser!, isNewUser: false);
-      }
+      await _updateSkoobUserInfo(_auth.currentUser!, isNewUser: false);
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const Skoob()));
       return;
     }
@@ -111,14 +104,22 @@ class _IntroState extends State<Intro> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
-            'SKOOB',
-            style: TextStyle(
-              fontFamily: 'LexendExaExtraBold',
-              fontSize: 48.0,
-              color: AppColors.white
+              'SKOOB',
+              style: TextStyle(
+                fontFamily: 'LexendExaExtraBold',
+                fontSize: 48.0,
+                color: AppColors.white
+              ),
             ),
-          ),
-            ElevatedButton(onPressed: () {_checkAuthentication();}, child: Text('log in with google'))
+            const SizedBox(height: 60.0,),
+            InkWell(
+              onTap: _checkAuthentication,
+              child: SvgPicture.asset(
+                'assets/android_neutral_sq_ctn.svg',
+                semanticsLabel: 'Continue with Google',
+                width: 200,
+              ),
+            ),
         ]),
       ),
     );

@@ -11,9 +11,10 @@ import 'package:skoob/app/views/widgets/bookshelf_list_tile_mixin.dart';
 import 'package:skoob/app/views/widgets/date_widget_accroding_to_status.dart';
 
 class DetailViewListTile extends StatelessWidget with BookshelfListTileMixin {
-  DetailViewListTile({super.key, required Book book, required bool isLast}) {
+  DetailViewListTile({super.key, required Book book, required bool isLast, bool isClickable = true}) {
     this.book = book;
     this.isLast = isLast;
+    this.isClickable = isClickable;
   }
 
   @override
@@ -26,6 +27,7 @@ class DetailViewListTile extends StatelessWidget with BookshelfListTileMixin {
             padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 4.5),
             child: InkWell(
               onTap: () {
+                if (!isClickable) {return;}
                 Navigator.push(
                     context,
                     PageRouteBuilder(

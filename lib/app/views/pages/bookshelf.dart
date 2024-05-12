@@ -19,9 +19,9 @@ import 'package:skoob/app/views/widgets/sort_option_list_tile.dart';
 import '../../models/skoob_user.dart';
 
 class Bookshelf extends StatefulWidget{
-  bool isVisiting;
-  SkoobUser? hostUser;
-  Bookshelf({super.key, this.isVisiting = false, this.hostUser});
+  final bool isVisiting;
+  final SkoobUser? hostUser;
+  const Bookshelf({super.key, this.isVisiting = false, this.hostUser});
 
   @override
   State<Bookshelf> createState() => _BookshelfState();
@@ -137,41 +137,61 @@ class _BookshelfState extends State<Bookshelf> {
   }
 
   Widget _buildBookshelfAppBar() {
-    return SizedBox(
-      height: 56.0,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(20.0, 0.0, 8.0, 0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const Text(
-              'MY BOOKS',
-              style: TextStyle(
-                  fontFamily: 'LexendExaMedium',
-                  fontSize: 24.0
+    if (!widget.isVisiting) {
+      return SizedBox(
+        height: 56.0,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20.0, 0.0, 8.0, 0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Text(
+                'MY BOOKS',
+                style: TextStyle(
+                    fontFamily: 'LexendExaMedium',
+                    fontSize: 24.0
+                ),
               ),
-            ),
-            Row(
-              children: [
-                _viewOptionItem(viewOption: BookshelfViewOption.detail,
-                    defaultIcon: const Icon(FluentIcons.apps_list_detail_24_regular, color: AppColors.gray2),
-                    selectedIcon: const Icon(FluentIcons.apps_list_detail_24_filled, color: AppColors.softBlack)
-                ),
-                _viewOptionItem(viewOption: BookshelfViewOption.table,
-                    defaultIcon: const Icon(FluentIcons.navigation_24_regular, color: AppColors.gray2),
-                    selectedIcon: const Icon(FluentIcons.navigation_24_filled, color: AppColors.softBlack)
-                ),
-                _viewOptionItem(viewOption: BookshelfViewOption.album,
-                    defaultIcon: const Icon(FluentIcons.grid_24_regular, color: AppColors.gray2),
-                    selectedIcon: const Icon(FluentIcons.grid_24_filled, color: AppColors.softBlack)
-                ),
-              ],
-            ),
-          ],
+              Row(
+                children: [
+                  _viewOptionItem(viewOption: BookshelfViewOption.detail,
+                      defaultIcon: const Icon(FluentIcons.apps_list_detail_24_regular, color: AppColors.gray2),
+                      selectedIcon: const Icon(FluentIcons.apps_list_detail_24_filled, color: AppColors.softBlack)
+                  ),
+                  _viewOptionItem(viewOption: BookshelfViewOption.table,
+                      defaultIcon: const Icon(FluentIcons.navigation_24_regular, color: AppColors.gray2),
+                      selectedIcon: const Icon(FluentIcons.navigation_24_filled, color: AppColors.softBlack)
+                  ),
+                  _viewOptionItem(viewOption: BookshelfViewOption.album,
+                      defaultIcon: const Icon(FluentIcons.grid_24_regular, color: AppColors.gray2),
+                      selectedIcon: const Icon(FluentIcons.grid_24_filled, color: AppColors.softBlack)
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    } else {
+      final friendName = widget.hostUser?.name ?? '';
+      return SizedBox(
+        height: 56.0,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20.0, 0.0, 8.0, 0),
+          child: Center(
+            child: Text(
+             friendName,
+             style: const TextStyle(
+                 fontFamily: 'LexendExaMedium',
+                 fontSize: 24.0
+             ),
+            ),
+          ),
+        ),
+      );
+    }
+
   }
 
   Widget _viewOptionItem({required BookshelfViewOption viewOption, required Icon defaultIcon, required Icon selectedIcon}) {
@@ -295,7 +315,7 @@ class _BookshelfState extends State<Bookshelf> {
                           if (_currentViewOption ==
                               BookshelfViewOption.detail) {
                             return DetailViewListTile(
-                                book: book, isLast: isLast);
+                                book: book, isLast: isLast, isClickable: !widget.isVisiting,);
                           } else if (_currentViewOption ==
                               BookshelfViewOption.table) {
                             return TableViewListTile(
