@@ -11,12 +11,14 @@ import 'package:skoob/app/models/book/custom_info.dart';
 import 'package:skoob/app/models/skoob_user.dart';
 import 'package:skoob/app/utils/app_colors.dart';
 import 'package:skoob/app/views/pages/intro.dart';
+import 'package:skoob/app/services/firebase_messaging_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform
   );
+  await FirebaseMessagingService().initializeFCMService();
 
   await Hive.initFlutter();
   Hive.registerAdapter(BookReadingStatusAdapter());
