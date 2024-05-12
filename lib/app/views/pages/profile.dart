@@ -8,6 +8,7 @@ import 'package:skoob/app/controller/user_data_manager.dart';
 import 'package:skoob/app/views/pages/setting.dart';
 
 import '../../models/book/custom_info.dart';
+import '../../services/firebase_analytics.dart';
 import '../../utils/app_colors.dart';
 import 'bookshelf.dart';
 import 'friend_search.dart';
@@ -280,6 +281,9 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                   child: InkWell(
                     onTap: () {
                       _visitFriendBookshelf(friend);
+                      AnalyticsService.logEvent('Profile-- click friend', parameters: {
+                        'uid': friend.uid,
+                      });
                     },
                     child: Container(
                       decoration: BoxDecoration(

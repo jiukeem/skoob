@@ -18,6 +18,8 @@ class SkoobUser extends HiveObject {
   String latestFeedBookTitle;
   @HiveField(6)
   BookReadingStatus latestFeedStatus;
+  @HiveField(7)
+  String messageToken;
 
   SkoobUser(
       {required this.uid,
@@ -26,7 +28,8 @@ class SkoobUser extends HiveObject {
       required this.photoUrl,
       required this.phoneNumber,
       required this.latestFeedBookTitle,
-      required this.latestFeedStatus}
+      required this.latestFeedStatus,
+      required this.messageToken}
   );
 
   Map<String, String> toMap() {
@@ -38,6 +41,7 @@ class SkoobUser extends HiveObject {
       'phoneNumber': phoneNumber,
       'latestFeedBookTitle': latestFeedBookTitle,
       'latestFeedStatus': latestFeedStatus.toString(),
+      'messageToken': messageToken,
     };
   }
 
@@ -59,6 +63,7 @@ class SkoobUser extends HiveObject {
         phoneNumber: map['phoneNumber'] ?? '',
         latestFeedBookTitle: map['latestFeedBookTitle'] ?? '',
         latestFeedStatus: status,
+        messageToken: map['messageToken'],
     );
   }
 }
@@ -76,7 +81,8 @@ class UserAdapter extends TypeAdapter<SkoobUser> {
         photoUrl: reader.readString(),
         phoneNumber: reader.readString(),
         latestFeedBookTitle: reader.readString(),
-        latestFeedStatus: reader.read()
+        latestFeedStatus: reader.read(),
+        messageToken: reader.readString(),
     );
   }
 
@@ -89,4 +95,5 @@ class UserAdapter extends TypeAdapter<SkoobUser> {
     writer.writeString(obj.photoUrl);
     writer.writeString(obj.latestFeedBookTitle);
     writer.write(obj.latestFeedStatus);
+    writer.write(obj.messageToken);
   }}

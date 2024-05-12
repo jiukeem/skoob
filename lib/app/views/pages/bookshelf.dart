@@ -17,6 +17,7 @@ import 'package:skoob/app/views/widgets/general_divider.dart';
 import 'package:skoob/app/views/widgets/sort_option_list_tile.dart';
 
 import '../../models/skoob_user.dart';
+import '../../services/firebase_analytics.dart';
 
 class Bookshelf extends StatefulWidget{
   final bool isVisiting;
@@ -198,6 +199,9 @@ class _BookshelfState extends State<Bookshelf> {
     bool isSelected = viewOption == _currentViewOption;
     return IconButton(
         onPressed: () {
+          AnalyticsService.logEvent(
+              'Bookshelf-- view option',
+              parameters: {'view option': viewOption.toString()});
           setState(() {
             _currentViewOption = viewOption;
           });
@@ -233,6 +237,12 @@ class _BookshelfState extends State<Bookshelf> {
                   children: [
                     InkWell(
                       onTap: () {
+                        AnalyticsService.logEvent(
+                            'Bookshelf-- sort option button',
+                            parameters: {
+                              'isVisiting': widget.isVisiting
+                            }
+                        );
                         _showSortOptionBottomSheet(context);
                       },
                       child: Container(
@@ -439,6 +449,14 @@ class _BookshelfState extends State<Bookshelf> {
     );
 
     if (result != null) {
+      AnalyticsService.logEvent(
+          'Bookshelf-- sort option button',
+          parameters: {
+            'sort option': result['selectedOption'],
+            'isAscending': result['isAscending'],
+            'isVisiting': widget.isVisiting,
+          }
+      );
       setState(() {
          _currentSortOption = result['selectedOption'];
          _isAscending = result['isAscending'];
