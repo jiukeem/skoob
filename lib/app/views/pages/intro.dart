@@ -113,7 +113,12 @@ class _IntroState extends State<Intro> {
             ),
             const SizedBox(height: 60.0,),
             InkWell(
-              onTap: _checkAuthentication,
+              onTap: () {
+                AnalyticsService.logEvent('Intro-- login tapped', parameters: {
+                  'platform': 'google'
+                });
+                _checkAuthentication();
+                },
               child: SvgPicture.asset(
                 'assets/android_neutral_sq_ctn.svg',
                 semanticsLabel: 'Continue with Google',

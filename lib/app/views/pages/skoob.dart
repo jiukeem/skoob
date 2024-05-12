@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:skoob/app/services/firebase_analytics.dart';
 
 import 'package:skoob/app/utils/app_colors.dart';
 import 'package:skoob/app/views/pages/bookshelf.dart';
@@ -22,7 +23,22 @@ class _SkoobState extends State<Skoob> {
     const Profile(),
   ];
 
+  @override
+  void initState() {
+    super.initState();
+    AnalyticsService.logEvent(
+        'Skoob-- init',
+        parameters: {}
+    );
+  }
+
   void _onItemTapped(int index) {
+    AnalyticsService.logEvent(
+        'NavigationBar Tapped',
+      parameters: {
+          'tab number': index,
+      }
+    );
     setState(() {
       _currentPageIndex = index;
     });

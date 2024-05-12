@@ -9,6 +9,7 @@ import 'package:skoob/app/models/book.dart';
 import 'package:skoob/app/models/aladin.dart';
 import 'package:skoob/app/models/book/basic_info.dart';
 import 'package:skoob/app/models/book/custom_info.dart';
+import 'package:skoob/app/services/firebase_analytics.dart';
 import 'package:skoob/app/utils/util_fuctions.dart';
 import 'package:skoob/app/utils/app_colors.dart';
 import 'package:skoob/app/views/widgets/search_result_view_list_tile.dart';
@@ -172,6 +173,9 @@ class _SearchState extends State<Search> {
                     fontSize: 16.0
                   ),
                   onSubmitted: (value) {
+                    AnalyticsService.logEvent('Search-- search clicked', parameters: {
+                      'keyword': _searchController.text
+                    });
                     setState(() {
                       _searchKeyword = _searchController.text;
                       _startSearch();

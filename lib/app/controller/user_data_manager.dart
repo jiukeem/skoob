@@ -7,6 +7,7 @@ import 'package:hive/hive.dart';
 import 'package:skoob/app/models/book.dart';
 import 'package:skoob/app/models/book/custom_info.dart';
 import 'package:skoob/app/models/skoob_user.dart';
+import 'package:skoob/app/services/firebase_analytics.dart';
 
 class UserDataManager {
   static final UserDataManager _instance = UserDataManager._internal();
@@ -30,6 +31,7 @@ class UserDataManager {
 
   void setUser(SkoobUser user) {
     currentUser = user;
+    AnalyticsService.setUser(user);
   }
 
   SkoobUser? getCurrentLocalUser() {

@@ -4,6 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:skoob/app/controller/user_data_manager.dart';
 import 'package:skoob/app/models/book.dart';
+import 'package:skoob/app/services/firebase_analytics.dart';
 import 'package:skoob/app/utils/app_colors.dart';
 
 class SearchResultViewListTile extends StatefulWidget {
@@ -102,6 +103,9 @@ class _SearchResultViewListTileState extends State<SearchResultViewListTile> {
               IconButton(
                 onPressed: () {
                   _dataManager.addBook(book);
+                  AnalyticsService.logEvent('Search-- add book', parameters: {
+                    'title': book.basicInfo.title,
+                  });
                   Fluttertoast.showToast(
                     msg: '책을 추가하였습니다: ${book.basicInfo.title}',
                     toastLength: Toast.LENGTH_SHORT,
