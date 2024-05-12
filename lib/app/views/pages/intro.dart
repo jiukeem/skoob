@@ -80,12 +80,12 @@ class _IntroState extends State<Intro> {
   }
 
   Future<void> _updateSkoobUserInfo(User user, {required bool isNewUser}) async {
-    final Map<String, String> userData = _createIncompleteSkoobUser(user);
+    final Map<String, String> userData = _createUserData(user);
     await _dataManager.updateUserProfile(userData, isNewUser);
     return;
   }
 
-  Map<String, String> _createIncompleteSkoobUser(User user) {
+  Map<String, String> _createUserData(User user) {
     return {
       'uid': user.uid ?? '',
       'name': user.displayName ?? '',

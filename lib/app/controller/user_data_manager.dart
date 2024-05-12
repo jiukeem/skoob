@@ -46,11 +46,11 @@ class UserDataManager {
     _userBox.close();
   }
 
-  Future<bool> updateUserProfile(Map<String, String> user, bool isNewUser) async {
+  Future<bool> updateUserProfile(Map<String, String> userData, bool isNewUser) async {
     try {
       var userDocument = _firestore
           .collection('user')
-          .doc(user['uid'])
+          .doc(userData['uid'])
           .collection('profile')
           .doc('info');
 
@@ -59,7 +59,7 @@ class UserDataManager {
           'lastLoggedInAt': DateTime.now().toIso8601String()
         else
           'createdAt': DateTime.now().toIso8601String(),
-        ...user,
+        ...userData,
       };
 
       String? token = await FirebaseMessaging.instance.getToken();
@@ -68,7 +68,7 @@ class UserDataManager {
       await userDocument.set(dataToUpdate, SetOptions(merge: true));
 
       if (isNewUser) {
-        _firestore.collection('user').doc('list').set({user['email']!: user['uid']}, SetOptions(merge: true));
+        _firestore.collection('user').doc('list').set({userData['email']!: userData['uid']}, SetOptions(merge: true));
       }
     } catch (e) {
       print("Failed to update Firestore or Hive: $e");
@@ -78,7 +78,7 @@ class UserDataManager {
     try {
       DocumentSnapshot userDoc = await _firestore
           .collection('user')
-          .doc(user['uid'])
+          .doc(userData['uid'])
           .collection('profile')
           .doc('info')
           .get();
@@ -87,7 +87,7 @@ class UserDataManager {
         final data = userDoc.data() as Map<String, dynamic>;
         SkoobUser skoobUser = SkoobUser.fromMap(data);
 
-        await _userBox.put(user['uid'], skoobUser);
+        await _userBox.put(userData['uid'], skoobUser);
         setUser(skoobUser);
       }
     } catch (e) {
@@ -440,7 +440,10 @@ class UserDataManager {
   }
   
   Future<void> addFriend(SkoobUser user) async {
-    final newFriendUid = user.uid;
+    final Map<String, String> newFriendData = {
+      'uid': user.uid,
+      'messageToken': user.messageToken,
+    };
 
     DocumentReference documentReference = _firestore
         .collection('user')
@@ -449,7 +452,7 @@ class UserDataManager {
         .doc('list');
 
     documentReference.set({
-      'friendsList': FieldValue.arrayUnion([newFriendUid])
+      'friendsList': FieldValue.arrayUnion([newFriendData])
     }, SetOptions(merge: true)).then((_) {
       print('Friend added successfully');
     }).catchError((error) {
@@ -457,12 +460,17 @@ class UserDataManager {
     });
 
     // friend is added in two-way for now
+    final myData = {
+      'uid': userId,
+      'messageToken': currentUser?.messageToken ?? '',
+    };
+
     _firestore
         .collection('user')
         .doc(user.uid)
         .collection('friend')
         .doc('list').set({
-      'friendsList': FieldValue.arrayUnion([userId])
+      'friendsList': FieldValue.arrayUnion([myData])
     }, SetOptions(merge: true)).then((_) {}).catchError((e) {
       print('Error adding friend (reverse way): $e');
     });
