@@ -2,9 +2,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import 'package:skoob/app/controller/user_data_manager.dart';
+import 'package:skoob/app/services/firebase_analytics.dart';
 import 'package:skoob/app/utils/app_colors.dart';
 import 'package:skoob/app/views/pages/skoob.dart';
 import 'package:skoob/app/views/pages/debug_error.dart';
@@ -47,8 +49,17 @@ class _IntroState extends State<Intro> {
         Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const Skoob()));
       } else {
         // Handle null user scenario (e.g., user cancelled the sign-in)
-        Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (_) => ErrorPage(errorMessage: 'Sign-in with Google cancelled by user')));
+        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const Intro()));
+        Fluttertoast.showToast(
+          msg: '로그인 중에 문제가 발생했습니다. 다시 시도해주세요',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.TOP,
+          timeInSecForIosWeb: 1,
+          backgroundColor: AppColors.gray1,
+          textColor: AppColors.white,
+          fontSize: 14.0,
+        );
+        print('Intro page-- error occurred: Sign-in with Google cancelled by user');
       }
     } catch (e) {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
