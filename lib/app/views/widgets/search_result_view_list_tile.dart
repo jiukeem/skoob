@@ -1,11 +1,11 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:provider/provider.dart';
-import 'package:skoob/app/controller/book_list_manager.dart';
 
-import '../../models/book.dart';
-import '../../utils/app_colors.dart';
+import 'package:skoob/app/controller/user_data_manager.dart';
+import 'package:skoob/app/models/book.dart';
+import 'package:skoob/app/services/firebase_analytics.dart';
+import 'package:skoob/app/utils/app_colors.dart';
 
 class SearchResultViewListTile extends StatefulWidget {
   final Book book;
@@ -19,6 +19,7 @@ class SearchResultViewListTile extends StatefulWidget {
 class _SearchResultViewListTileState extends State<SearchResultViewListTile> {
   // bool isInBookshelf = false;
   // bool isInWishlist = false;
+  final UserDataManager _dataManager = UserDataManager();
 
   @override
   Widget build(BuildContext context) {
@@ -101,7 +102,10 @@ class _SearchResultViewListTileState extends State<SearchResultViewListTile> {
             children: [
               IconButton(
                 onPressed: () {
-                  Provider.of<BookListManager>(context, listen: false).addItem(book);
+                  _dataManager.addBook(book);
+                  AnalyticsService.logEvent('Search-- add book', parameters: {
+                    'title': book.basicInfo.title,
+                  });
                   Fluttertoast.showToast(
                     msg: '책을 추가하였습니다: ${book.basicInfo.title}',
                     toastLength: Toast.LENGTH_SHORT,

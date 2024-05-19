@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../models/book.dart';
-import '../../utils/app_colors.dart';
+import 'package:skoob/app/utils/app_colors.dart';
 
 class BookDetailNoteListViewTile extends StatefulWidget {
   final MapEntry note;

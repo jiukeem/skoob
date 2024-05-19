@@ -1,12 +1,12 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+
+import 'package:skoob/app/controller/user_data_manager.dart';
+import 'package:skoob/app/models/book.dart';
+import 'package:skoob/app/utils/app_colors.dart';
 import 'package:skoob/app/views/widgets/general_divider.dart';
 
-import '../../controller/book_list_manager.dart';
-import '../../models/book.dart';
-import '../../utils/app_colors.dart';
-import '../../utils/util_fuctions.dart';
+import '../../services/firebase_analytics.dart';
 
 class UserRecord extends StatefulWidget {
   final Book book;
@@ -21,6 +21,7 @@ class UserRecord extends StatefulWidget {
 
 class _UserRecordPageState extends State<UserRecord> {
   late TextEditingController _textController;
+  final UserDataManager _dataManager = UserDataManager();
 
   @override
   void initState() {
@@ -90,8 +91,13 @@ class _UserRecordPageState extends State<UserRecord> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     IconButton(onPressed: () {
+                      AnalyticsService.logEvent('Detail-- comment', parameters: {
+                        'title': book.basicInfo.title,
+                        'commentAfter': _textController.text,
+                        'saved': true
+                      });
                       saveUserRecord(_textController.text, book);
-                      Provider.of<BookListManager>(context, listen: false).replaceWithUpdatedBook(book);
+                      _dataManager.updateBook(book);
                       Navigator.pop(context, book);
                     }, icon: const Icon(FluentIcons.checkmark_16_filled))
                   ],

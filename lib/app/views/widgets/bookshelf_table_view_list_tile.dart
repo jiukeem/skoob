@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+
 import 'package:skoob/app/models/book.dart';
 import 'package:skoob/app/models/book/custom_info.dart';
 import 'package:skoob/app/utils/app_colors.dart';
+import 'package:skoob/app/views/pages/book_detail.dart';
 import 'package:skoob/app/views/widgets/status_label.dart';
-import 'bookshelf_list_tile_mixin.dart';
-import '../pages/book_detail.dart';
-import 'date_widget_accroding_to_status.dart';
+import 'package:skoob/app/views/widgets/bookshelf_list_tile_mixin.dart';
 
 class TableViewListTile extends StatelessWidget with BookshelfListTileMixin {
   TableViewListTile({super.key, required Book book, required bool isLast}) {

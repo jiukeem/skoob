@@ -1,15 +1,15 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:skoob/app/controller/book_list_manager.dart';
+
+import 'package:skoob/app/controller/user_data_manager.dart';
+import 'package:skoob/app/models/book.dart';
+import 'package:skoob/app/models/book/custom_info.dart';
+import 'package:skoob/app/services/firebase_analytics.dart';
+import 'package:skoob/app/utils/app_colors.dart';
 import 'package:skoob/app/utils/util_fuctions.dart';
+import 'package:skoob/app/views/pages/book_detail.dart';
 import 'package:skoob/app/views/widgets/general_divider.dart';
 import 'package:skoob/app/views/widgets/status_label.dart';
-
-import '../../models/book.dart';
-import '../../models/book/custom_info.dart';
-import '../../utils/app_colors.dart';
-import '../pages/book_detail.dart';
 
 class BookDetailInfoListViewTile extends StatefulWidget {
   final Book book;
@@ -23,6 +23,7 @@ class BookDetailInfoListViewTile extends StatefulWidget {
 
 class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile> {
   final List<String> labels = infoLabelList;
+  final UserDataManager _dataManager = UserDataManager();
 
   Widget _generateTextWidget(String data) {
     return Text(
@@ -86,7 +87,12 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
                     setState(() {
                       widget.book.customInfo.startReadingDate = dateTimeToString(pickedDate);
                     });
-                    Provider.of<BookListManager>(context, listen: false).replaceWithUpdatedBook(widget.book);
+                    _dataManager.updateBook(widget.book);
+                    AnalyticsService.logEvent('Detail-- startReadingOn', parameters: {
+                      'status': status.toString(),
+                      'dateBefore': startReadingDate,
+                      'dateAfter': pickedDate
+                    });
                   }
                 }
               },
@@ -136,7 +142,12 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
                       setState(() {
                         widget.book.customInfo.finishReadingDate = dateTimeToString(pickedDate);
                       });
-                      Provider.of<BookListManager>(context, listen: false).replaceWithUpdatedBook(widget.book);
+                      _dataManager.updateBook(widget.book);
+                      AnalyticsService.logEvent('Detail-- finishReadingOn', parameters: {
+                        'status': status.toString(),
+                        'dateBefore': finishReadingDate,
+                        'dateAfter': pickedDate
+                      });
                     }
                   }
                 },
@@ -241,8 +252,12 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
                         onTap: () {
                           final book = widget.book;
                           book.customInfo.status = BookReadingStatus.notStarted;
-                          Provider.of<BookListManager>(context, listen: false).replaceWithUpdatedBook(book);
+                          _dataManager.updateBook(widget.book);
                           Navigator.pop(context, BookReadingStatus.notStarted);
+                          AnalyticsService.logEvent('Detail-- status', parameters: {
+                            'statusBefore': book.customInfo.status.toString(),
+                            'statusAfter': BookReadingStatus.notStarted
+                          });
                         },
                         child: const Padding(
                           padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
@@ -254,8 +269,13 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
                         onTap: () {
                           final book = widget.book;
                           book.customInfo.status = BookReadingStatus.reading;
-                          Provider.of<BookListManager>(context, listen: false).replaceWithUpdatedBook(book);
+                          _dataManager.updateBook(widget.book);
+                          _dataManager.updateLatestFeed(widget.book, BookReadingStatus.reading);
                           Navigator.pop(context, BookReadingStatus.reading);
+                          AnalyticsService.logEvent('Detail-- status', parameters: {
+                            'statusBefore': book.customInfo.status.toString(),
+                            'statusAfter': BookReadingStatus.reading
+                          });
                         },
                         child: const Padding(
                           padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
@@ -267,8 +287,13 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
                         onTap: () {
                           final book = widget.book;
                           book.customInfo.status = BookReadingStatus.done;
-                          Provider.of<BookListManager>(context, listen: false).replaceWithUpdatedBook(book);
+                          _dataManager.updateBook(widget.book);
+                          _dataManager.updateLatestFeed(widget.book, BookReadingStatus.done);
                           Navigator.pop(context, BookReadingStatus.done);
+                          AnalyticsService.logEvent('Detail-- status', parameters: {
+                            'statusBefore': book.customInfo.status.toString(),
+                            'statusAfter': BookReadingStatus.done
+                          });
                         },
                         child: const Padding(
                           padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),

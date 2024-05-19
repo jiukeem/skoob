@@ -1,6 +1,8 @@
+import 'package:hive/hive.dart';
+
 import 'package:skoob/app/models/book/basic_info.dart';
 import 'package:skoob/app/models/book/custom_info.dart';
-import 'package:hive/hive.dart';
+
 
 @HiveType(typeId: 0)
 class Book extends HiveObject{
@@ -10,6 +12,12 @@ class Book extends HiveObject{
   CustomInfo customInfo;
 
   Book({required this.basicInfo,required this.customInfo});
+
+  static Book fromFirestore(Map<String, dynamic> data) {
+    BasicInfo basicInfo = BasicInfo.fromMap(data);
+    CustomInfo customInfo = CustomInfo.fromMap(data);
+    return Book(basicInfo: basicInfo, customInfo: customInfo);
+  }
 }
 
 class BookAdapter extends TypeAdapter<Book> {

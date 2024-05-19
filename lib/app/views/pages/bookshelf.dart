@@ -1,104 +1,207 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/adapters.dart';
-import 'package:skoob/app/controller/book_list_manager.dart';
-import 'package:provider/provider.dart';
-import 'package:skoob/app/models/book.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:skoob/app/utils/app_colors.dart';
+import 'dart:async';
+
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
-import 'package:skoob/app/views/pages/sign_in.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:hive_flutter/adapters.dart';
+import 'package:skoob/app/controller/user_data_manager.dart';
+
+import 'package:skoob/app/models/book.dart';
+import 'package:skoob/app/models/book/custom_info.dart';
+import 'package:skoob/app/utils/app_colors.dart';
 import 'package:skoob/app/views/widgets/bookshelf_detail_view_list_tile.dart';
 import 'package:skoob/app/views/widgets/bookshelf_table_view_label.dart';
+import 'package:skoob/app/views/widgets/bookshelf_album_view_builder.dart';
+import 'package:skoob/app/views/widgets/bookshelf_table_view_list_tile.dart';
+import 'package:skoob/app/views/widgets/general_divider.dart';
+import 'package:skoob/app/views/widgets/sort_option_list_tile.dart';
 
-import '../../models/book/custom_info.dart';
-import '../widgets/bookshelf_album_view_builder.dart';
-import '../widgets/bookshelf_table_view_list_tile.dart';
-import '../widgets/general_divider.dart';
-import '../widgets/sort_option_list_tile.dart';
+import '../../models/skoob_user.dart';
+import '../../services/firebase_analytics.dart';
 
 class Bookshelf extends StatefulWidget{
-  const Bookshelf({super.key});
+  final bool isVisiting;
+  final SkoobUser? hostUser;
+  const Bookshelf({super.key, this.isVisiting = false, this.hostUser});
 
   @override
   State<Bookshelf> createState() => _BookshelfState();
 }
 
 class _BookshelfState extends State<Bookshelf> {
-  BookshelfStatus _currentStatus = BookshelfStatus.complete;
+  bool _isLoading = true;
   BookshelfViewOption _currentViewOption = BookshelfViewOption.detail;
   SortOption _currentSortOption = SortOption.addedDate;
   bool _isAscending = true;
+  final UserDataManager _userDataManager = UserDataManager();
+  List<Book> friendBooks = [];
 
   @override
   void initState() {
     super.initState();
+
+    if (!widget.isVisiting) {
+      _initSync();
+    } else {
+      _getFriendBookshelf();
+    }
   }
 
-  void _deleteSelectedBook(Book book) {
-    Provider.of<BookListManager>(context, listen: false).deleteItem(book);
+  void _initSync() async {
+    await _checkLocalAndServerSync();
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  Future<void> _checkLocalAndServerSync() async {
+    DateTime? localLastModified = await _userDataManager.getLastModifiedTimeHive();
+    DateTime? serverLastModified = await _userDataManager.getLastModifiedTimeFirestore();
+
+    print(localLastModified);
+    print(serverLastModified);
+
+    if (localLastModified == null && serverLastModified == null) return;
+
+    if (localLastModified == null) {
+      // re-installed case
+      await _syncFromServer();
+      return;
+    }
+
+    if (serverLastModified == null) {
+      // server is not updated
+      _syncFromLocal();
+      return;
+    }
+
+    final diff = localLastModified.difference(serverLastModified);
+    if (diff < const Duration(seconds: 5)) {
+      // consider they are synchronized
+      return;
+    }
+
+    if (serverLastModified.isAfter(localLastModified)) {
+      await _syncFromServer();
+    } else if (localLastModified.isAfter(serverLastModified)) {
+      _syncFromLocal();
+    }
+    return;
+  }
+
+  Future<void> _syncFromServer() async {
+    print('Bookshelf-- _syncFromServer is executed');
+    try {
+      await _userDataManager.syncBookshelfFromServer();
+    } catch (e) {
+      print("Error during sync from server: $e");
+    }
+  }
+
+  Future<void> _syncFromLocal() async {
+    print('Bookshelf-- _syncFromLocal is executed');
+    try {
+      _userDataManager.syncBookshelfFromLocal();
+    } catch (e) {
+      print("Error during sync from local: $e");
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: Column(
-          children: [
-            _buildBookshelfAppBar(),
-            ValueListenableBuilder(
-              valueListenable: Hive.box<Book>('bookshelfBox').listenable(),
+    if (!widget.isVisiting) {
+      return SafeArea(
+          child: Column(
+            children: [
+              _buildBookshelfAppBar(),
+              ValueListenableBuilder(
+                valueListenable: Hive.box<Book>('bookshelfBox').listenable(),
                 builder: (context, Box<Book> box, _) {
                   var books = box.values.toList();
                   return _buildContentBasedOnBookshelfStatus(books);
                 },
-            ),
-          ],
-        )
-    );
+              ),
+            ],
+          ));
+    } else {
+      return Scaffold(
+        backgroundColor: AppColors.white,
+        body: SafeArea(
+            child: Column(
+              children: [
+                _buildBookshelfAppBar(),
+                _buildContentBasedOnBookshelfStatus(friendBooks)
+              ],
+            )),
+      );
+    }
   }
 
   Widget _buildBookshelfAppBar() {
-    return SizedBox(
-      height: 60.0,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(20.0, 10.0, 8.0, 0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const Text(
-              'MY BOOKS',
-              style: TextStyle(
-                  fontFamily: 'LexendExaMedium',
-                  fontSize: 24.0
+    if (!widget.isVisiting) {
+      return SizedBox(
+        height: 56.0,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20.0, 0.0, 8.0, 0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Text(
+                'MY BOOKS',
+                style: TextStyle(
+                    fontFamily: 'LexendExaMedium',
+                    fontSize: 24.0
+                ),
               ),
-            ),
-            Row(
-              children: [
-                _viewOptionItem(viewOption: BookshelfViewOption.detail,
-                    defaultIcon: const Icon(FluentIcons.apps_list_detail_24_regular, color: AppColors.gray2),
-                    selectedIcon: const Icon(FluentIcons.apps_list_detail_24_filled, color: AppColors.softBlack)
-                ),
-                _viewOptionItem(viewOption: BookshelfViewOption.table,
-                    defaultIcon: const Icon(FluentIcons.navigation_24_regular, color: AppColors.gray2),
-                    selectedIcon: const Icon(FluentIcons.navigation_24_filled, color: AppColors.softBlack)
-                ),
-                _viewOptionItem(viewOption: BookshelfViewOption.album,
-                    defaultIcon: const Icon(FluentIcons.grid_24_regular, color: AppColors.gray2),
-                    selectedIcon: const Icon(FluentIcons.grid_24_filled, color: AppColors.softBlack)
-                ),
-              ],
-            ),
-          ],
+              Row(
+                children: [
+                  _viewOptionItem(viewOption: BookshelfViewOption.detail,
+                      defaultIcon: const Icon(FluentIcons.apps_list_detail_24_regular, color: AppColors.gray2),
+                      selectedIcon: const Icon(FluentIcons.apps_list_detail_24_filled, color: AppColors.softBlack)
+                  ),
+                  _viewOptionItem(viewOption: BookshelfViewOption.table,
+                      defaultIcon: const Icon(FluentIcons.navigation_24_regular, color: AppColors.gray2),
+                      selectedIcon: const Icon(FluentIcons.navigation_24_filled, color: AppColors.softBlack)
+                  ),
+                  _viewOptionItem(viewOption: BookshelfViewOption.album,
+                      defaultIcon: const Icon(FluentIcons.grid_24_regular, color: AppColors.gray2),
+                      selectedIcon: const Icon(FluentIcons.grid_24_filled, color: AppColors.softBlack)
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    } else {
+      final friendName = widget.hostUser?.name ?? '';
+      return SizedBox(
+        height: 56.0,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20.0, 0.0, 8.0, 0),
+          child: Center(
+            child: Text(
+             friendName,
+             style: const TextStyle(
+                 fontFamily: 'LexendExaMedium',
+                 fontSize: 24.0
+             ),
+            ),
+          ),
+        ),
+      );
+    }
+
   }
 
   Widget _viewOptionItem({required BookshelfViewOption viewOption, required Icon defaultIcon, required Icon selectedIcon}) {
     bool isSelected = viewOption == _currentViewOption;
     return IconButton(
         onPressed: () {
+          AnalyticsService.logEvent(
+              'Bookshelf-- view option',
+              parameters: {'view option': viewOption.toString()});
           setState(() {
             _currentViewOption = viewOption;
           });
@@ -108,130 +211,148 @@ class _BookshelfState extends State<Bookshelf> {
   }
 
   Widget _buildContentBasedOnBookshelfStatus(List<Book> books) {
-    switch (_currentStatus) {
-      case BookshelfStatus.loading:
-        return const SpinKitRotatingCircle(
-          size: 30.0,
-          color: AppColors.primaryYellow,
+    if (_isLoading) {
+      return const Expanded(
+        child: Center(
+          child: SpinKitRotatingCircle(
+            size: 30.0,
+            color: AppColors.primaryYellow,
+          ),
+        ),
+      );
+    } else {
+      if (books.isEmpty) {
+        return const Expanded(
+          child: Center(
+            child: Text('추가한 책이 없습니다'),
+          ),
         );
-      case BookshelfStatus.complete:
-        if (books.isEmpty) {
-          return const Expanded(
-            child: Center(
-              child: Text('추가한 책이 없습니다'),
-            ),
-          );
-        } else {
-          return Expanded(
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20.0, 4.0, 20.0, 20.0),
-                  child: Row(
-                    children: [
-                      ElevatedButton(
-                        onPressed: () async {
-                          await FirebaseAuth.instance.signOut();
-                          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const SignIn()));
-                        },
-                        child: Text("Sign out"),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          _showSortOptionBottomSheet(context);
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                color: AppColors.gray1,
-                                width: 0.5,
-                              ),
-                              borderRadius: const BorderRadius.all(Radius.circular(20.0))
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(9, 3, 8, 4),
-                            child: Row(
-                              children: [
-                                Text(
-                                  sortOptionMapSortIcon[_currentSortOption]!,
-                                  style: const TextStyle(
-                                      color: AppColors.gray1,
-                                      fontFamily: 'NotoSansKRRegular',
-                                      fontSize: 14.0
-                                  ),
-                                ),
-                                // const SizedBox(width: 4.0,),
-                                Icon(
-                                  _isAscending ? FluentIcons.chevron_up_16_regular : FluentIcons.chevron_down_16_regular,
-                                  color: AppColors.gray1,
-                                  size: 16.0,
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 12.0,),
-                      // TODO implement filter
-                      // Container(
-                      //   decoration: BoxDecoration(
-                      //       border: Border.all(
-                      //         color: AppColors.gray1,
-                      //         width: 0.5,
-                      //       ),
-                      //       borderRadius: const BorderRadius.all(Radius.circular(20.0))
-                      //   ),
-                      //   child: const Padding(
-                      //     padding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 8.0),
-                      //     child: Row(
-                      //       children: [
-                      //         Icon(
-                      //           FluentIcons.options_16_regular,
-                      //           color: AppColors.gray1,
-                      //           size: 14.0,
-                      //         ),
-                      //         SizedBox(width: 4.0,),
-                      //         Text(
-                      //           'filter',
-                      //           style: TextStyle(
-                      //               color: AppColors.gray1,
-                      //               fontFamily: 'LexendRegular',
-                      //               fontSize: 14.0
-                      //           ),
-                      //         )
-                      //       ],
-                      //     ),
-                      //   ),
-                      // ),
-                    ],
-                  ),
-                ),
-                if (_currentViewOption == BookshelfViewOption.table)
-                  const TableViewLabel(),
-                Expanded(
-                  child: _currentViewOption == BookshelfViewOption.album
-                      ? BookshelfAlbumViewBuilder(items: _sortBookshelf(books))
-                      : ListView.builder(
-                          itemCount: books.length,
-                          itemBuilder: (context, index) {
-                            List<Book> sortedList = _sortBookshelf(books);
-                            Book book = sortedList[index];
-                            bool isLast = index + 1 == sortedList.length;
-                            if (_currentViewOption == BookshelfViewOption.detail) {
-                              return DetailViewListTile(book: book, isLast: isLast);
-                            } else if (_currentViewOption == BookshelfViewOption.table) {
-                              return TableViewListTile(book: book, isLast: isLast);
-                            } else {
-                              return ListTile(title: Text(book.basicInfo.title));
+      } else {
+        return Expanded(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20.0, 4.0, 20.0, 20.0),
+                child: Row(
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        AnalyticsService.logEvent(
+                            'Bookshelf-- sort option button',
+                            parameters: {
+                              'isVisiting': widget.isVisiting
                             }
-                          },
+                        );
+                        _showSortOptionBottomSheet(context);
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                              color: AppColors.gray1,
+                              width: 0.5,
+                            ),
+                            borderRadius: const BorderRadius.all(Radius.circular(20.0))
                         ),
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(9, 3, 8, 4),
+                          child: Row(
+                            children: [
+                              Text(
+                                sortOptionMapSortIcon[_currentSortOption]!,
+                                style: const TextStyle(
+                                    color: AppColors.gray1,
+                                    fontFamily: 'NotoSansKRRegular',
+                                    fontSize: 14.0
+                                ),
+                              ),
+                              // const SizedBox(width: 4.0,),
+                              Icon(
+                                _isAscending ? FluentIcons.chevron_up_16_regular : FluentIcons.chevron_down_16_regular,
+                                color: AppColors.gray1,
+                                size: 16.0,
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12.0,),
+                    // TODO implement filter
+                    // Container(
+                    //   decoration: BoxDecoration(
+                    //       border: Border.all(
+                    //         color: AppColors.gray1,
+                    //         width: 0.5,
+                    //       ),
+                    //       borderRadius: const BorderRadius.all(Radius.circular(20.0))
+                    //   ),
+                    //   child: const Padding(
+                    //     padding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 8.0),
+                    //     child: Row(
+                    //       children: [
+                    //         Icon(
+                    //           FluentIcons.options_16_regular,
+                    //           color: AppColors.gray1,
+                    //           size: 14.0,
+                    //         ),
+                    //         SizedBox(width: 4.0,),
+                    //         Text(
+                    //           'filter',
+                    //           style: TextStyle(
+                    //               color: AppColors.gray1,
+                    //               fontFamily: 'LexendRegular',
+                    //               fontSize: 14.0
+                    //           ),
+                    //         )
+                    //       ],
+                    //     ),
+                    //   ),
+                    // ),
+                  ],
                 ),
-              ],
-            ),
-          );
-        }
+              ),
+              if (_currentViewOption == BookshelfViewOption.table)
+                const TableViewLabel(),
+              Expanded(
+                child: _currentViewOption == BookshelfViewOption.album
+                    ? BookshelfAlbumViewBuilder(items: _sortBookshelf(books))
+                    : ListView.builder(
+                        itemCount: books.length,
+                        itemBuilder: (context, index) {
+                          List<Book> sortedList = _sortBookshelf(books);
+                          Book book = sortedList[index];
+                          bool isLast = index + 1 == sortedList.length;
+                          if (_currentViewOption ==
+                              BookshelfViewOption.detail) {
+                            return DetailViewListTile(
+                                book: book, isLast: isLast, isClickable: !widget.isVisiting,);
+                          } else if (_currentViewOption ==
+                              BookshelfViewOption.table) {
+                            return TableViewListTile(
+                                book: book, isLast: isLast);
+                          } else {
+                            return ListTile(title: Text(book.basicInfo.title));
+                          }
+                        },
+                      ),
+              ),
+            ],
+          ),
+        );
+      }
     }
+  }
+
+  void _getFriendBookshelf() async {
+    if (widget.hostUser == null) {
+      return;
+    }
+
+    friendBooks = await _userDataManager.getFriendBookshelf(widget.hostUser!.uid);
+    setState(() {
+      _isLoading = false;
+    });
+    return;
   }
 
   List<Book> _sortBookshelf(List<Book> list) {
@@ -272,7 +393,6 @@ class _BookshelfState extends State<Bookshelf> {
     if (!_isAscending) {
       list = list.reversed.toList();
     }
-
     return list;
   }
 
@@ -329,6 +449,14 @@ class _BookshelfState extends State<Bookshelf> {
     );
 
     if (result != null) {
+      AnalyticsService.logEvent(
+          'Bookshelf-- sort option button',
+          parameters: {
+            'sort option': result['selectedOption'],
+            'isAscending': result['isAscending'],
+            'isVisiting': widget.isVisiting,
+          }
+      );
       setState(() {
          _currentSortOption = result['selectedOption'];
          _isAscending = result['isAscending'];
@@ -337,7 +465,6 @@ class _BookshelfState extends State<Bookshelf> {
   }
 }
 
-enum BookshelfStatus { loading, complete }
 enum BookshelfViewOption { detail, table, album }
 enum SortOption { title, rate, status, startReadingDate, finishReadingDate, category, addedDate }
 

@@ -1,15 +1,13 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:provider/provider.dart';
-import 'package:skoob/app/controller/book_list_manager.dart';
-import 'package:skoob/app/views/pages/user_record.dart';
 
-import '../../models/book.dart';
-import '../../utils/app_colors.dart';
-import '../widgets/book_detail_highlight_list_view_tile.dart';
-import '../widgets/book_detail_info_list_view_tile.dart';
-import '../widgets/book_detail_note_list_view_tile.dart';
+import 'package:skoob/app/controller/user_data_manager.dart';
+import 'package:skoob/app/models/book.dart';
+import 'package:skoob/app/services/firebase_analytics.dart';
+import 'package:skoob/app/utils/app_colors.dart';
+import 'package:skoob/app/views/pages/user_record.dart';
+import 'package:skoob/app/views/widgets/book_detail_info_list_view_tile.dart';
 
 class BookDetail extends StatefulWidget {
   final Book book;
@@ -24,6 +22,7 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
   TabController? _tabController;
   late Book book;
   late double _currentRating;
+  final UserDataManager _dataManager = UserDataManager();
 
   @override
   void initState() {
@@ -31,6 +30,7 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
     _tabController = TabController(length: 1, vsync: this);
     book = widget.book;
     _currentRating = double.tryParse(book.customInfo.rate) ?? 0.0;
+    AnalyticsService.logEvent('Detail-- entered', parameters: {});
   }
 
   @override
@@ -69,6 +69,13 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
         book = result as Book;
       });
     }
+
+    if (result == null) {
+      AnalyticsService.logEvent('Detail-- comment', parameters: {
+        'title': book.basicInfo.title,
+        'saved': false
+      });
+    }
   }
 
   Future<void> _showDeleteDialog(BuildContext context) async {
@@ -85,6 +92,10 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
         ),
       ),
       onTap: () {
+        AnalyticsService.logEvent('Detail-- delete dialog', parameters: {
+          'title': book.basicInfo.title,
+          'result': 'cancelled'
+        });
         Navigator.of(context).pop(false);
       },
     );
@@ -108,6 +119,10 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
         ),
       ),
       onTap: () {
+        AnalyticsService.logEvent('Detail-- delete dialog', parameters: {
+          'title': book.basicInfo.title,
+          'result': 'deleted'
+        });
         Navigator.of(context).pop(true);
       },
     );
@@ -142,7 +157,7 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
 
     if (mounted && shouldDelete == true) {
       Navigator.of(context).pop();
-      Provider.of<BookListManager>(context, listen: false).deleteItem(book);
+      _dataManager.deleteBook(widget.book);
     }
   }
 
@@ -253,6 +268,11 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
                               ),
                             ),
                             onRatingUpdate: (rating) {
+                              AnalyticsService.logEvent('Detail-- rate', parameters: {
+                                'title': book.basicInfo.title,
+                                'rateBefore': _currentRating,
+                                'rateAfter': rating
+                              });
                               setState(() {
                                 if (rating == _currentRating) {
                                   _currentRating = 0.0;
@@ -261,13 +281,17 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
                                 }
                               });
                               book.customInfo.rate = rating.toString();
-                              Provider.of<BookListManager>(context, listen: false).replaceWithUpdatedBook(book);
+                              _dataManager.updateBook(book);
                             },
                             glow: false,
                           ),
                           const SizedBox(height: 8.0),
                           InkWell(
                           onTap: () {
+                            AnalyticsService.logEvent('Detail-- comment', parameters: {
+                              'title': book.basicInfo.title,
+                              'commentBefore': book.customInfo.comment,
+                            });
                             navigateAndUpdateUserRecord(context, book.customInfo.comment, UserRecordOption.comment);
                           },
                           child: book.customInfo.comment.isEmpty

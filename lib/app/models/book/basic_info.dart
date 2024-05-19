@@ -38,6 +38,23 @@ class BasicInfo {
     required this.isbn10,
     this.translator = '',
   });
+
+  static BasicInfo fromMap(Map<String, dynamic> map) {
+    print("Creating BasicInfo from map: $map");
+    return BasicInfo(
+      title: map['title'] ?? '',
+      author: map['author'] ?? '',
+      publisher: map['publisher'] ?? '',
+      pubDate: map['pubDate'] ?? '',
+      description: map['description'] ?? '',
+      coverImageUrl: map['coverImageUrl'] ?? '',
+      infoUrl: map['infoUrl'] ?? '',
+      category: map['category'] ?? '',
+      isbn13: map['isbn13'] ?? '',
+      isbn10: map['isbn10'] ?? '',
+      translator: map['translator'] ?? '',
+    );
+  }
 }
 
 class BasicInfoAdapter extends TypeAdapter<BasicInfo> {

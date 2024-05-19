@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:skoob/app/models/book/custom_info.dart';
 
-import '../../utils/app_colors.dart';
+import 'package:skoob/app/models/book/custom_info.dart';
+import 'package:skoob/app/utils/app_colors.dart';
 
 class StatusLabel extends StatelessWidget {
   final BookReadingStatus status;

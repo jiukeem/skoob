@@ -1,8 +1,8 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:skoob/app/views/widgets/general_divider.dart';
 
-import '../pages/bookshelf.dart';
+import 'package:skoob/app/views/pages/bookshelf.dart';
+import 'package:skoob/app/views/widgets/general_divider.dart';
 
 class SortOptionListTile extends StatefulWidget {
   final int index;
