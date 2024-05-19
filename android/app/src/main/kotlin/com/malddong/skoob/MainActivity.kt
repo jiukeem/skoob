@@ -1,4 +1,4 @@
-package com.example.skoob
+package com.malddong.skoob
 
 import io.flutter.embedding.android.FlutterActivity
 
