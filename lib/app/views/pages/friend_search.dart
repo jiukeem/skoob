@@ -130,8 +130,7 @@ class _FriendSearchState extends State<FriendSearch> {
           children: [
             Row(
               children: [
-                // _buildUserImage(_resultUser!.photoUrl),
-                // TODO
+                _buildUserImage(),
                 const SizedBox(width: 15.0,),
                 Text(
                   _resultUser!.name,
@@ -183,18 +182,13 @@ class _FriendSearchState extends State<FriendSearch> {
     }
   }
 
-  Widget _buildUserImage(String photoUrl) {
+  Widget _buildUserImage() {
     return ClipRRect(
       borderRadius: BorderRadius.circular(12),
       child: SizedBox(
           width: 40,
           height: 40,
-          child: photoUrl.isNotEmpty
-              ? Image.network(
-            photoUrl,
-            fit: BoxFit.cover,
-          )
-              : Image.asset(
+          child: Image.asset(
             'assets/temp_logo.png',
             fit: BoxFit.cover,
           )),

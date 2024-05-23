@@ -459,7 +459,6 @@ class UserDataManager {
   }
 
   Future<SkoobUser?> searchUserByEmail(String email) async {
-    String? userId;
     try {
       DocumentSnapshot userList = await _firestore
           .collection('user')
@@ -468,25 +467,18 @@ class UserDataManager {
 
       Map<String, dynamic> userListData = userList.data() as Map<String, dynamic>;
 
-      userListData.forEach((key, value) {
-        print('key: $key, value: $value');
-        if (key == email) {
-          userId = value;
-          print('found userId: $userId');
-        }
-      });
-      print('userID: $userId');
+      if (!userListData.keys.contains(email)) {
+        return null;
+      }
     } catch (e) {
       print("Failed to fetch searchUserByEmail--1: $e");
       return null;
     }
 
-    if (userId == null) return null;
-
     try {
       DocumentSnapshot? user = await _firestore
           .collection('user')
-          .doc(userId)
+          .doc(email)
           .collection('profile')
           .doc('info')
           .get();

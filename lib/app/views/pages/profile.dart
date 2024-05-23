@@ -136,8 +136,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
             padding: const EdgeInsets.fromLTRB(20.0, 14.0, 28.0, 14.0),
             child: Row(
               children: [
-                // _buildUserImage(user.photoUrl),
-                // TODO
+                _buildUserImage(),
                 const SizedBox(width: 15.0,),
                 Expanded(
                   child: Column(
@@ -191,18 +190,13 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
     );
   }
 
-  Widget _buildUserImage(String photoUrl) {
+  Widget _buildUserImage() {
     return ClipRRect(
       borderRadius: BorderRadius.circular(16),
       child: SizedBox(
           width: 72,
           height: 72,
-          child: photoUrl.isNotEmpty
-              ? Image.network(
-            photoUrl,
-            fit: BoxFit.cover,
-          )
-              : Image.asset(
+          child: Image.asset(
             'assets/temp_logo.png',
             fit: BoxFit.cover,
           )),
@@ -314,22 +308,16 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                         padding: const EdgeInsets.all(20.0),
                         child: Row(
                           children: [
-                            // TODO
-                            // ClipRRect(
-                            //   borderRadius: BorderRadius.circular(12),
-                            //   child: SizedBox(
-                            //       width: 54,
-                            //       height: 54,
-                            //       child: friend.photoUrl.isNotEmpty
-                            //           ? Image.network(
-                            //               friend.photoUrl,
-                            //               fit: BoxFit.cover,
-                            //             )
-                            //           : Image.asset(
-                            //               'assets/temp_logo.png',
-                            //               fit: BoxFit.cover,
-                            //             )),
-                            // ),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: SizedBox(
+                                  width: 54,
+                                  height: 54,
+                                  child: Image.asset(
+                                          'assets/temp_logo.png',
+                                          fit: BoxFit.cover,
+                                        )),
+                            ),
                             const SizedBox(width: 16,),
                             Expanded(
                               child: Column(
