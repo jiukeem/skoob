@@ -22,6 +22,7 @@ class UserDataManager {
   late Box<String> _settingBox;
   SkoobUser? currentUser;
   String? get userId => currentUser?.uid;
+  String? get userEmail => currentUser?.email;
 
   Future<void> initBox() async {
     _bookBox = await Hive.openBox<Book>('bookshelfBox');
@@ -30,8 +31,112 @@ class UserDataManager {
   }
 
   void setUser(SkoobUser user) {
+    _userBox.put(user.uid, user);
     currentUser = user;
     AnalyticsService.setUser(user);
+  }
+
+  Future<String?> _registerNewUserAndGetUid({required String email, required String password}) async {
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      return userCredential.user?.uid;
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
+
+  Future<void> handleSignIn(
+      {required String name, required String email, required String password}) async {
+
+    String? uid = await _registerNewUserAndGetUid(email: email, password: password);
+    if (uid == null) {
+      print('uid is null');
+      return;
+    }
+
+    String token = await FirebaseMessaging.instance.getToken() ?? '';
+    final userDataMap = {
+      'uid': uid,
+      'name': name,
+      'email': email,
+      'password': password,
+      'messageToken': token,
+      'createdAt': DateTime.now().toIso8601String(),
+    };
+
+    try {
+      _firestore
+          .collection('user')
+          .doc(email)
+          .collection('profile')
+          .doc('info')
+          .set(userDataMap, SetOptions(merge: true));
+    } catch (e) {
+      print(e);
+    }
+
+    try {
+      _firestore
+          .collection('user')
+          .doc('list')
+          .set({email: name}, SetOptions(merge: true));
+    } catch (e) {
+      print(e);
+    }
+
+    SkoobUser newUser = SkoobUser.fromMap(userDataMap);
+    setUser(newUser);
+  }
+
+  Future<void> handleLogin(String email) async {
+    try {
+      _firestore
+          .collection('user')
+          .doc(email)
+          .collection('profile')
+          .doc('info')
+          .set({'lastLoggedInAt': DateTime.now().toIso8601String()}, SetOptions(merge: true));
+    } catch (e) {
+      print(e);
+    }
+
+    try {
+      DocumentSnapshot userDoc = await _firestore
+          .collection('user')
+          .doc(email)
+          .collection('profile')
+          .doc('info')
+          .get();
+
+      if (userDoc.data() != null) {
+        SkoobUser user = SkoobUser.fromMap(userDoc.data() as Map<String, dynamic>);
+        setUser(user);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<Map<String, dynamic>?> getAllUserMap() async {
+    try {
+      DocumentSnapshot doc = await _firestore
+          .collection('user')
+          .doc('list')
+          .get();
+
+      if (doc.data() != null) {
+        final data = doc.data() as Map<String, dynamic>;
+        return data;
+      }
+    } catch (e) {
+      print(e);
+      return null;
+    }
+    return null;
   }
 
   SkoobUser? getCurrentLocalUser() {
@@ -46,6 +151,27 @@ class UserDataManager {
   void dispose() {
     _bookBox.close();
     _userBox.close();
+    _settingBox.close();
+  }
+
+  Future<String?> getValidPassword(String email) async {
+    try {
+      DocumentSnapshot userDoc = await _firestore
+          .collection('user')
+          .doc(email)
+          .collection('profile')
+          .doc('info')
+          .get();
+
+      if (userDoc.data() != null) {
+        final user = userDoc.data() as Map<String, dynamic>;
+        return user['password'];
+      }
+      return null;
+    } catch (e) {
+      print(e);
+      return null;
+    }
   }
 
   Future<bool> updateUserProfile(Map<String, String> userData, bool isNewUser) async {
@@ -135,7 +261,7 @@ class UserDataManager {
       // Adding to Firebase - Individual book
       await _firestore
           .collection('user')
-          .doc(userId)
+          .doc(userEmail)
           .collection('bookshelf')
           .doc(book.basicInfo.isbn13)
           .set(mapData);
@@ -143,7 +269,7 @@ class UserDataManager {
       // Adding to Firebase - Collective list
       await _firestore
           .collection('user')
-          .doc(userId)
+          .doc(userEmail)
           .collection('bookshelf')
           .doc('list')
           .set({book.basicInfo.isbn13: mapData}, SetOptions(merge: true));
@@ -165,7 +291,7 @@ class UserDataManager {
         // Updating Firebase - Individual book document
         await _firestore
             .collection('user')
-            .doc(userId)
+            .doc(userEmail)
             .collection('bookshelf')
             .doc(book.basicInfo.isbn13)
             .update(mapData);
@@ -173,7 +299,7 @@ class UserDataManager {
         // Updating Firebase - Collective list
         await _firestore
             .collection('user')
-            .doc(userId)
+            .doc(userEmail)
             .collection('bookshelf')
             .doc('list')
             .set({book.basicInfo.isbn13: mapData}, SetOptions(merge: true));
@@ -193,10 +319,10 @@ class UserDataManager {
         await updateLastModifiedTimeHive();
 
         // Deleting from Firebase - Individual book document
-        await _firestore.collection('user').doc(userId).collection('bookshelf').doc(book.basicInfo.isbn13).delete();
+        await _firestore.collection('user').doc(userEmail).collection('bookshelf').doc(book.basicInfo.isbn13).delete();
 
         // Removing from Firebase - Collective list
-        await _firestore.collection('user').doc(userId).collection('bookshelf').doc('list').update({
+        await _firestore.collection('user').doc(userEmail).collection('bookshelf').doc('list').update({
           book.basicInfo.isbn13: FieldValue.delete(),
         });
         await updateLastModifiedTimeFirestore();
@@ -212,19 +338,19 @@ class UserDataManager {
     }
 
     final title = book.basicInfo.title;
-    SkoobUser? user = _userBox.get(userId);
+    SkoobUser? user = _userBox.get(userEmail);
     if (user == null) {
       return;
     }
     user.latestFeedBookTitle = title;
     user.latestFeedStatus = status;
-    _userBox.put(userId, user);
+    _userBox.put(userEmail, user);
     setUser(user);
 
     try {
       await _firestore
           .collection('user')
-          .doc(userId)
+          .doc(userEmail)
           .collection('profile')
           .doc('info')
           .set({
@@ -251,7 +377,7 @@ class UserDataManager {
     try {
       await _firestore
           .collection('user')
-          .doc(userId)
+          .doc(userEmail)
           .collection('profile')
           .doc('info')
           .set({
@@ -267,7 +393,7 @@ class UserDataManager {
     try {
       DocumentSnapshot userDoc = await _firestore
           .collection('user')
-          .doc(userId)
+          .doc(userEmail)
           .collection('profile')
           .doc('info')
           .get();
@@ -287,11 +413,11 @@ class UserDataManager {
     try {
       List<Book> localBooks = _bookBox.values.toList();
       WriteBatch batch = _firestore.batch();
-      DocumentReference listDocRef = _firestore.collection('user').doc(userId).collection('bookshelf').doc('list');
+      DocumentReference listDocRef = _firestore.collection('user').doc(userEmail).collection('bookshelf').doc('list');
       Map<String, dynamic> listData = {};
 
       for (Book book in localBooks) {
-        DocumentReference docRef = _firestore.collection('user').doc(userId).collection('bookshelf').doc(book.basicInfo.isbn13);
+        DocumentReference docRef = _firestore.collection('user').doc(userEmail).collection('bookshelf').doc(book.basicInfo.isbn13);
         final bookData = _createMapFromSkoobBook(book);
         batch.set(docRef, bookData);
         listData[book.basicInfo.isbn13] = bookData;
@@ -310,7 +436,7 @@ class UserDataManager {
     try {
       QuerySnapshot querySnapshot = await _firestore
           .collection('user')
-          .doc(userId)
+          .doc(userEmail)
           .collection('bookshelf')
           .get();
 
@@ -383,7 +509,7 @@ class UserDataManager {
     try {
       DocumentSnapshot? userDoc = await _firestore
           .collection('user')
-          .doc(userId)
+          .doc(userEmail)
           .collection('friend')
           .doc('list')
           .get();
@@ -445,7 +571,7 @@ class UserDataManager {
 
     DocumentReference documentReference = _firestore
         .collection('user')
-        .doc(userId)
+        .doc(userEmail)
         .collection('friend')
         .doc('list');
 
@@ -463,7 +589,7 @@ class UserDataManager {
         .doc(user.uid)
         .collection('friend')
         .doc('list').set({
-      userId ?? '': {'messageToken': currentUser?.messageToken ?? ''}
+      userEmail ?? '': {'messageToken': currentUser?.messageToken ?? ''}
     }, SetOptions(merge: true)).then((_) {}).catchError((e) {
       print('Error adding friend (reverse way): $e');
     });
@@ -474,6 +600,6 @@ class UserDataManager {
     _userBox.clear();
     _settingBox.clear();
 
-    await _auth.signOut();
+    // await _auth.signOut();
   }
 }

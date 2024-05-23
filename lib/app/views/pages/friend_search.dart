@@ -130,7 +130,8 @@ class _FriendSearchState extends State<FriendSearch> {
           children: [
             Row(
               children: [
-                _buildUserImage(_resultUser!.photoUrl),
+                // _buildUserImage(_resultUser!.photoUrl),
+                // TODO
                 const SizedBox(width: 15.0,),
                 Text(
                   _resultUser!.name,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:skoob/app/views/pages/launch.dart';
 
 import 'package:skoob/firebase_options.dart';
 import 'package:skoob/app/controller/user_data_manager.dart';
@@ -10,7 +11,6 @@ import 'package:skoob/app/models/book/basic_info.dart';
 import 'package:skoob/app/models/book/custom_info.dart';
 import 'package:skoob/app/models/skoob_user.dart';
 import 'package:skoob/app/utils/app_colors.dart';
-import 'package:skoob/app/views/pages/intro.dart';
 import 'package:skoob/app/services/firebase_messaging_service.dart';
 
 void main() async {
@@ -45,7 +45,7 @@ void main() async {
             selectionColor: AppColors.gray2,
             cursorColor: AppColors.gray2),
       ),
-      home: const Intro(),
+      home: const Launch(),
     ),
   ));
 }

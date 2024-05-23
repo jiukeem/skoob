@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:263080703449:android:300871cd477e7c31f5d5c8",
         "android_client_info": {
-          "package_name": "com.malddong.skoob"
+          "package_name": "com.example.skoob"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "263080703449-7h6qln9mk0fkl7bq6d7fi5577p9hujnf.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.malddong.skoob",
+            "package_name": "com.example.skoob",
             "certificate_hash": "b26e930d1118f5544c3359f91a832ccb0debeb0f"
           }
         },
@@ -26,7 +26,7 @@
           "client_id": "263080703449-canjbh2rsnb19fe1aa6e2c3u7lm3bu2e.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.malddong.skoob",
+            "package_name": "com.example.skoob",
             "certificate_hash": "a78af9e38d2a5bce6b1abada683b590c2d411852"
           }
         },
@@ -51,7 +51,51 @@
               "client_id": "263080703449-4mu6vvbcg8jmi65ht1592b6up1vor88e.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.malddong.skoob"
+                "bundle_id": "com.example.skoob"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:263080703449:android:15d63aba90cd1cc0f5d5c8",
+        "android_client_info": {
+          "package_name": "com.malddong.skoob"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "263080703449-b10eql29b00svdus9o332mtdbh7m731c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.malddong.skoob",
+            "certificate_hash": "20c3c62cc6e453245f0300bee69b9475a9130d7c"
+          }
+        },
+        {
+          "client_id": "263080703449-m8uvnenvhipumgc9gjv651g29j0i1vod.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBmtblrPK0lBqrVCRC_ZQofd7g7-lDyVrc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "263080703449-m8uvnenvhipumgc9gjv651g29j0i1vod.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "263080703449-4mu6vvbcg8jmi65ht1592b6up1vor88e.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.skoob"
               }
             }
           ]

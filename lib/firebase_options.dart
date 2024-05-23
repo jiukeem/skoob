@@ -51,9 +51,10 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBmtblrPK0lBqrVCRC_ZQofd7g7-lDyVrc',
-    appId: '1:263080703449:android:300871cd477e7c31f5d5c8',
+    appId: '1:263080703449:android:15d63aba90cd1cc0f5d5c8',
     messagingSenderId: '263080703449',
     projectId: 'skoob-d5938',
+    databaseURL: 'https://skoob-d5938-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'skoob-d5938.appspot.com',
   );
 
@@ -62,7 +63,11 @@ class DefaultFirebaseOptions {
     appId: '1:263080703449:ios:42de63d7bde426d1f5d5c8',
     messagingSenderId: '263080703449',
     projectId: 'skoob-d5938',
+    databaseURL: 'https://skoob-d5938-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'skoob-d5938.appspot.com',
+    androidClientId: '263080703449-7h6qln9mk0fkl7bq6d7fi5577p9hujnf.apps.googleusercontent.com',
+    iosClientId: '263080703449-4mu6vvbcg8jmi65ht1592b6up1vor88e.apps.googleusercontent.com',
     iosBundleId: 'com.example.skoob',
   );
+
 }

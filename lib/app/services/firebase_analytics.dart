@@ -12,7 +12,7 @@ class AnalyticsService {
 
   static Future<void> logEvent(String eventName, {Map<String, dynamic>? parameters}) async {
     final mergedParameter = {
-      'uid': user?.uid ?? '',
+      'uid': user?.email ?? '',
       ...?parameters,
     };
 
