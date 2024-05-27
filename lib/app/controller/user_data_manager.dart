@@ -31,7 +31,16 @@ class UserDataManager {
   }
 
   void setUser(SkoobUser user) {
-    _userBox.put(user.uid, user);
+    _userBox.put('user', user);
+    currentUser = user;
+    AnalyticsService.setUser(user);
+  }
+
+  void setUserFromCurrentLocalUser() {
+    final user = _userBox.get('user');
+    if (user == null) {
+      return;
+    }
     currentUser = user;
     AnalyticsService.setUser(user);
   }
@@ -89,6 +98,12 @@ class UserDataManager {
     }
 
     SkoobUser newUser = SkoobUser.fromMap(userDataMap);
+    print(userDataMap);
+    print('newUser');
+    print(newUser.uid);
+    print(newUser.name);
+    print(newUser.email);
+    print(newUser.latestFeedStatus);
     setUser(newUser);
   }
 
@@ -114,11 +129,21 @@ class UserDataManager {
 
       if (userDoc.data() != null) {
         SkoobUser user = SkoobUser.fromMap(userDoc.data() as Map<String, dynamic>);
+        print(userDoc.data());
+        print('user');
+        print(user.uid);
+        print(user.name);
+        print(user.email);
+        print(user.latestFeedStatus);
         setUser(user);
       }
     } catch (e) {
       print(e);
     }
+  }
+
+  Future<bool> hasUser() async {
+    return _userBox.isNotEmpty;
   }
 
   Future<Map<String, dynamic>?> getAllUserMap() async {
@@ -215,7 +240,7 @@ class UserDataManager {
         final data = userDoc.data() as Map<String, dynamic>;
         SkoobUser skoobUser = SkoobUser.fromMap(data);
 
-        await _userBox.put(userData['uid'], skoobUser);
+        await _userBox.put('user', skoobUser);
         setUser(skoobUser);
       }
     } catch (e) {
@@ -338,13 +363,13 @@ class UserDataManager {
     }
 
     final title = book.basicInfo.title;
-    SkoobUser? user = _userBox.get(userEmail);
+    SkoobUser? user = _userBox.get('user');
     if (user == null) {
       return;
     }
     user.latestFeedBookTitle = title;
     user.latestFeedStatus = status;
-    _userBox.put(userEmail, user);
+    _userBox.put('user', user);
     setUser(user);
 
     try {

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:skoob/app/views/pages/login_password.dart';
 import 'package:skoob/app/views/pages/setup_password.dart';
-import 'package:skoob/app/views/pages/launch.dart';
+import 'package:skoob/app/views/pages/auth_start.dart';
 
 import '../../controller/user_data_manager.dart';
 import '../../utils/app_colors.dart';

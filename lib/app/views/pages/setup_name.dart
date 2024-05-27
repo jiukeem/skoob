@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:skoob/app/views/pages/welcome.dart';
 
 import '../../utils/app_colors.dart';
@@ -115,9 +116,7 @@ class _SetupNameState extends State<SetupName> {
                           // errorText: _passwordErrorText
                       ),
                       inputFormatters: [
-                        CustomTextInputFormatter(
-                            pattern: r"""w\d"""
-                        ),
+                        FilteringTextInputFormatter.allow(RegExp("[a-zA-Z]+")),
                       ],
                       style: const TextStyle(
                         color: AppColors.softBlack,

@@ -34,7 +34,7 @@ class _WelcomeState extends State<Welcome> {
       await _userDataManager.handleLogin(widget.email);
     }
     networkDone = true;
-    Navigator.of(context).push(MaterialPageRoute(builder: (_) => const Skoob()));
+    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const Skoob()));
   }
 
   @override

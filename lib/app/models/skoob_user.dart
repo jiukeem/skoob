@@ -11,16 +11,22 @@ class SkoobUser extends HiveObject {
   @HiveField(2)
   final String email;
   @HiveField(3)
-  String latestFeedBookTitle;
+  String photoUrl;
   @HiveField(4)
-  BookReadingStatus latestFeedStatus;
+  String phoneNumber;
   @HiveField(5)
+  String latestFeedBookTitle;
+  @HiveField(6)
+  BookReadingStatus latestFeedStatus;
+  @HiveField(7)
   String messageToken;
 
   SkoobUser(
       {required this.uid,
       required this.name,
       required this.email,
+      this.photoUrl = '',
+      this.phoneNumber = '',
       this.latestFeedBookTitle = '',
       this.latestFeedStatus = BookReadingStatus.initial,
       required this.messageToken}
@@ -31,6 +37,8 @@ class SkoobUser extends HiveObject {
       'uid': uid,
       'name': name,
       'email': email,
+      'photoUrl': photoUrl,
+      'phoneNumber': phoneNumber,
       'latestFeedBookTitle': latestFeedBookTitle,
       'latestFeedStatus': latestFeedStatus.toString(),
       'messageToken': messageToken,
@@ -51,6 +59,8 @@ class SkoobUser extends HiveObject {
         uid: map['uid'] ?? '',
         name: map['name'] ?? '',
         email: map['email'] ?? '',
+        photoUrl: map['photoUrl'] ?? '',
+        phoneNumber: map['phoneNumber'] ?? '',
         latestFeedBookTitle: map['latestFeedBookTitle'] ?? '',
         latestFeedStatus: status,
         messageToken: map['messageToken'],
@@ -64,14 +74,33 @@ class UserAdapter extends TypeAdapter<SkoobUser> {
 
   @override
   SkoobUser read(BinaryReader reader) {
-    return SkoobUser(
-        uid: reader.readString(),
-        name: reader.readString(),
-        email: reader.readString(),
-        latestFeedBookTitle: reader.readString(),
-        latestFeedStatus: reader.read(),
-        messageToken: reader.readString(),
-    );
+    print('Starting to read SkoobUser');
+    try {
+      var uid = reader.readString();
+      print('uid: $uid');
+      var name = reader.readString();
+      print('name: $name');
+      var email = reader.readString();
+      print('email: $email');
+      var latestFeedBookTitle = reader.readString();
+      print('latestFeedBookTitle: $latestFeedBookTitle');
+      int latestFeedStatusIndex = reader.readByte(); // Should read as byte
+      var latestFeedStatus = BookReadingStatus.values[latestFeedStatusIndex];
+      var messageToken = reader.readString();
+      print('messageToken: $messageToken');
+      print('Read SkoobUser successfully');
+      return SkoobUser(
+          uid: uid,
+          name: name,
+          email: email,
+          latestFeedBookTitle: latestFeedBookTitle,
+          latestFeedStatus: latestFeedStatus,
+          messageToken: messageToken
+      );
+    } catch (e) {
+      print('Failed to read SkoobUser: $e');
+      rethrow;
+    }
   }
 
   @override
@@ -79,7 +108,9 @@ class UserAdapter extends TypeAdapter<SkoobUser> {
     writer.writeString(obj.uid);
     writer.writeString(obj.name);
     writer.writeString(obj.email);
+    writer.writeString(obj.phoneNumber);
+    writer.writeString(obj.photoUrl);
     writer.writeString(obj.latestFeedBookTitle);
-    writer.write(obj.latestFeedStatus);
-    writer.write(obj.messageToken);
+    writer.writeByte(obj.latestFeedStatus.index);
+    writer.writeString(obj.messageToken);
   }}
