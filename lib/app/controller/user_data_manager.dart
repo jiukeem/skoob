@@ -405,7 +405,7 @@ class UserDataManager {
           .collection('profile')
           .doc('info')
           .set({
-        'lastModifiedAt': FieldValue.serverTimestamp()
+        'lastModifiedAt': DateTime.now().toIso8601String()
       }, SetOptions(merge: true));
       print("UserDataManger-- updating last modified time server(firestore): ${FieldValue.serverTimestamp()}");
     } catch (e) {
