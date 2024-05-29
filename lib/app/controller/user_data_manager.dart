@@ -369,7 +369,6 @@ class UserDataManager {
     }
     user.latestFeedBookTitle = title;
     user.latestFeedStatus = status;
-    _userBox.put('user', user);
     setUser(user);
 
     try {
@@ -584,7 +583,38 @@ class UserDataManager {
     }
   }
   
-  Future<void> addFriend(SkoobUser user) async {
+  Future<void> addFriend(SkoobUser friend) async {
+    String? userMessageToken;
+    String? friendMessageToken;
+
+    try {
+      DocumentSnapshot userDoc = await _firestore
+          .collection('user')
+          .doc(userEmail)
+          .collection('profile')
+          .doc('info')
+          .get();
+
+      if (userDoc.data() != null) {
+        final data = userDoc.data() as Map<String, dynamic>;
+        userMessageToken = data['messageToken'];
+      }
+
+      DocumentSnapshot friendDoc = await _firestore
+          .collection('user')
+          .doc(friend.email)
+          .collection('profile')
+          .doc('info')
+          .get();
+
+      if (friendDoc.data() != null) {
+        final data = friendDoc.data() as Map<String, dynamic>;
+        friendMessageToken = data['messageToken'];
+      }
+    } catch (e) {
+      print(e);
+    }
+
 
     DocumentReference documentReference = _firestore
         .collection('user')
@@ -593,7 +623,7 @@ class UserDataManager {
         .doc('list');
 
     documentReference.set({
-      user.uid: {'messageToken': user.messageToken}
+      friend.uid: {'messageToken': friendMessageToken}
     }, SetOptions(merge: true)).then((_) {
       print('Friend added successfully');
     }).catchError((error) {
@@ -603,10 +633,10 @@ class UserDataManager {
     // friend is added in two-way for now
     _firestore
         .collection('user')
-        .doc(user.uid)
+        .doc(friend.email)
         .collection('friend')
         .doc('list').set({
-      userEmail ?? '': {'messageToken': currentUser?.messageToken ?? ''}
+      userEmail ?? '': {'messageToken': userMessageToken}
     }, SetOptions(merge: true)).then((_) {}).catchError((e) {
       print('Error adding friend (reverse way): $e');
     });
