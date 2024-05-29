@@ -423,8 +423,8 @@ class UserDataManager {
           .get();
       if (userDoc.data() != null) {
         Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
-        Timestamp? timestamp = userData['lastModifiedAt'] as Timestamp?;
-        return timestamp?.toDate();
+        String? time = userData['lastModifiedAt'] as String?;
+        return time != null ? DateTime.parse(time) : null;
       }
     } catch (e) {
       print("Failed to fetch Firestore timestamp: $e");
