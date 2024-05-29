@@ -152,6 +152,7 @@ class _SetupPasswordState extends State<SetupPassword> {
                   color: AppColors.softBlack,
                   fontSize: 24.0,
                 ),
+                onSubmitted: (_) => _handleSubmit(),
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(4, 28, 4, 0),

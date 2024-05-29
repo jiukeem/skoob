@@ -122,6 +122,7 @@ class _SetupNameState extends State<SetupName> {
                         color: AppColors.softBlack,
                         fontSize: 24.0,
                       ),
+                      onSubmitted: (_) => _handleSubmit(),
                     ),
                   )
                 ],

@@ -17,6 +17,7 @@ class LoginPassword extends StatefulWidget {
 class _LoginPasswordState extends State<LoginPassword> {
   final UserDataManager _userDataManager = UserDataManager();
   late TextEditingController _controller;
+  late FocusNode _focusNode;
   String? _errorText;
   String? _validPassword;
 
@@ -24,12 +25,17 @@ class _LoginPasswordState extends State<LoginPassword> {
   void initState() {
     super.initState();
     _controller = TextEditingController();
+    _focusNode = FocusNode();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _focusNode.requestFocus();
+    });
     _getValidPassword();
   }
 
   @override
   void dispose() {
     _controller.dispose();
+    _focusNode.dispose();
     super.dispose();
   }
 
@@ -124,6 +130,7 @@ class _LoginPasswordState extends State<LoginPassword> {
                         color: AppColors.softBlack,
                         fontSize: 24.0,
                       ),
+                      onSubmitted: (_) => _handleSubmit(),
                     ),
                   )
                 ],

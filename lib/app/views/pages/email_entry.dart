@@ -152,6 +152,7 @@ class _EmailEntryState extends State<EmailEntry> {
                         color: AppColors.softBlack,
                         fontSize: 24.0,
                       ),
+                      onSubmitted: (_) => _handleSubmit(),
                     ),
                   )
                 ],
