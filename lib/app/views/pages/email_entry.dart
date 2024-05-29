@@ -79,8 +79,8 @@ class _EmailEntryState extends State<EmailEntry> {
       );
       return;
     }
-    final userEmailList = emailToNameMap.keys;
-    final userNameList = emailToNameMap.values.map((value) => value as String).toList();
+    final userEmailList = emailToNameMap.values;
+    final userNameList = emailToNameMap.keys.toList();
 
     if (userEmailList.contains(_email)) {
       Navigator.of(context).push(MaterialPageRoute(builder: (_) => LoginPassword(_email)));
