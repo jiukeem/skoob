@@ -25,13 +25,11 @@ class _FriendSearchState extends State<FriendSearch> {
 
 
   Future<void> _startSearch() async {
-    print('searchKeyword: $_searchKeyword');
     setState(() {
       _isLoading = true;
     });
     _resultUser = await _userDataManager.searchUserByEmail(_searchKeyword);
     setState(() {
-      print('resultUser: $_resultUser');
       _isLoading = false;
     });
   }
@@ -208,7 +206,6 @@ class _FriendSearchState extends State<FriendSearch> {
     }
 
     for (String friendUid in _currentFriendsList) {
-      print('friendUid: $friendUid');
       if (friendUid == targetUid) {
         _isFriend = true;
         return;

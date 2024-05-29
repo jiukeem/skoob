@@ -98,12 +98,6 @@ class UserDataManager {
     }
 
     SkoobUser newUser = SkoobUser.fromMap(userDataMap);
-    print(userDataMap);
-    print('newUser');
-    print(newUser.uid);
-    print(newUser.name);
-    print(newUser.email);
-    print(newUser.latestFeedStatus);
     setUser(newUser);
   }
 
@@ -129,12 +123,6 @@ class UserDataManager {
 
       if (userDoc.data() != null) {
         SkoobUser user = SkoobUser.fromMap(userDoc.data() as Map<String, dynamic>);
-        print(userDoc.data());
-        print('user');
-        print(user.uid);
-        print(user.name);
-        print(user.email);
-        print(user.latestFeedStatus);
         setUser(user);
       }
     } catch (e) {
@@ -466,7 +454,6 @@ class UserDataManager {
 
       await _bookBox.clear();
 
-      print("number of documents in bookshelf: ${querySnapshot.size}");
       for (var doc in querySnapshot.docs) {
         if (doc.id == "list") continue; // Skip the 'list' document
         if (doc.data() != null && doc.data() is Map<String, dynamic>) {
@@ -507,11 +494,8 @@ class UserDataManager {
           .doc('info')
           .get();
 
-      print('user.data(): ${user.data()}');
       if (user.data() != null) {
         Map<String, dynamic> userData = user.data() as Map<String, dynamic>;
-        print('userData: $userData');
-        print('skoobuser: ${SkoobUser.fromMap(userData)}');
         return SkoobUser.fromMap(userData);
       }
       return null;

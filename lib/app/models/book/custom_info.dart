@@ -32,7 +32,6 @@ class CustomInfo {
   };
 
   static CustomInfo fromMap(Map<String, dynamic> map) {
-    print("Creating CustomInfo from map: $map");
     String statusString = map['status'] as String? ?? 'BookReadingStatus.initial'; // Default to 'initial' if null
     BookReadingStatus status = statusMap[statusString] ?? BookReadingStatus.initial;
     return CustomInfo(

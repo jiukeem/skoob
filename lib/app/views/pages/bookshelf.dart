@@ -58,9 +58,6 @@ class _BookshelfState extends State<Bookshelf> {
     DateTime? localLastModified = await _userDataManager.getLastModifiedTimeHive();
     DateTime? serverLastModified = await _userDataManager.getLastModifiedTimeFirestore();
 
-    print(localLastModified);
-    print(serverLastModified);
-
     if (localLastModified == null && serverLastModified == null) return;
 
     if (localLastModified == null) {

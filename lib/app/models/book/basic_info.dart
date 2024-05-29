@@ -40,7 +40,6 @@ class BasicInfo {
   });
 
   static BasicInfo fromMap(Map<String, dynamic> map) {
-    print("Creating BasicInfo from map: $map");
     return BasicInfo(
       title: map['title'] ?? '',
       author: map['author'] ?? '',
