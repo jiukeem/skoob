@@ -33,11 +33,14 @@ class _LaunchState extends State<Launch> {
 
   @override
   Widget build(BuildContext context) {
-    return const SafeArea(
-        child: Center(
-          child: SpinKitRotatingCircle(
-            size: 40.0,
-            color: AppColors.primaryYellow,
+    return SafeArea(
+        child: Container(
+          color: AppColors.white,
+          child: const Center(
+            child: SpinKitRotatingCircle(
+              size: 40.0,
+              color: AppColors.primaryYellow,
+            ),
           ),
         )
     );
