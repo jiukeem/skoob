@@ -28,7 +28,8 @@ class _FriendSearchState extends State<FriendSearch> {
     setState(() {
       _isLoading = true;
     });
-    _resultUser = await _userDataManager.searchUserByEmail(_searchKeyword);
+    _resultUser = await _userDataManager.searchUserByName(_searchKeyword);
+    _checkAlreadyFriend();
     setState(() {
       _isLoading = false;
     });
@@ -120,7 +121,6 @@ class _FriendSearchState extends State<FriendSearch> {
     if (_resultUser == null) {
       return const Text('사용자를 찾을 수 없습니다.');
     } else {
-      _checkAlreadyFriend();
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24.0),
         child: Row(
@@ -142,22 +142,6 @@ class _FriendSearchState extends State<FriendSearch> {
             ),
             IconButton(
                 onPressed: () async {
-                  if (!_isFriend) {
-                    await _userDataManager.addFriend(_resultUser!);
-                    Fluttertoast.showToast(
-                      msg: '친구를 추가하였습니다',
-                      toastLength: Toast.LENGTH_SHORT,
-                      gravity: ToastGravity.TOP,
-                      timeInSecForIosWeb: 1,
-                      backgroundColor: AppColors.gray1,
-                      textColor: AppColors.white,
-                      fontSize: 14.0,
-                    );
-                    setState(() {
-                      _isFriend = true;
-                    });
-                    return;
-                  }
                   if (_isFriend) {
                     Fluttertoast.showToast(
                       msg: '이미 추가된 사용자입니다',
@@ -168,6 +152,20 @@ class _FriendSearchState extends State<FriendSearch> {
                       textColor: AppColors.white,
                       fontSize: 14.0,
                     );
+                  } else {
+                    await _userDataManager.addFriend(_resultUser!);
+                    Fluttertoast.showToast(
+                      msg: '${_resultUser?.name} 님을 친구로 추가했습니다',
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.TOP,
+                      timeInSecForIosWeb: 1,
+                      backgroundColor: AppColors.gray1,
+                      textColor: AppColors.white,
+                      fontSize: 14.0,
+                    );
+                    setState(() {
+                      _isFriend = true;
+                    });
                   }
                 },
                 icon: _isFriend
@@ -198,15 +196,15 @@ class _FriendSearchState extends State<FriendSearch> {
       return;
     }
 
-    final targetUid = _resultUser!.uid;
+    final targetEmail = _resultUser!.email;
 
-    if (_userDataManager.currentUser?.uid == targetUid) {
+    if (_userDataManager.userEmail == targetEmail) {
       _isFriend = true;
       return;
     }
 
-    for (String friendUid in _currentFriendsList) {
-      if (friendUid == targetUid) {
+    for (String friendEmail in _currentFriendsList) {
+      if (friendEmail == targetEmail) {
         _isFriend = true;
         return;
       }

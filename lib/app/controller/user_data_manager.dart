@@ -92,7 +92,7 @@ class UserDataManager {
       _firestore
           .collection('user')
           .doc('list')
-          .set({email: name}, SetOptions(merge: true));
+          .set({name: email}, SetOptions(merge: true));
     } catch (e) {
       print(e);
     }
@@ -469,7 +469,9 @@ class UserDataManager {
     }
   }
 
-  Future<SkoobUser?> searchUserByEmail(String email) async {
+  Future<SkoobUser?> searchUserByName(String friendName) async {
+    String? friendEmail;
+
     try {
       DocumentSnapshot userList = await _firestore
           .collection('user')
@@ -478,9 +480,10 @@ class UserDataManager {
 
       Map<String, dynamic> userListData = userList.data() as Map<String, dynamic>;
 
-      if (!userListData.keys.contains(email)) {
+      if (!userListData.keys.contains(friendName)) {
         return null;
       }
+      friendEmail = userListData[friendName];
     } catch (e) {
       print("Failed to fetch searchUserByEmail--1: $e");
       return null;
@@ -489,7 +492,7 @@ class UserDataManager {
     try {
       DocumentSnapshot? user = await _firestore
           .collection('user')
-          .doc(email)
+          .doc(friendEmail)
           .collection('profile')
           .doc('info')
           .get();
@@ -517,18 +520,18 @@ class UserDataManager {
       if (userDoc.data() == null) return [];
 
       final friendDoc = userDoc.data() as Map<String, dynamic>;
-      return List<String>.from(friendDoc['friendsList']);
+      return friendDoc.keys.toList();
     } catch (e) {
       print("UserDataManager-- failed to getCurrentFriendsList: $e");
       return [];
     }
   }
 
-  Future<SkoobUser?> getFriendData(String uid) async {
+  Future<SkoobUser?> getFriendData(String email) async {
     try {
       DocumentSnapshot? userDoc = await _firestore
           .collection('user')
-          .doc(uid)
+          .doc(email)
           .collection('profile')
           .doc('info')
           .get();
@@ -607,7 +610,7 @@ class UserDataManager {
         .doc('list');
 
     documentReference.set({
-      friend.uid: {'messageToken': friendMessageToken}
+      friend.email: {'messageToken': friendMessageToken}
     }, SetOptions(merge: true)).then((_) {
       print('Friend added successfully');
     }).catchError((error) {

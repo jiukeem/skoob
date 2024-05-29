@@ -35,9 +35,9 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   }
 
   Future<void> _getFriendsData() async {
-    final friendsUidList = await _userDataManager.getCurrentFriendsList();
-    for (String uid in friendsUidList) {
-      final friend = await _userDataManager.getFriendData(uid);
+    final friendsList = await _userDataManager.getCurrentFriendsList();
+    for (String friendEmail in friendsList) {
+      final friend = await _userDataManager.getFriendData(friendEmail);
       if (friend != null) {
         _friendList.add(friend);
       }
