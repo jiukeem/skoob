@@ -21,6 +21,7 @@ class _FriendSearchState extends State<FriendSearch> {
   bool _isLoading = false;
   bool _isFriend = false;
   SkoobUser? _resultUser;
+  String? _guideMessage = '이름으로 친구를 검색해보세요';
   List<String> _currentFriendsList = [];
 
 
@@ -29,6 +30,11 @@ class _FriendSearchState extends State<FriendSearch> {
       _isLoading = true;
     });
     _resultUser = await _userDataManager.searchUserByName(_searchKeyword);
+    if (_resultUser == null) {
+      _guideMessage = '사용자를 찾을 수 없습니다';
+    } else {
+      _guideMessage = null;
+    }
     _checkAlreadyFriend();
     setState(() {
       _isLoading = false;
@@ -118,8 +124,8 @@ class _FriendSearchState extends State<FriendSearch> {
   }
 
   Widget _buildSearchResult() {
-    if (_resultUser == null) {
-      return const Text('사용자를 찾을 수 없습니다.');
+    if (_guideMessage != null) {
+      return Text(_guideMessage!);
     } else {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24.0),
