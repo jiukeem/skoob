@@ -71,14 +71,22 @@ class UserAdapter extends TypeAdapter<SkoobUser> {
   @override
   SkoobUser read(BinaryReader reader) {
     try {
-      int latestFeedStatusIndex = reader.readByte(); // Should read as byte
+      var uid = reader.readString();
+      var name = reader.readString();
+      var email = reader.readString();
+      var photoUrl = reader.readString();
+      var phoneNumber = reader.readString();
+      var latestFeedBookTitle = reader.readString();
+      int latestFeedStatusIndex = reader.readByte();
       var latestFeedStatus = BookReadingStatus.values[latestFeedStatusIndex];
       return SkoobUser(
-          uid: reader.readString(),
-          name: reader.readString(),
-          email: reader.readString(),
-          latestFeedBookTitle: reader.readString(),
-          latestFeedStatus: latestFeedStatus,
+          uid: uid,
+          name: name,
+          email: email,
+          photoUrl: photoUrl,
+          phoneNumber: phoneNumber,
+          latestFeedBookTitle: latestFeedBookTitle,
+          latestFeedStatus: latestFeedStatus
       );
     } catch (e) {
       print('Failed to read SkoobUser: $e');
@@ -91,8 +99,9 @@ class UserAdapter extends TypeAdapter<SkoobUser> {
     writer.writeString(obj.uid);
     writer.writeString(obj.name);
     writer.writeString(obj.email);
-    writer.writeString(obj.phoneNumber);
     writer.writeString(obj.photoUrl);
+    writer.writeString(obj.phoneNumber);
     writer.writeString(obj.latestFeedBookTitle);
     writer.writeByte(obj.latestFeedStatus.index);
-  }}
+  }
+}
