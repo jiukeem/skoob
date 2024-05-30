@@ -1,9 +1,14 @@
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:skoob/app/views/pages/auth_start.dart';
+import 'package:skoob/app/views/widgets/general_divider.dart';
 
 import '../../controller/user_data_manager.dart';
 import '../../services/firebase_analytics.dart';
 import '../../utils/app_colors.dart';
+import '../../utils/custom_text_input_formatter.dart';
 
 class Setting extends StatefulWidget {
   const Setting({super.key});
@@ -17,35 +22,83 @@ class _SettingState extends State<Setting> {
 
   @override
   Widget build(BuildContext context) {
+    final user = _userDataManager.currentUser;
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: AppBar(
-        title: const Text('SETTING',
-          style: TextStyle(
-          fontFamily: 'LexendExaRegular',
-        ),),
-        centerTitle: true,
         surfaceTintColor: AppColors.white,
         backgroundColor: AppColors.white,
       ),
-      body: InkWell(
-        onTap: () {
-          _showLogoutDialog(context);
-        },
-        child: const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
-          child: Row(
-            children: [
-              Text(
-                '로그아웃',
-                style: TextStyle(
-                  fontSize: 16.0,
-                  fontFamily: 'NotoSansKRRegular'
-                )
-              )
-            ],
+      body: Column(
+        children: [
+          Text(
+            user?.name ?? '',
+            style: const TextStyle(
+              fontFamily: 'LexendMedium',
+              fontSize: 24.0
+            ),
           ),
-        ),
+          const SizedBox(height: 4.0,),
+          Text(
+              user?.email ?? '',
+            style: const TextStyle(
+              fontFamily: 'LexendLight',
+              fontSize: 18.0,
+              color: AppColors.gray1
+            ),
+          ),
+          const SizedBox(height: 24.0,),
+          const GeneralDivider(verticalPadding: 0,),
+          InkWell(
+            onTap: () {
+              _showLogoutDialog(context);
+            },
+            child: const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
+              child: Row(
+                children: [
+                  Icon(FluentIcons.door_arrow_right_16_regular),
+                  SizedBox(width: 20,),
+                  Text(
+                    '로그아웃',
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      fontFamily: 'NotoSansKRMedium'
+                    )
+                  )
+                ],
+              ),
+            ),
+          ),
+          InkWell(
+            onTap: () {
+              _showDeleteAccountDialog(context);
+            },
+            child: const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
+              child: Row(
+                children: [
+                  Icon(FluentIcons.person_delete_16_filled, color: AppColors.warningRed,),
+                  SizedBox(width: 20,),
+                  Text(
+                      '회원탈퇴',
+                      style: TextStyle(
+                          fontSize: 16.0,
+                          fontFamily: 'NotoSansKRRegular',
+                        color: AppColors.warningRed
+                      )
+                  )
+                ],
+              ),
+            ),
+          ),
+          _isLoading
+          ? const SpinKitRotatingCircle(
+            size: 40.0,
+            color: AppColors.primaryYellow,
+          )
+          : const SizedBox.shrink()
+        ],
       ),
     );
   }
