@@ -19,6 +19,7 @@ class Setting extends StatefulWidget {
 
 class _SettingState extends State<Setting> {
   final UserDataManager _userDataManager = UserDataManager();
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -180,5 +181,214 @@ class _SettingState extends State<Setting> {
     if (mounted && shouldLogout == true) {
       _logout();
     }
+  }
+
+  Future<void> _showDeleteAccountDialog(BuildContext context) async {
+    Widget cancelButton = InkWell(
+      child: const Padding(
+        padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
+        child: Text(
+          '취소',
+          style: TextStyle(
+            fontFamily: 'NotoSansKRMedium',
+            fontSize: 14.0,
+            color: AppColors.softBlack,
+          ),
+        ),
+      ),
+      onTap: () {
+        AnalyticsService.logEvent('Setting-- logout', parameters: {
+          'result': 'cancelled'
+        });
+        Navigator.of(context).pop(false);
+      },
+    );
+
+    Widget confirmButton = InkWell(
+      child: Container(
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(5.0)),
+          color: AppColors.warningRed,
+        ),
+        child: const Padding(
+          padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
+          child: Text(
+            '진행',
+            style: TextStyle(
+              fontFamily: 'NotoSansKRMedium',
+              fontSize: 14.0,
+              color: AppColors.white,
+            ),
+          ),
+        ),
+      ),
+      onTap: () {
+        AnalyticsService.logEvent('Setting-- logout', parameters: {
+          'result': 'logged out'
+        });
+        Navigator.of(context).pop(true);
+      },
+    );
+
+    AlertDialog alert = AlertDialog(
+      backgroundColor: AppColors.white,
+      surfaceTintColor: AppColors.white,
+      content: const Text('SKOOB을 탈퇴하시겠습니까?\n모든 기록이 삭제됩니다'),
+      actions: [
+        cancelButton,
+        confirmButton,
+      ],
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+      ),
+    );
+
+    final bool? shouldDeleteAccount = await showDialog(
+        context: context,
+        builder: (context) {
+          return alert;
+        });
+
+    if (mounted && shouldDeleteAccount == true) {
+      _showPasswordConfirmDialog(context);
+    }
+  }
+
+  Future<void> _showPasswordConfirmDialog(BuildContext context) async {
+    TextEditingController controller = TextEditingController();
+    String? errorText;
+
+    final bool? shouldDeleteAccount = await showDialog(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(builder: (context, setDialogState) {
+            return AlertDialog(
+              backgroundColor: AppColors.white,
+              surfaceTintColor: AppColors.white,
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                    child: Text('확인을 위해 비밀번호를 입력해주세요'),
+                  ),
+                  TextField(
+                    obscureText: true,
+                    controller: controller,
+                    keyboardType: TextInputType.visiblePassword,
+                    decoration: InputDecoration(
+                      errorText: errorText,
+                      labelText: '비밀번호',
+                      labelStyle: const TextStyle(
+                          color: AppColors.gray1,
+                          fontFamily: 'NotoSansKRRegular'
+                      ),
+                      floatingLabelStyle: const TextStyle(
+                          color: AppColors.softBlack,
+                          fontFamily: 'NotoSansKRRegular'
+                      ),
+                      contentPadding: const EdgeInsets.only(bottom: 0),
+                      enabledBorder: const UnderlineInputBorder(
+                        borderSide: BorderSide(color: AppColors.softBlack, width: 1.2),
+                      ),
+                      focusedBorder: const UnderlineInputBorder(
+                        borderSide: BorderSide(color: AppColors.softBlack, width: 1.2),
+                      ),
+                    ),
+                    inputFormatters: [
+                      CustomTextInputFormatter(
+                          pattern: r"""^[\w\d!@#$%^&*()_+=[\]{}|\\:;"'<>,.?/-~]+$"""
+                      ),
+                    ],
+                    style: const TextStyle(
+                      color: AppColors.softBlack,
+                      fontSize: 24.0,
+                    ),
+                  ),
+                ],
+              ),
+              actions: [
+                InkWell(
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
+                    child: Text(
+                      '취소',
+                      style: TextStyle(
+                        fontFamily: 'NotoSansKRMedium',
+                        fontSize: 14.0,
+                        color: AppColors.softBlack,
+                      ),
+                    ),
+                  ),
+                  onTap: () {
+                    AnalyticsService.logEvent('Setting-- logout', parameters: {
+                      'result': 'cancelled'
+                    });
+                    Navigator.of(context).pop(false);
+                  },
+                ),
+                InkWell(
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                      color: AppColors.warningRed,
+                    ),
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
+                      child: Text(
+                        '회원탈퇴',
+                        style: TextStyle(
+                          fontFamily: 'NotoSansKRMedium',
+                          fontSize: 14.0,
+                          color: AppColors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                  onTap: () async {
+                    final validPassword = await _userDataManager.getValidPassword(_userDataManager.userEmail ?? '');
+                    setDialogState(() {
+                      errorText = null;
+
+                      if (validPassword == controller.text) {
+                        Navigator.pop(context, true);
+                      } else {
+                        errorText = '비밀번호가 일치하지 않습니다';
+                      }
+                    });
+                  },
+                ),
+              ],
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10.0)),
+              ),
+            );
+          });
+        });
+
+    if (mounted && shouldDeleteAccount == true) {
+      _deleteAccount();
+    }
+  }
+
+  void _deleteAccount() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    await _userDataManager.deleteAccount();
+    Fluttertoast.showToast(
+      msg: '계정이 안전하게 삭제되었습니다\n그동안 SKOOB을 이용해주셔서 감사합니다',
+      toastLength: Toast.LENGTH_LONG,
+      gravity: ToastGravity.TOP,
+      timeInSecForIosWeb: 1,
+      backgroundColor: AppColors.gray1,
+      textColor: AppColors.white,
+      fontSize: 14.0,
+    );
+    Navigator.pushAndRemoveUntil(context,
+      MaterialPageRoute(builder: (context) => const AuthStart()),
+          (Route<dynamic> route) => false,
+    );
   }
 }

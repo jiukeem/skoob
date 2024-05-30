@@ -47,7 +47,7 @@ class UserDataManager {
 
   Future<String?> _registerNewUserAndGetUid({required String email, required String password}) async {
     try {
-      UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -78,6 +78,8 @@ class UserDataManager {
     };
 
     try {
+      _firestore.collection('user').doc(email).set({});
+
       _firestore
           .collection('user')
           .doc(email)
@@ -635,5 +637,80 @@ class UserDataManager {
     _settingBox.clear();
 
     // await _auth.signOut();
+  }
+
+  Future<void> deleteAccount() async {
+    await _deleteAllUserDocumentAndSubcollection();
+    await _deleteUserInfoInAllUserList();
+    await _deleteUserAuthentication();
+
+    _bookBox.clear();
+    _userBox.clear();
+    _settingBox.clear();
+    currentUser = null;
+    return;
+  }
+
+  Future<void> _deleteAllUserDocumentAndSubcollection() async {
+    DocumentReference docRef = _firestore.collection('user').doc(userEmail);
+
+    List<String> subcollections = ['profile', 'friend', 'bookshelf'];
+    for (String subcolName in subcollections) {
+      CollectionReference subcolRef = docRef.collection(subcolName);
+      QuerySnapshot snapshot = await subcolRef.get();
+
+      for (DocumentSnapshot doc in snapshot.docs) {
+        await doc.reference.delete();
+      }
+    }
+
+    // Once all subcollections are cleared, delete the main document
+    await docRef.delete();
+  }
+
+  Future<void> _deleteUserInfoInAllUserList() async {
+    try {
+      await _firestore
+          .collection('user')
+          .doc('list')
+          .update({currentUser?.name ?? '': FieldValue.delete()});
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> _deleteUserAuthentication() async {
+    User? user = _auth.currentUser;
+
+    if (user != null) {
+      try {
+        await user.getIdToken(true);
+        await user.delete();
+      } catch (e) {
+      }
+    } else {
+    }
+  }
+
+  Future<bool> checkPasswordMatch(String text) async {
+    try {
+      DocumentSnapshot userDoc = await _firestore
+          .collection('user')
+          .doc(userEmail)
+          .collection('profile')
+          .doc('info')
+          .get();
+
+      if (userDoc.data() != null) {
+        final user = userDoc.data() as Map<String, dynamic>;
+        final password = user['password'];
+        if (password == null) return false;
+        return password == text;
+      }
+    } catch (e) {
+      print(e);
+      return false;
+    }
+    return false;
   }
 }
