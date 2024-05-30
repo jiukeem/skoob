@@ -53,23 +53,29 @@ class _FriendSearchState extends State<FriendSearch> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.white,
-      body: SafeArea(
-        child: Column(
-          children: [
-            _buildSearchField(),
-            _isLoading
-            ? const Expanded(
-              child: Center(
-                child: SpinKitRotatingCircle(
-                  size: 30.0,
-                  color: AppColors.primaryYellow,
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.pop(context, true);
+        return true;
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.white,
+        body: SafeArea(
+          child: Column(
+            children: [
+              _buildSearchField(),
+              _isLoading
+              ? const Expanded(
+                child: Center(
+                  child: SpinKitRotatingCircle(
+                    size: 30.0,
+                    color: AppColors.primaryYellow,
+                  ),
                 ),
-              ),
-            )
-            : _buildSearchResult()
-          ],
+              )
+              : _buildSearchResult()
+            ],
+          ),
         ),
       ),
     );

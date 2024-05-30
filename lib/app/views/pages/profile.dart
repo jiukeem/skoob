@@ -35,6 +35,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   }
 
   Future<void> _getFriendsData() async {
+    _friendList.clear();
     final friendsList = await _userDataManager.getCurrentFriendsList();
     for (String friendEmail in friendsList) {
       final friend = await _userDataManager.getFriendData(friendEmail);
@@ -74,8 +75,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
           IconButton(
             icon: const Icon(FluentIcons.person_add_24_regular),
             onPressed: () {
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => const FriendSearch()));
+              _navigateAndUpdateFriendList();
             },
           ),
           Padding(
@@ -371,6 +371,16 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
 
   void _visitFriendBookshelf(SkoobUser friend) {
     Navigator.of(context).push(MaterialPageRoute(builder: (_) => Bookshelf(isVisiting: true, hostUser: friend)));
+  }
+
+  void _navigateAndUpdateFriendList() async {
+    final result = await Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const FriendSearch()));
+
+    if (result != null) {
+      await _getFriendsData();
+      setState(() {});
+    }
   }
 
   Future<void> _handleRefresh() async {
