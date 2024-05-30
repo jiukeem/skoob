@@ -265,6 +265,8 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
           ),
         )
         : RefreshIndicator(
+          color: AppColors.white,
+          backgroundColor: AppColors.primaryYellow,
           onRefresh: _handleRefresh,
           child: ListView.builder(
               itemCount: _friendList.length,
