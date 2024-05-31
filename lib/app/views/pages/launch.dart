@@ -27,7 +27,7 @@ class _LaunchState extends State<Launch> {
   void _checkNetworkAndLogin() async {
     var connectivityResult = await _connectivity.checkConnectivity();
     if (connectivityResult == ConnectivityResult.none) {
-      _showNoInternetDialog();
+      _showNoNetworkDialog();
     } else {
       _checkExistingUserCredential();
     }
@@ -55,6 +55,54 @@ class _LaunchState extends State<Launch> {
           ),
         )
     );
+  }
+
+  void _showNoNetworkDialog()  {
+    Widget confirmButton = InkWell(
+      child: Container(
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(5.0)),
+          color: AppColors.primaryGreen,
+        ),
+        child: const Padding(
+          padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
+          child: Text(
+            '확인',
+            style: TextStyle(
+              fontFamily: 'NotoSansKRMedium',
+              fontSize: 14.0,
+              color: AppColors.white,
+            ),
+          ),
+        ),
+      ),
+      onTap: () {
+        Navigator.of(context).pop();
+        if (Navigator.canPop(context)) {
+          Navigator.pop(context);
+        }
+      },
+    );
+
+    AlertDialog alert = AlertDialog(
+      backgroundColor: AppColors.white,
+      surfaceTintColor: AppColors.white,
+      title: const Text('네트워크 없음'),
+      content: const Text('네트워크 연결 후\nSKOOB 앱을 다시 실행해주세요'),
+      actions: [
+        confirmButton,
+      ],
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+      ),
+    );
+
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+      return alert;
+    });
   }
 
   void _showNoInternetDialog() {
