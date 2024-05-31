@@ -268,6 +268,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
           backgroundColor: AppColors.primaryYellow,
           onRefresh: _handleRefresh,
           child: ListView.builder(
+              padding: const EdgeInsets.only(bottom: 100.0),
               itemCount: _friendList.length,
               itemBuilder: (context, index) {
                 final friend = _friendList[index];
