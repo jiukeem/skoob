@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:skoob/app/services/firebase_analytics.dart';
 
 import 'package:skoob/app/utils/app_colors.dart';
@@ -46,27 +47,52 @@ class _SkoobState extends State<Skoob> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.white,
-      resizeToAvoidBottomInset: false,
-      body: Stack(
-          children: [
-            Positioned.fill(
-              child: IndexedStack(
-                index: _currentPageIndex,
-                children: _pages,
+    DateTime? lastPressed;
+
+    return WillPopScope(
+      onWillPop: () async {
+        final now = DateTime.now();
+        final backButtonHasNotBeenPressedOrSnackbarHasBeenClosed = lastPressed == null ||
+            now.difference(lastPressed!) > const Duration(seconds: 3);
+
+        if (backButtonHasNotBeenPressedOrSnackbarHasBeenClosed) {
+          lastPressed = now;
+          Fluttertoast.showToast(
+            msg: '뒤로 가기를 한 번 더 누르시면 앱이 종료됩니다',
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 3,
+            backgroundColor: AppColors.gray1,
+            textColor: AppColors.white,
+            fontSize: 14.0,
+          );
+          return false; // false will cancel the back button event
+        }
+
+        return true; // true will exit the app
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.white,
+        resizeToAvoidBottomInset: false,
+        body: Stack(
+            children: [
+              Positioned.fill(
+                child: IndexedStack(
+                  index: _currentPageIndex,
+                  children: _pages,
+                ),
               ),
-            ),
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: SkoobBottomNavBar(
-                  currentIndex: _currentPageIndex,
-                  onTap: _onItemTapped
-              ),
-            )
-          ]
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: SkoobBottomNavBar(
+                    currentIndex: _currentPageIndex,
+                    onTap: _onItemTapped
+                ),
+              )
+            ]
+        ),
       ),
     );
   }
