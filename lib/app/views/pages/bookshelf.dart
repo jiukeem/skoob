@@ -221,7 +221,7 @@ class _BookshelfState extends State<Bookshelf> {
       if (books.isEmpty) {
         return const Expanded(
           child: Center(
-            child: Text('추가한 책이 없습니다'),
+            child: Text('아직 추가한 책이 없습니다'),
           ),
         );
       } else {
