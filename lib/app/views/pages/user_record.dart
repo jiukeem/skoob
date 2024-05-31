@@ -46,68 +46,155 @@ class _UserRecordPageState extends State<UserRecord> {
   Widget build(BuildContext context) {
     final Book book = widget.book;
 
-    return Scaffold(
-      backgroundColor: AppColors.white,
-      resizeToAvoidBottomInset: true,
-      appBar: AppBar(
+    return WillPopScope(
+      onWillPop: () async {
+        if (book.customInfo.comment != _textController.text) {
+          _showSaveDialog(context, book);
+        }
+        return true;
+      },
+      child: Scaffold(
         backgroundColor: AppColors.white,
-        centerTitle: true,
-        title: Text(
-            book.basicInfo.title,
-          style: const TextStyle(
+        resizeToAvoidBottomInset: true,
+        appBar: AppBar(
+          backgroundColor: AppColors.white,
+          centerTitle: true,
+          title: Text(
+              book.basicInfo.title,
+            style: const TextStyle(
+              fontFamily: 'NotoSansKRMedium',
+              fontSize: 16.0,
+              color: AppColors.softBlack,
+            ),
+          ),
+        ),
+        body: Column(
+          children: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: TextField(
+                  controller: _textController,
+                  maxLines: null,
+                  expands: true,
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                  ),
+                  cursorWidth: 1.2,
+                  autofocus: true,
+                  style: const TextStyle(
+                    fontSize: 14.0
+                  ),
+                  keyboardType: TextInputType.multiline,
+                ),
+              ),
+            ),
+            Container(
+              color: Colors.white,
+              child: Column(
+                children: [
+                  const GeneralDivider(verticalPadding: 0.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      IconButton(onPressed: () {
+                        _handleSubmit(book);
+                      }, icon: const Icon(FluentIcons.checkmark_16_filled))
+                    ],
+                  ),
+                ],
+              )
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _handleSubmit(Book book) {
+    AnalyticsService.logEvent('Detail-- comment', parameters: {
+      'title': book.basicInfo.title,
+      'commentAfter': _textController.text,
+      'saved': true
+    });
+    saveUserRecord(_textController.text, book);
+    _dataManager.updateBook(book);
+    Navigator.pop(context, book);
+  }
+
+  Future<void> _showSaveDialog(BuildContext context, Book book) async {
+    Widget cancelButton = InkWell(
+      child: const Padding(
+        padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
+        child: Text(
+          '저장하지 않고 나가기',
+          style: TextStyle(
             fontFamily: 'NotoSansKRMedium',
-            fontSize: 16.0,
+            fontSize: 14.0,
             color: AppColors.softBlack,
           ),
         ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
-              child: TextField(
-                controller: _textController,
-                maxLines: null,
-                expands: true,
-                decoration: const InputDecoration(
-                  border: InputBorder.none,
-                ),
-                cursorWidth: 1.2,
-                autofocus: true,
-                style: const TextStyle(
-                  fontSize: 14.0
-                ),
-                keyboardType: TextInputType.multiline,
-              ),
+      onTap: () {
+        AnalyticsService.logEvent('Setting-- logout', parameters: {
+          'result': 'cancelled'
+        });
+        Navigator.of(context).pop(false);
+      },
+    );
+
+    Widget confirmButton = InkWell(
+      child: Container(
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(5.0)),
+          color: AppColors.primaryGreen,
+        ),
+        child: const Padding(
+          padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
+          child: Text(
+            '저장',
+            style: TextStyle(
+              fontFamily: 'NotoSansKRMedium',
+              fontSize: 14.0,
+              color: AppColors.white,
             ),
           ),
-          Container(
-            color: Colors.white,
-            child: Column(
-              children: [
-                const GeneralDivider(verticalPadding: 0.0),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    IconButton(onPressed: () {
-                      AnalyticsService.logEvent('Detail-- comment', parameters: {
-                        'title': book.basicInfo.title,
-                        'commentAfter': _textController.text,
-                        'saved': true
-                      });
-                      saveUserRecord(_textController.text, book);
-                      _dataManager.updateBook(book);
-                      Navigator.pop(context, book);
-                    }, icon: const Icon(FluentIcons.checkmark_16_filled))
-                  ],
-                ),
-              ],
-            )
-          )
-        ],
+        ),
+      ),
+      onTap: () {
+        AnalyticsService.logEvent('Setting-- logout', parameters: {
+          'result': 'logged out'
+        });
+        Navigator.of(context).pop(true);
+      },
+    );
+
+    AlertDialog alert = AlertDialog(
+      backgroundColor: AppColors.white,
+      surfaceTintColor: AppColors.white,
+      content: const Text('변경사항을 저장할까요?'),
+      actions: [
+        cancelButton,
+        confirmButton,
+      ],
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(10.0)),
       ),
     );
+
+    final bool? shouldSaveComment = await showDialog(
+        context: context,
+        builder: (context) {
+          return alert;
+        });
+
+    if (mounted && shouldSaveComment == true) {
+      _handleSubmit(book);
+    }
+
+    if (mounted && shouldSaveComment == false) {
+      Navigator.pop(context);
+    }
   }
 }
 
