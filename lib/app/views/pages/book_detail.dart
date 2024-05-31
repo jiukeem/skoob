@@ -514,5 +514,5 @@ final List<String> infoLabelList = [
   'Publisher',
   'Publish Date',
   'Category',
-  'Link',
+  // 'Link',
 ];

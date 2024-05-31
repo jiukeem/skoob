@@ -6,7 +6,6 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:skoob/app/models/skoob_user.dart';
 import 'package:skoob/app/controller/user_data_manager.dart';
 import 'package:skoob/app/views/pages/setting.dart';
-
 import '../../models/book/custom_info.dart';
 import '../../services/firebase_analytics.dart';
 import '../../utils/app_colors.dart';
@@ -30,7 +29,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 1, vsync: this);
     _getFriendsData();
   }
 
@@ -116,7 +115,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
               physics: const NeverScrollableScrollPhysics(),
               children: [
                 _buildFriendsTab(),
-                Text('feed tab'),
+                // Text('feed tab'),
               ],
             ),
           ),
@@ -210,7 +209,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
       unselectedLabelColor: AppColors.gray2,
       tabs: const [
         Tab(text: 'FRIENDS'),
-        Tab(text: 'FEED'),
+        // Tab(text: 'FEED'),
       ],
       labelStyle: const TextStyle(
         fontFamily: 'LexendMedium',
