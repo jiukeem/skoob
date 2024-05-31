@@ -50,9 +50,15 @@ class DetailViewListTile extends StatelessWidget with BookshelfListTileMixin {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(
+                  Container(
                     height: 168.0,
                     width: 120.0,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: AppColors.gray2,
+                        width: 0.4
+                      )
+                    ),
                     child: Image.network(
                       book.basicInfo.coverImageUrl,
                       fit: BoxFit.cover,
