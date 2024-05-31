@@ -234,16 +234,17 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
                             ),
                             child: Image.network(
                               book.basicInfo.coverImageUrl,
-                              fit: BoxFit.cover,
+                              fit: BoxFit.contain,
                             ),
                           ),
                           const SizedBox(height: 8.0),
                           Text(
                             book.basicInfo.title,
+                            textAlign: TextAlign.center,
                             style: const TextStyle(
                               fontFamily: 'NotoSansKRMedium',
                               fontSize: 16.0,
-                              color: AppColors.softBlack
+                              color: AppColors.softBlack,
                             ),
                           ),
                           const SizedBox(height: 4.0),
@@ -325,15 +326,24 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
                                     ],
                                   ),
                                 )
-                              : Text(
-                                  book.customInfo.comment,
-                                  maxLines: 3,
-                                  textAlign: TextAlign.center,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    fontFamily: 'NotoSansKrRegular',
-                                    fontSize: 12.0,
-                                    color: AppColors.softBlack,
+                              : Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 6.0, vertical: 4.0),
+                                  decoration: const BoxDecoration(
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(6.0)),
+                                    color: AppColors.gray3
+                                  ),
+                                  child: Text(
+                                    book.customInfo.comment,
+                                    maxLines: 3,
+                                    textAlign: TextAlign.center,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontFamily: 'NotoSansKrRegular',
+                                      fontSize: 12.0,
+                                      color: AppColors.softBlack,
+                                    ),
                                   ),
                                 ),
                         ),
