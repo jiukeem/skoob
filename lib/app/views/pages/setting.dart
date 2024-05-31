@@ -95,7 +95,7 @@ class _SettingState extends State<Setting> {
           ),
           _isLoading
           ? const SpinKitRotatingCircle(
-            size: 40.0,
+            size: 30.0,
             color: AppColors.primaryYellow,
           )
           : const SizedBox.shrink()

@@ -38,7 +38,7 @@ class _LaunchState extends State<Launch> {
           color: AppColors.white,
           child: const Center(
             child: SpinKitRotatingCircle(
-              size: 40.0,
+              size: 30.0,
               color: AppColors.primaryYellow,
             ),
           ),

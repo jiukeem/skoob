@@ -56,25 +56,25 @@ class _WelcomeState extends State<Welcome> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
+      body: const SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 32.0),
+          padding: EdgeInsets.symmetric(horizontal: 32.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(height: 100.0,),
+              SizedBox(height: 100.0,),
               Text(
                 '환영합니다',
                 textAlign: TextAlign.center,
-                style: const TextStyle(
+                style: TextStyle(
                     fontFamily: 'NotoSansKRBold',
                     fontSize: 24,
                     color: AppColors.softBlack,
                 ),
               ),
-              const SizedBox(height: 100,),
-              const SpinKitRotatingCircle(
-                size: 40.0,
+              SizedBox(height: 100,),
+              SpinKitRotatingCircle(
+                size: 30.0,
                 color: AppColors.primaryYellow,
               ),
             ],
