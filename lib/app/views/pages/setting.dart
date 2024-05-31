@@ -43,7 +43,7 @@ class _SettingState extends State<Setting> {
           Text(
               user?.email ?? '',
             style: const TextStyle(
-              fontFamily: 'LexendLight',
+              fontFamily: 'NotoSansKRLight',
               fontSize: 18.0,
               color: AppColors.gray1
             ),
