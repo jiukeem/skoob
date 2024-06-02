@@ -1,3 +1,4 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart';
@@ -20,6 +21,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform
   );
   await FirebaseMessagingService().initializeFCMService();
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
 
   await Hive.initFlutter();
   Hive.registerAdapter(BookReadingStatusAdapter());

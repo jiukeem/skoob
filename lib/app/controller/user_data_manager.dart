@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
@@ -51,8 +52,8 @@ class UserDataManager {
         password: password,
       );
       return userCredential.user?.uid;
-    } catch (e) {
-      print(e);
+    } catch (e, s) {
+      FirebaseCrashlytics.instance.recordError(e, s);
       return null;
     }
   }
@@ -78,8 +79,8 @@ class UserDataManager {
           .collection('profile')
           .doc('info')
           .set(userDataMap, SetOptions(merge: true));
-    } catch (e) {
-      print(e);
+    } catch (e, s) {
+      FirebaseCrashlytics.instance.recordError(e, s);
     }
 
     try {
@@ -87,8 +88,8 @@ class UserDataManager {
           .collection('user')
           .doc('list')
           .set({name: email}, SetOptions(merge: true));
-    } catch (e) {
-      print(e);
+    } catch (e, s) {
+      FirebaseCrashlytics.instance.recordError(e, s);
     }
 
     SkoobUser newUser = SkoobUser.fromMap(userDataMap);
@@ -103,8 +104,8 @@ class UserDataManager {
           .collection('profile')
           .doc('info')
           .set({'lastLoggedInAt': DateTime.now().toIso8601String()}, SetOptions(merge: true));
-    } catch (e) {
-      print(e);
+    } catch (e, s) {
+      FirebaseCrashlytics.instance.recordError(e, s);
     }
 
     try {
@@ -119,8 +120,8 @@ class UserDataManager {
         SkoobUser user = SkoobUser.fromMap(userDoc.data() as Map<String, dynamic>);
         setUser(user);
       }
-    } catch (e) {
-      print(e);
+    } catch (e, s) {
+      FirebaseCrashlytics.instance.recordError(e, s);
     }
   }
 
@@ -139,8 +140,8 @@ class UserDataManager {
         final data = doc.data() as Map<String, dynamic>;
         return data;
       }
-    } catch (e) {
-      print(e);
+    } catch (e, s) {
+      FirebaseCrashlytics.instance.recordError(e, s);
       return null;
     }
     return null;
@@ -175,8 +176,8 @@ class UserDataManager {
         return user['password'];
       }
       return null;
-    } catch (e) {
-      print(e);
+    } catch (e, s) {
+      FirebaseCrashlytics.instance.recordError(e, s);
       return null;
     }
   }
@@ -205,8 +206,9 @@ class UserDataManager {
       if (isNewUser) {
         _firestore.collection('user').doc('list').set({userData['email']!: userData['uid']}, SetOptions(merge: true));
       }
-    } catch (e) {
+    } catch (e, s) {
       print("Failed to update Firestore or Hive: $e");
+      FirebaseCrashlytics.instance.recordError(e, s);
       return false;
     }
 
@@ -225,8 +227,9 @@ class UserDataManager {
         await _userBox.put('user', skoobUser);
         setUser(skoobUser);
       }
-    } catch (e) {
+    } catch (e, s) {
       print("Failed to update Firestore or Hive: $e");
+      FirebaseCrashlytics.instance.recordError(e, s);
       return false;
     }
     return true;
@@ -281,8 +284,9 @@ class UserDataManager {
           .doc('list')
           .set({book.basicInfo.isbn13: mapData}, SetOptions(merge: true));
       await updateLastModifiedTimeFirestore();
-    } catch (e) {
+    } catch (e, s) {
       print("Error adding book to Firestore and Hive: $e");
+      FirebaseCrashlytics.instance.recordError(e, s);
     }
   }
 
@@ -311,8 +315,9 @@ class UserDataManager {
             .doc('list')
             .set({book.basicInfo.isbn13: mapData}, SetOptions(merge: true));
         await updateLastModifiedTimeFirestore();
-      } catch (e) {
+      } catch (e, s) {
         print("Error updating book in Firestore and Hive: $e");
+        FirebaseCrashlytics.instance.recordError(e, s);
       }
     }
   }
@@ -333,8 +338,9 @@ class UserDataManager {
           book.basicInfo.isbn13: FieldValue.delete(),
         });
         await updateLastModifiedTimeFirestore();
-      } catch (e) {
+      } catch (e, s) {
         print("Error deleting book from Firestore and Hive: $e");
+        FirebaseCrashlytics.instance.recordError(e, s);
       }
     }
   }
@@ -363,8 +369,9 @@ class UserDataManager {
         'latestFeedBookTitle': title,
         'latestFeedStatus': status.toString(),
       }, SetOptions(merge: true));
-    } catch (e) {
+    } catch (e, s) {
       print("Failed to update Firestore latestFeed: $e");
+      FirebaseCrashlytics.instance.recordError(e, s);
     }
   }
 
@@ -390,8 +397,9 @@ class UserDataManager {
         'lastModifiedAt': DateTime.now().toIso8601String()
       }, SetOptions(merge: true));
       print("UserDataManger-- updating last modified time server(firestore): ${FieldValue.serverTimestamp()}");
-    } catch (e) {
+    } catch (e, s) {
       print("Failed to update Firestore timestamp: $e");
+      FirebaseCrashlytics.instance.recordError(e, s);
     }
   }
 
@@ -408,8 +416,9 @@ class UserDataManager {
         String? time = userData['lastModifiedAt'] as String?;
         return time != null ? DateTime.parse(time) : null;
       }
-    } catch (e) {
+    } catch (e, s) {
       print("Failed to fetch Firestore timestamp: $e");
+      FirebaseCrashlytics.instance.recordError(e, s);
       return null;
     }
     return null;
@@ -433,8 +442,9 @@ class UserDataManager {
       await batch.commit();
       await updateLastModifiedTimeFirestore();
 
-    } catch (e) {
+    } catch (e, s) {
       print("UserDataManager-- Error syncing from local to server: $e");
+      FirebaseCrashlytics.instance.recordError(e, s);
     }
   }
 
@@ -458,8 +468,9 @@ class UserDataManager {
         }
       }
       await updateLastModifiedTimeHive();
-    } catch (e) {
+    } catch (e, s) {
       print("UserDataManager-- Error syncing from server to local: $e");
+      FirebaseCrashlytics.instance.recordError(e, s);
     }
   }
 
@@ -478,8 +489,9 @@ class UserDataManager {
         return null;
       }
       friendEmail = userListData[friendName];
-    } catch (e) {
+    } catch (e, s) {
       print("Failed to fetch searchUserByEmail--1: $e");
+      FirebaseCrashlytics.instance.recordError(e, s);
       return null;
     }
 
@@ -496,8 +508,9 @@ class UserDataManager {
         return SkoobUser.fromMap(userData);
       }
       return null;
-    } catch (e) {
+    } catch (e, s) {
       print("Failed to fetch searchUserByEmail--2: $e");
+      FirebaseCrashlytics.instance.recordError(e, s);
       return null;
     }
   }
@@ -515,8 +528,9 @@ class UserDataManager {
 
       final friendDoc = userDoc.data() as Map<String, dynamic>;
       return friendDoc.keys.toList();
-    } catch (e) {
+    } catch (e, s) {
       print("UserDataManager-- failed to getCurrentFriendsList: $e");
+      FirebaseCrashlytics.instance.recordError(e, s);
       return [];
     }
   }
@@ -534,8 +548,9 @@ class UserDataManager {
 
       final friendProfile = userDoc.data() as Map<String, dynamic>;
       return SkoobUser.fromMap(friendProfile);
-    } catch (e) {
+    } catch (e, s) {
       print("UserDataManager-- failed to getFriendData: $e");
+      FirebaseCrashlytics.instance.recordError(e, s);
       return null;
     }
   }
@@ -559,7 +574,8 @@ class UserDataManager {
         }
       }
       return bookList;
-    } catch (e) {
+    } catch (e, s) {
+      FirebaseCrashlytics.instance.recordError(e, s);
       return [];
     }
   }
@@ -592,8 +608,8 @@ class UserDataManager {
         final data = friendDoc.data() as Map<String, dynamic>;
         friendMessageToken = data['messageToken'];
       }
-    } catch (e) {
-      print(e);
+    } catch (e, s) {
+      FirebaseCrashlytics.instance.recordError(e, s);
     }
 
 
@@ -618,8 +634,9 @@ class UserDataManager {
         .collection('friend')
         .doc('list').set({
       userEmail ?? '': {'messageToken': userMessageToken}
-    }, SetOptions(merge: true)).then((_) {}).catchError((e) {
+    }, SetOptions(merge: true)).then((_) {}).catchError((e, s) {
       print('Error adding friend (reverse way): $e');
+      FirebaseCrashlytics.instance.recordError(e, s);
     });
   }
 
@@ -666,8 +683,8 @@ class UserDataManager {
           .collection('user')
           .doc('list')
           .update({currentUser?.name ?? '': FieldValue.delete()});
-    } catch (e) {
-      print(e);
+    } catch (e, s) {
+      FirebaseCrashlytics.instance.recordError(e, s);
     }
   }
 
@@ -678,7 +695,8 @@ class UserDataManager {
       try {
         await user.getIdToken(true);
         await user.delete();
-      } catch (e) {
+      } catch (e, s) {
+        FirebaseCrashlytics.instance.recordError(e, s);
       }
     } else {
     }
@@ -699,8 +717,8 @@ class UserDataManager {
         if (password == null) return false;
         return password == text;
       }
-    } catch (e) {
-      print(e);
+    } catch (e, s) {
+      FirebaseCrashlytics.instance.recordError(e, s);
       return false;
     }
     return false;
