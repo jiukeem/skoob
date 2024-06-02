@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:skoob/app/models/book.dart';
 import 'package:skoob/app/models/book/custom_info.dart';
+import 'package:skoob/app/services/firebase_analytics.dart';
 import 'package:skoob/app/utils/app_colors.dart';
 import 'package:skoob/app/views/pages/book_detail.dart';
 import 'package:skoob/app/views/widgets/general_divider.dart';
@@ -28,6 +29,7 @@ class DetailViewListTile extends StatelessWidget with BookshelfListTileMixin {
             child: InkWell(
               onTap: () {
                 if (!isClickable) {return;}
+                AnalyticsService.logEvent('bookshelf_detail_view_option_book_tapped');
                 Navigator.push(
                     context,
                     PageRouteBuilder(

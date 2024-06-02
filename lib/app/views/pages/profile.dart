@@ -81,6 +81,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
             padding: const EdgeInsets.fromLTRB(0, 0, 8.0, 0),
             child: IconButton(
                 onPressed: () {
+                  AnalyticsService.logEvent('profile_setting_button_tapped');
                   Navigator.push(
                       context,
                       PageRouteBuilder(
@@ -278,9 +279,6 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                   child: InkWell(
                     onTap: () {
                       _visitFriendBookshelf(friend);
-                      AnalyticsService.logEvent('Profile-- click friend', parameters: {
-                        'uid': friend.uid,
-                      });
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -372,10 +370,14 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   }
 
   void _visitFriendBookshelf(SkoobUser friend) {
+    AnalyticsService.logEvent('profile_visit_friend', parameters: {
+      'visit_to': friend.email
+    });
     Navigator.of(context).push(MaterialPageRoute(builder: (_) => Bookshelf(isVisiting: true, hostUser: friend)));
   }
 
   void _navigateAndUpdateFriendList() async {
+    AnalyticsService.logEvent('profile_button_tapped_friend_search');
     final result = await Navigator.of(context).push(
         MaterialPageRoute(builder: (_) => const FriendSearch()));
 
@@ -386,6 +388,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   }
 
   Future<void> _handleRefresh() async {
+    AnalyticsService.logEvent('profile_refresh_friend_tab');
     _friendList.clear();
     await _getFriendsData();
   }

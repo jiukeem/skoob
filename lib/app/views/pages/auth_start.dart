@@ -35,8 +35,8 @@ class AuthStart extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 10)
                 ),
                 onPressed: () {
+                  AnalyticsService.logEvent('auth_start_button_tapped_continue_with_email');
                   Navigator.of(context).push(MaterialPageRoute(builder: (_) => const EmailEntry()));
-                  AnalyticsService.logEvent('LAUNCH_continue_with_email_tapped');
                 },
                 child: const Text(
                   'continue with email',

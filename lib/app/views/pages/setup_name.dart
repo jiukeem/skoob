@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:skoob/app/views/pages/welcome.dart';
 
+import '../../services/firebase_analytics.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/custom_text_input_formatter.dart';
 
@@ -37,8 +38,10 @@ class _SetupNameState extends State<SetupName> {
       _errorText = null;
       final name = _controller.text;
       if (widget.nameList.contains(name)) {
+        AnalyticsService.logEvent('setup_name_already_exist');
         _errorText = '이미 존재하는 이름입니다';
       } else {
+        AnalyticsService.logEvent('setup_name_move_on_to_welcome');
         Navigator.of(context).push(MaterialPageRoute(
             builder: (_) => Welcome(
                   email: widget.email,

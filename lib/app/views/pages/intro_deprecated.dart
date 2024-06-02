@@ -125,9 +125,6 @@ class _IntroState extends State<Intro> {
             const SizedBox(height: 60.0,),
             InkWell(
               onTap: () {
-                AnalyticsService.logEvent('Intro-- login tapped', parameters: {
-                  'platform': 'google'
-                });
                 _checkAuthentication();
                 },
               child: SvgPicture.asset(

@@ -6,6 +6,8 @@ import 'package:skoob/app/views/widgets/rate_star.dart';
 import 'package:skoob/app/views/widgets/bookshelf_list_tile_mixin.dart';
 import 'package:skoob/app/views/pages/book_detail.dart';
 
+import '../../services/firebase_analytics.dart';
+
 class AlbumViewListTile extends StatelessWidget with BookshelfListTileMixin {
   final double itemWidth;
 
@@ -18,6 +20,7 @@ class AlbumViewListTile extends StatelessWidget with BookshelfListTileMixin {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
+        AnalyticsService.logEvent('bookshelf_album_view_option_book_tapped');
         Navigator.push(
             context,
             PageRouteBuilder(

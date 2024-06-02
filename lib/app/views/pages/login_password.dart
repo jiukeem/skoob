@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:skoob/app/views/pages/welcome.dart';
 
 import '../../controller/user_data_manager.dart';
+import '../../services/firebase_analytics.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/custom_text_input_formatter.dart';
 
@@ -49,8 +50,10 @@ class _LoginPasswordState extends State<LoginPassword> {
 
       final password = _controller.text;
       if (_validPassword == password) {
+        AnalyticsService.logEvent('login_password_valid_password_and_start_skoob');
         Navigator.of(context).push(MaterialPageRoute(builder: (_) => Welcome(isNewUser: false, email: widget._email, password: password, name: '')));
       } else {
+        AnalyticsService.logEvent('login_password_invalid_password');
         _errorText = '비밀번호가 일치하지 않습니다';
       }
     });

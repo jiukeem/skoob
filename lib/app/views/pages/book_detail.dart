@@ -30,7 +30,6 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
     _tabController = TabController(length: 1, vsync: this);
     book = widget.book;
     _currentRating = double.tryParse(book.customInfo.rate) ?? 0.0;
-    AnalyticsService.logEvent('Detail-- entered', parameters: {});
   }
 
   @override
@@ -71,10 +70,6 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
     }
 
     if (result == null) {
-      AnalyticsService.logEvent('Detail-- comment', parameters: {
-        'title': book.basicInfo.title,
-        'saved': false
-      });
     }
   }
 
@@ -92,10 +87,6 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
         ),
       ),
       onTap: () {
-        AnalyticsService.logEvent('Detail-- delete dialog', parameters: {
-          'title': book.basicInfo.title,
-          'result': 'cancelled'
-        });
         Navigator.of(context).pop(false);
       },
     );
@@ -119,10 +110,6 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
         ),
       ),
       onTap: () {
-        AnalyticsService.logEvent('Detail-- delete dialog', parameters: {
-          'title': book.basicInfo.title,
-          'result': 'deleted'
-        });
         Navigator.of(context).pop(true);
       },
     );
@@ -156,6 +143,7 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
         });
 
     if (mounted && shouldDelete == true) {
+      AnalyticsService.logEvent('book_detail_start_delete_book');
       Navigator.of(context).pop();
       _dataManager.deleteBook(widget.book);
     }
@@ -211,6 +199,7 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
                         ],
                         onSelected: (value) {
                           if (value == 1) {
+                            AnalyticsService.logEvent('book_detail_button_tapped_delete_book');
                             _showDeleteDialog(context);
                           }
                         },
@@ -269,10 +258,9 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
                               ),
                             ),
                             onRatingUpdate: (rating) {
-                              AnalyticsService.logEvent('Detail-- rate', parameters: {
-                                'title': book.basicInfo.title,
-                                'rateBefore': _currentRating,
-                                'rateAfter': rating
+                              AnalyticsService.logEvent('book_detail_rate_changed', parameters: {
+                                'rate_from': _currentRating,
+                                'rate_to': rating
                               });
                               setState(() {
                                 if (rating == _currentRating) {
@@ -289,10 +277,7 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
                           const SizedBox(height: 8.0),
                           InkWell(
                           onTap: () {
-                            AnalyticsService.logEvent('Detail-- comment', parameters: {
-                              'title': book.basicInfo.title,
-                              'commentBefore': book.customInfo.comment,
-                            });
+                            AnalyticsService.logEvent('book_detail_comment_tapped');
                             navigateAndUpdateUserRecord(context, book.customInfo.comment, UserRecordOption.comment);
                           },
                           child: book.customInfo.comment.isEmpty

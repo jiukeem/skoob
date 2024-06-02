@@ -87,7 +87,7 @@ class _BookshelfState extends State<Bookshelf> {
   }
 
   Future<void> _syncFromServer() async {
-    print('Bookshelf-- _syncFromServer is executed');
+    AnalyticsService.logEvent('bookshelf_start_sync_from_server');
     try {
       await _userDataManager.syncBookshelfFromServer();
     } catch (e) {
@@ -96,7 +96,7 @@ class _BookshelfState extends State<Bookshelf> {
   }
 
   Future<void> _syncFromLocal() async {
-    print('Bookshelf-- _syncFromLocal is executed');
+    AnalyticsService.logEvent('bookshelf_start_sync_from_local');
     try {
       _userDataManager.syncBookshelfFromLocal();
     } catch (e) {
@@ -196,9 +196,11 @@ class _BookshelfState extends State<Bookshelf> {
     bool isSelected = viewOption == _currentViewOption;
     return IconButton(
         onPressed: () {
-          AnalyticsService.logEvent(
-              'Bookshelf-- view option',
-              parameters: {'view option': viewOption.toString()});
+          AnalyticsService.logEvent('bookshelf_view_option_changed',
+              parameters: {
+                'view_option_from': _currentViewOption.toString(),
+                'view_option_to': viewOption.toString()
+              });
           setState(() {
             _currentViewOption = viewOption;
           });
@@ -234,12 +236,7 @@ class _BookshelfState extends State<Bookshelf> {
                   children: [
                     InkWell(
                       onTap: () {
-                        AnalyticsService.logEvent(
-                            'Bookshelf-- sort option button',
-                            parameters: {
-                              'isVisiting': widget.isVisiting
-                            }
-                        );
+                        AnalyticsService.logEvent('bookshelf_tap_sort_option');
                         _showSortOptionBottomSheet(context);
                       },
                       child: Container(
@@ -446,18 +443,20 @@ class _BookshelfState extends State<Bookshelf> {
     );
 
     if (result != null) {
-      AnalyticsService.logEvent(
-          'Bookshelf-- sort option button',
-          parameters: {
-            'sort option': result['selectedOption'],
-            'isAscending': result['isAscending'],
-            'isVisiting': widget.isVisiting,
-          }
-      );
-      setState(() {
-         _currentSortOption = result['selectedOption'];
-         _isAscending = result['isAscending'];
+      final newSortOption = result['selectedOption'];
+      final newIsAscending = result['isAscending'];
+      AnalyticsService.logEvent('bookshelf_sort_option_changed', parameters: {
+        'sort_option_from': _currentSortOption.toString(),
+        'is_ascending_from': _isAscending.toString(),
+        'sort_option_to': newSortOption.toString(),
+        'is_ascending_to': newIsAscending.toString()
       });
+      setState(() {
+         _currentSortOption = newSortOption;
+         _isAscending = newIsAscending;
+      });
+    } else {
+      AnalyticsService.logEvent('bookshelf_sort_option_not_changed');
     }
   }
 }

@@ -1,4 +1,5 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:skoob/app/models/skoob_user.dart';
 
 class AnalyticsService {
@@ -12,7 +13,7 @@ class AnalyticsService {
 
   static Future<void> logEvent(String eventName, {Map<String, dynamic>? parameters}) async {
     final mergedParameter = {
-      'uid': user?.email ?? '',
+      'email': user?.email ?? '',
       ...?parameters,
     };
 
@@ -20,6 +21,8 @@ class AnalyticsService {
       name: eventName,
       parameters: mergedParameter,
     );
-    print("Event logged: $eventName");
+    if (kDebugMode) {
+      print("SKOOB----------Event logged: $eventName");
+    }
   }
 }

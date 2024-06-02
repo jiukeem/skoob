@@ -52,6 +52,7 @@ class _SettingState extends State<Setting> {
           const GeneralDivider(verticalPadding: 0,),
           InkWell(
             onTap: () {
+              AnalyticsService.logEvent('setting_button_tapped_logout');
               _showLogoutDialog(context);
             },
             child: const Padding(
@@ -73,6 +74,7 @@ class _SettingState extends State<Setting> {
           ),
           InkWell(
             onTap: () {
+              AnalyticsService.logEvent('setting_button_tapped_delete_account');
               _showDeleteAccountDialog(context);
             },
             child: const Padding(
@@ -126,9 +128,6 @@ class _SettingState extends State<Setting> {
         ),
       ),
       onTap: () {
-        AnalyticsService.logEvent('Setting-- logout', parameters: {
-          'result': 'cancelled'
-        });
         Navigator.of(context).pop(false);
       },
     );
@@ -152,9 +151,6 @@ class _SettingState extends State<Setting> {
         ),
       ),
       onTap: () {
-        AnalyticsService.logEvent('Setting-- logout', parameters: {
-          'result': 'logged out'
-        });
         Navigator.of(context).pop(true);
       },
     );
@@ -179,6 +175,7 @@ class _SettingState extends State<Setting> {
         });
 
     if (mounted && shouldLogout == true) {
+      AnalyticsService.logEvent('setting_start_logout');
       _logout();
     }
   }
@@ -197,9 +194,6 @@ class _SettingState extends State<Setting> {
         ),
       ),
       onTap: () {
-        AnalyticsService.logEvent('Setting-- logout', parameters: {
-          'result': 'cancelled'
-        });
         Navigator.of(context).pop(false);
       },
     );
@@ -223,9 +217,6 @@ class _SettingState extends State<Setting> {
         ),
       ),
       onTap: () {
-        AnalyticsService.logEvent('Setting-- logout', parameters: {
-          'result': 'logged out'
-        });
         Navigator.of(context).pop(true);
       },
     );
@@ -250,6 +241,7 @@ class _SettingState extends State<Setting> {
         });
 
     if (mounted && shouldDeleteAccount == true) {
+      AnalyticsService.logEvent('setting_proceed_delete_account');
       _showPasswordConfirmDialog(context);
     }
   }
@@ -321,9 +313,6 @@ class _SettingState extends State<Setting> {
                     ),
                   ),
                   onTap: () {
-                    AnalyticsService.logEvent('Setting-- logout', parameters: {
-                      'result': 'cancelled'
-                    });
                     Navigator.of(context).pop(false);
                   },
                 ),
@@ -367,6 +356,7 @@ class _SettingState extends State<Setting> {
         });
 
     if (mounted && shouldDeleteAccount == true) {
+      AnalyticsService.logEvent('setting_start_delete_account');
       _deleteAccount();
     }
   }

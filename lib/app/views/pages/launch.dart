@@ -1,6 +1,7 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:skoob/app/services/firebase_analytics.dart';
 import 'package:skoob/app/views/pages/auth_start.dart';
 import 'package:skoob/app/views/pages/skoob.dart';
 
@@ -28,6 +29,7 @@ class _LaunchState extends State<Launch> {
     var connectivityResult = await _connectivity.checkConnectivity();
     if (connectivityResult == ConnectivityResult.none) {
       _showNoNetworkDialog();
+      AnalyticsService.logEvent('launch_no_network_and_show_dialog');
     } else {
       _checkExistingUserCredential();
     }
@@ -35,9 +37,11 @@ class _LaunchState extends State<Launch> {
 
   void _checkExistingUserCredential() async {
     if (await _userDataManager.hasUser()) {
+      AnalyticsService.logEvent('launch_existing_user');
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const Skoob()));
       _userDataManager.setUserFromCurrentLocalUser();
     } else {
+      AnalyticsService.logEvent('launch_new_user_and_start_sign_up');
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AuthStart()));
     }
   }

@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:skoob/app/models/skoob_user.dart';
 
 import '../../controller/user_data_manager.dart';
+import '../../services/firebase_analytics.dart';
 import '../../utils/app_colors.dart';
 
 class FriendSearch extends StatefulWidget {
@@ -26,11 +27,16 @@ class _FriendSearchState extends State<FriendSearch> {
 
 
   Future<void> _startSearch() async {
+    AnalyticsService.logEvent('friend_search_start_search', parameters: {
+      'query': _searchKeyword
+    });
+
     setState(() {
       _isLoading = true;
     });
     _resultUser = await _userDataManager.searchUserByName(_searchKeyword);
     if (_resultUser == null) {
+      AnalyticsService.logEvent('friend_search_no_one_found');
       _guideMessage = '사용자를 찾을 수 없습니다';
     } else {
       _guideMessage = null;
@@ -165,6 +171,10 @@ class _FriendSearchState extends State<FriendSearch> {
                       fontSize: 14.0,
                     );
                   } else {
+                    AnalyticsService.logEvent('friend_search_add_friend', parameters: {
+                      'friend_name': _resultUser?.name,
+                      'friend_email': _resultUser?.email
+                    });
                     await _userDataManager.addFriend(_resultUser!);
                     Fluttertoast.showToast(
                       msg: '${_resultUser?.name} 님을 친구로 추가했습니다',

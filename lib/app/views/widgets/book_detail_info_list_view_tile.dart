@@ -42,6 +42,7 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
       children: [
         InkWell(
           onTap: () {
+            AnalyticsService.logEvent('book_detail_info_status_tapped');
             _showStatusOptionBottomSheet(context);
           },
           child: _buildChildBasedOnStatus(status),
@@ -83,16 +84,17 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
                 if (status == BookReadingStatus.reading || status == BookReadingStatus.done) {
                   final DateTime? pickedDate = await _selectDate(context, finishDate: DateTime.now());
                   if (pickedDate != null) {
+                    final newDate = dateTimeToString(pickedDate);
+                    AnalyticsService.logEvent('book_detail_info_start_date_changed', parameters: {
+                      'status': status.toString(),
+                      'date_from': startReadingDate,
+                      'date_to': newDate
+                    });
                     _checkIfNeedToResetFinishDate(pickedDate);
                     setState(() {
-                      widget.book.customInfo.startReadingDate = dateTimeToString(pickedDate);
+                      widget.book.customInfo.startReadingDate = newDate;
                     });
                     _dataManager.updateBook(widget.book);
-                    AnalyticsService.logEvent('Detail-- startReadingOn', parameters: {
-                      'status': status.toString(),
-                      'dateBefore': startReadingDate,
-                      'dateAfter': pickedDate
-                    });
                   }
                 }
               },
@@ -139,15 +141,16 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
                     final startDate = DateTime.parse(widget.book.customInfo.startReadingDate.replaceAll('.', '-'));
                     final DateTime? pickedDate = await _selectDate(context, startDate: startDate);
                     if (pickedDate != null) {
+                      final newDate = dateTimeToString(pickedDate);
+                      AnalyticsService.logEvent('book_detail_info_start_date_changed', parameters: {
+                        'status': status.toString(),
+                        'date_from': startReadingDate,
+                        'date_to': newDate
+                      });
                       setState(() {
-                        widget.book.customInfo.finishReadingDate = dateTimeToString(pickedDate);
+                        widget.book.customInfo.finishReadingDate = newDate;
                       });
                       _dataManager.updateBook(widget.book);
-                      AnalyticsService.logEvent('Detail-- finishReadingOn', parameters: {
-                        'status': status.toString(),
-                        'dateBefore': finishReadingDate,
-                        'dateAfter': pickedDate
-                      });
                     }
                   }
                 },
@@ -251,6 +254,10 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
                       InkWell(
                         onTap: () {
                           final book = widget.book;
+                          AnalyticsService.logEvent('book_detail_info_status_changed', parameters: {
+                            'status_from': book.customInfo.status.toString(),
+                            'status_to': BookReadingStatus.notStarted.toString()
+                          });
                           book.customInfo.status = BookReadingStatus.notStarted;
                           _dataManager.updateBook(widget.book);
                           Navigator.pop(context, BookReadingStatus.notStarted);
@@ -268,6 +275,10 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
                       InkWell(
                         onTap: () {
                           final book = widget.book;
+                          AnalyticsService.logEvent('book_detail_info_status_changed', parameters: {
+                            'status_from': book.customInfo.status.toString(),
+                            'status_to': BookReadingStatus.reading.toString()
+                          });
                           book.customInfo.status = BookReadingStatus.reading;
                           _dataManager.updateBook(widget.book);
                           _dataManager.updateLatestFeed(widget.book, BookReadingStatus.reading);
@@ -286,6 +297,10 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
                       InkWell(
                         onTap: () {
                           final book = widget.book;
+                          AnalyticsService.logEvent('book_detail_info_status_changed', parameters: {
+                            'status_from': book.customInfo.status.toString(),
+                            'status_to': BookReadingStatus.done.toString()
+                          });
                           book.customInfo.status = BookReadingStatus.done;
                           _dataManager.updateBook(widget.book);
                           _dataManager.updateLatestFeed(widget.book, BookReadingStatus.done);

@@ -28,19 +28,15 @@ class _SkoobState extends State<Skoob> {
   void initState() {
     super.initState();
     AnalyticsService.logEvent(
-        'Skoob-- init',
+        'skoob_initState',
         parameters: {}
     );
   }
 
   void _onItemTapped(int index) {
-    AnalyticsService.logEvent(
-        'NavigationBar Tapped',
-      parameters: {
-          'tab number': index,
-      }
-    );
     setState(() {
+      AnalyticsService.logEvent('skoob_page_index_changed',
+          parameters: {'index_from': _currentPageIndex, 'index_to': index});
       _currentPageIndex = index;
     });
   }
@@ -69,6 +65,7 @@ class _SkoobState extends State<Skoob> {
           return false; // false will cancel the back button event
         }
 
+        AnalyticsService.logEvent('skoob_exit_app_by_back_button');
         return true; // true will exit the app
       },
       child: Scaffold(

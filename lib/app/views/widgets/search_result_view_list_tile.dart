@@ -103,7 +103,7 @@ class _SearchResultViewListTileState extends State<SearchResultViewListTile> {
               IconButton(
                 onPressed: () {
                   _dataManager.addBook(book);
-                  AnalyticsService.logEvent('Search-- add book', parameters: {
+                  AnalyticsService.logEvent('search_add_book', parameters: {
                     'title': book.basicInfo.title,
                   });
                   Fluttertoast.showToast(

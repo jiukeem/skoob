@@ -7,6 +7,8 @@ import 'package:skoob/app/views/pages/book_detail.dart';
 import 'package:skoob/app/views/widgets/status_label.dart';
 import 'package:skoob/app/views/widgets/bookshelf_list_tile_mixin.dart';
 
+import '../../services/firebase_analytics.dart';
+
 class TableViewListTile extends StatelessWidget with BookshelfListTileMixin {
   TableViewListTile({super.key, required Book book, required bool isLast}) {
     this.book = book;
@@ -27,6 +29,7 @@ class TableViewListTile extends StatelessWidget with BookshelfListTileMixin {
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
           child: InkWell(
             onTap: () {
+              AnalyticsService.logEvent('bookshelf_table_view_option_book_tapped');
               Navigator.push(
                   context,
                   PageRouteBuilder(

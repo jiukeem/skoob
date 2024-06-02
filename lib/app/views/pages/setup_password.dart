@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:skoob/app/services/firebase_analytics.dart';
 import 'package:skoob/app/views/pages/setup_name.dart';
 
 import '../../utils/app_colors.dart';
@@ -43,10 +44,13 @@ class _SetupPasswordState extends State<SetupPassword> {
       final password = _controller.text;
       final confirmPassword = _confirmController.text;
       if (password.length < 6 || password.length > 20) {
+        AnalyticsService.logEvent('setup_password_invalid_length');
         _passwordErrorText = '비밀번호는 6-20자 사이여야 합니다';
       } else if (password != confirmPassword) {
+        AnalyticsService.logEvent('setup_password_not_correspond');
         _confirmPasswordErrorText = '비밀번호가 일치하지 않습니다';
       } else {
+        AnalyticsService.logEvent('setup_password_move_on_to_setup_name_page');
         Navigator.of(context).push(MaterialPageRoute(
             builder: (_) =>
                 SetupName(nameList: widget.nameList, email: widget.email, password: password,)));

@@ -39,6 +39,9 @@ class _SearchState extends State<Search> {
   }
 
   Future<void> _searchBookByTitle() async {
+    AnalyticsService.logEvent('search_start_search', parameters: {
+      'query': _searchKeyword
+    });
     Uri url = Uri.parse(aladin.requestUrl);
     Map<String, dynamic> queryParams = {
       'TTBKey': aladin.ttb_key,
@@ -173,9 +176,6 @@ class _SearchState extends State<Search> {
                     fontSize: 16.0
                   ),
                   onSubmitted: (value) {
-                    AnalyticsService.logEvent('Search-- search clicked', parameters: {
-                      'keyword': _searchController.text
-                    });
                     setState(() {
                       _searchKeyword = _searchController.text;
                       _startSearch();

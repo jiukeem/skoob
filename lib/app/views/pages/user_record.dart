@@ -49,8 +49,14 @@ class _UserRecordPageState extends State<UserRecord> {
     return WillPopScope(
       onWillPop: () async {
         if (book.customInfo.comment != _textController.text) {
+          AnalyticsService.logEvent('user_record_back_button_tapped', parameters: {
+            'text_changed': true
+          });
           _showSaveDialog(context, book);
         }
+        AnalyticsService.logEvent('user_record_back_button_tapped', parameters: {
+          'text_changed': false
+        });
         return true;
       },
       child: Scaffold(
@@ -112,10 +118,9 @@ class _UserRecordPageState extends State<UserRecord> {
   }
 
   void _handleSubmit(Book book) {
-    AnalyticsService.logEvent('Detail-- comment', parameters: {
-      'title': book.basicInfo.title,
-      'commentAfter': _textController.text,
-      'saved': true
+    AnalyticsService.logEvent('user_record_save_comment', parameters: {
+      'comment_from': book.customInfo.comment,
+      'comment_to': _textController.text
     });
     saveUserRecord(_textController.text, book);
     _dataManager.updateBook(book);
@@ -136,9 +141,7 @@ class _UserRecordPageState extends State<UserRecord> {
         ),
       ),
       onTap: () {
-        AnalyticsService.logEvent('Setting-- logout', parameters: {
-          'result': 'cancelled'
-        });
+        AnalyticsService.logEvent('user_record_dialog_do_not_save');
         Navigator.of(context).pop(false);
       },
     );
@@ -162,9 +165,7 @@ class _UserRecordPageState extends State<UserRecord> {
         ),
       ),
       onTap: () {
-        AnalyticsService.logEvent('Setting-- logout', parameters: {
-          'result': 'logged out'
-        });
+        AnalyticsService.logEvent('user_record_dialog_save');
         Navigator.of(context).pop(true);
       },
     );

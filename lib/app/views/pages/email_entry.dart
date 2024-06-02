@@ -5,6 +5,7 @@ import 'package:skoob/app/views/pages/setup_password.dart';
 import 'package:skoob/app/views/pages/auth_start.dart';
 
 import '../../controller/user_data_manager.dart';
+import '../../services/firebase_analytics.dart';
 import '../../utils/app_colors.dart';
 
 class EmailEntry extends StatefulWidget {
@@ -39,6 +40,7 @@ class _EmailEntryState extends State<EmailEntry> {
   }
 
   void _handleSubmit() {
+    AnalyticsService.logEvent('email_entry_email_submitted');
     _email = _controller.text;
 
     if (_checkValidity()) {
@@ -68,6 +70,7 @@ class _EmailEntryState extends State<EmailEntry> {
   Future<void> _navigateEmailCorrespondingPage() async {
     final emailToNameMap = await _userDataManager.getAllUserMap();
     if (emailToNameMap == null) {
+      AnalyticsService.logEvent('email_entry_no_network_error');
       Fluttertoast.showToast(
         msg: '네트워크 연결을 확인해주세요',
         toastLength: Toast.LENGTH_SHORT,
@@ -83,8 +86,10 @@ class _EmailEntryState extends State<EmailEntry> {
     final userNameList = emailToNameMap.keys.toList();
 
     if (userEmailList.contains(_email)) {
+      AnalyticsService.logEvent('email_entry_handle_existing_user');
       Navigator.of(context).push(MaterialPageRoute(builder: (_) => LoginPassword(_email)));
     } else {
+      AnalyticsService.logEvent('email_entry_handle_new_user');
       Navigator.of(context).push(MaterialPageRoute(builder: (_) => SetupPassword(_email, userNameList)));
     }
   }
