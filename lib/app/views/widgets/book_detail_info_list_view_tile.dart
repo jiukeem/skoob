@@ -261,10 +261,6 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
                           book.customInfo.status = BookReadingStatus.notStarted;
                           _dataManager.updateBook(widget.book);
                           Navigator.pop(context, BookReadingStatus.notStarted);
-                          AnalyticsService.logEvent('Detail-- status', parameters: {
-                            'statusBefore': book.customInfo.status.toString(),
-                            'statusAfter': BookReadingStatus.notStarted
-                          });
                         },
                         child: const Padding(
                           padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
@@ -283,10 +279,6 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
                           _dataManager.updateBook(widget.book);
                           _dataManager.updateLatestFeed(widget.book, BookReadingStatus.reading);
                           Navigator.pop(context, BookReadingStatus.reading);
-                          AnalyticsService.logEvent('Detail-- status', parameters: {
-                            'statusBefore': book.customInfo.status.toString(),
-                            'statusAfter': BookReadingStatus.reading
-                          });
                         },
                         child: const Padding(
                           padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
@@ -305,10 +297,6 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
                           _dataManager.updateBook(widget.book);
                           _dataManager.updateLatestFeed(widget.book, BookReadingStatus.done);
                           Navigator.pop(context, BookReadingStatus.done);
-                          AnalyticsService.logEvent('Detail-- status', parameters: {
-                            'statusBefore': book.customInfo.status.toString(),
-                            'statusAfter': BookReadingStatus.done
-                          });
                         },
                         child: const Padding(
                           padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
