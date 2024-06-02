@@ -4,8 +4,6 @@ import 'book/custom_info.dart';
 
 @HiveType(typeId: 4)
 class SkoobUser extends HiveObject {
-  @HiveField(0)
-  final String uid;
   @HiveField(1)
   final String name;
   @HiveField(2)
@@ -20,8 +18,7 @@ class SkoobUser extends HiveObject {
   BookReadingStatus latestFeedStatus;
 
   SkoobUser(
-      {required this.uid,
-      required this.name,
+      {required this.name,
       required this.email,
       this.photoUrl = '',
       this.phoneNumber = '',
@@ -32,7 +29,6 @@ class SkoobUser extends HiveObject {
 
   Map<String, String> toMap() {
     return {
-      'uid': uid,
       'name': name,
       'email': email,
       'photoUrl': photoUrl,
@@ -53,7 +49,6 @@ class SkoobUser extends HiveObject {
     String statusString = map['latestFeedStatus'] as String? ?? 'BookReadingStatus.initial';
     BookReadingStatus status = statusMap[statusString] ?? BookReadingStatus.initial;
     return SkoobUser(
-        uid: map['uid'] ?? '',
         name: map['name'] ?? '',
         email: map['email'] ?? '',
         photoUrl: map['photoUrl'] ?? '',
@@ -71,7 +66,6 @@ class UserAdapter extends TypeAdapter<SkoobUser> {
   @override
   SkoobUser read(BinaryReader reader) {
     try {
-      var uid = reader.readString();
       var name = reader.readString();
       var email = reader.readString();
       var photoUrl = reader.readString();
@@ -80,7 +74,6 @@ class UserAdapter extends TypeAdapter<SkoobUser> {
       int latestFeedStatusIndex = reader.readByte();
       var latestFeedStatus = BookReadingStatus.values[latestFeedStatusIndex];
       return SkoobUser(
-          uid: uid,
           name: name,
           email: email,
           photoUrl: photoUrl,
@@ -96,7 +89,6 @@ class UserAdapter extends TypeAdapter<SkoobUser> {
 
   @override
   void write(BinaryWriter writer, SkoobUser obj) {
-    writer.writeString(obj.uid);
     writer.writeString(obj.name);
     writer.writeString(obj.email);
     writer.writeString(obj.photoUrl);

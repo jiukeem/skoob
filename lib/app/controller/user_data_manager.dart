@@ -21,7 +21,6 @@ class UserDataManager {
   late Box<Book> _bookBox;
   late Box<String> _settingBox;
   SkoobUser? currentUser;
-  String? get userId => currentUser?.uid;
   String? get userEmail => currentUser?.email;
 
   Future<void> initBox() async {
@@ -61,15 +60,8 @@ class UserDataManager {
   Future<void> handleSignIn(
       {required String name, required String email, required String password}) async {
 
-    String? uid = await _registerNewUserAndGetUid(email: email, password: password);
-    if (uid == null) {
-      print('uid is null');
-      return;
-    }
-
     String token = await FirebaseMessaging.instance.getToken() ?? '';
     final userDataMap = {
-      'uid': uid,
       'name': name,
       'email': email,
       'password': password,
@@ -548,11 +540,11 @@ class UserDataManager {
     }
   }
 
-  Future<List<Book>> getFriendBookshelf(String uid) async {
+  Future<List<Book>> getFriendBookshelf(String email) async {
     try {
       DocumentSnapshot doc = await _firestore
           .collection('user')
-          .doc(uid)
+          .doc(email)
           .collection('bookshelf')
           .doc('list')
           .get();
@@ -642,7 +634,7 @@ class UserDataManager {
   Future<void> deleteAccount() async {
     await _deleteAllUserDocumentAndSubcollection();
     await _deleteUserInfoInAllUserList();
-    await _deleteUserAuthentication();
+    // await _deleteUserAuthentication();
 
     _bookBox.clear();
     _userBox.clear();

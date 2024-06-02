@@ -342,7 +342,7 @@ class _BookshelfState extends State<Bookshelf> {
       return;
     }
 
-    friendBooks = await _userDataManager.getFriendBookshelf(widget.hostUser!.uid);
+    friendBooks = await _userDataManager.getFriendBookshelf(widget.hostUser!.email);
     setState(() {
       _isLoading = false;
     });

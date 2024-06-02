@@ -98,7 +98,6 @@ class _IntroState extends State<Intro> {
 
   Map<String, String> _createUserData(User user) {
     return {
-      'uid': user.uid ?? '',
       'name': user.displayName ?? '',
       'email': user.email ?? '',
       'phoneNumber': user.phoneNumber ?? '',
