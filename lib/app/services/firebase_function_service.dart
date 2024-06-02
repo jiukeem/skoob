@@ -20,12 +20,6 @@ class FirebaseFunctionService {
 
     final Map<String, dynamic> responseBody = json.decode(response.body);
 
-    print("SENT ${userId} ${userName} ${bookTitle} ${status}");
-    print("SENT ${userId} ${userName} ${bookTitle} ${status}");
-    print("SENT ${userId} ${userName} ${bookTitle} ${status}");
-    print("SENT ${userId} ${userName} ${bookTitle} ${status}");
-    print("SENT ${userId} ${userName} ${bookTitle} ${status}");
-
     return responseBody;
   }
 }
