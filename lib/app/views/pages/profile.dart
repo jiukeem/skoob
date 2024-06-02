@@ -196,7 +196,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
           width: 72,
           height: 72,
           child: Image.asset(
-            'assets/temp_logo.png',
+            'assets/profile_default.jpg',
             fit: BoxFit.cover,
           )),
     );
@@ -316,7 +316,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                   width: 54,
                                   height: 54,
                                   child: Image.asset(
-                                          'assets/temp_logo.png',
+                                          'assets/profile_default.jpg',
                                           fit: BoxFit.cover,
                                         )),
                             ),

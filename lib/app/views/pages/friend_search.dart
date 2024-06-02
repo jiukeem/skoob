@@ -197,7 +197,7 @@ class _FriendSearchState extends State<FriendSearch> {
           width: 40,
           height: 40,
           child: Image.asset(
-            'assets/temp_logo.png',
+            'assets/profile_default.jpg',
             fit: BoxFit.cover,
           )),
     );

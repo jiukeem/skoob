@@ -88,6 +88,7 @@ flutter:
   assets:
     - assets/temp_logo.png
     - assets/android_neutral_sq_ctn.svg
+    - assets/profile_default.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
