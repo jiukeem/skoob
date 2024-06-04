@@ -2,13 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
 
 import 'package:skoob/app/models/book.dart';
 import 'package:skoob/app/models/book/custom_info.dart';
 import 'package:skoob/app/models/skoob_user.dart';
 import 'package:skoob/app/services/firebase_analytics.dart';
+import 'package:skoob/app/services/firebase_function_service.dart';
 
 class UserDataManager {
   static final UserDataManager _instance = UserDataManager._internal();
@@ -369,6 +369,8 @@ class UserDataManager {
         'latestFeedBookTitle': title,
         'latestFeedStatus': status.toString(),
       }, SetOptions(merge: true));
+
+      await FirebaseFunctionService.sendStatusUpdatePushMessage(user.email, user.name, title, status.toString());
     } catch (e, s) {
       print("Failed to update Firestore latestFeed: $e");
       FirebaseCrashlytics.instance.recordError(e, s);
