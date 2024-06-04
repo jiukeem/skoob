@@ -176,15 +176,22 @@ class _BookshelfState extends State<Bookshelf> {
       return SizedBox(
         height: 56.0,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(20.0, 0.0, 8.0, 0),
-          child: Center(
-            child: Text(
-             friendName,
-             style: const TextStyle(
-                 fontFamily: 'LexendExaMedium',
-                 fontSize: 24.0
-             ),
-            ),
+          padding: const EdgeInsets.fromLTRB(4.0, 0.0, 0.0, 0),
+          child: Row(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+              const SizedBox(width: 12,),
+              Text(
+              friendName,
+              style: const TextStyle(
+                  fontFamily: 'LexendExaMedium', fontSize: 24.0),
+                          ),
+            ]
           ),
         ),
       );

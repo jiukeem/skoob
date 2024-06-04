@@ -66,6 +66,9 @@ class _FriendSearchState extends State<FriendSearch> {
       },
       child: Scaffold(
         backgroundColor: AppColors.white,
+        appBar: AppBar(
+          backgroundColor: AppColors.white,
+        ),
         body: SafeArea(
           child: Column(
             children: [
@@ -89,7 +92,7 @@ class _FriendSearchState extends State<FriendSearch> {
 
   Widget _buildSearchField() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20.0, 16.0, 8.0, 12.0),
+      padding: const EdgeInsets.fromLTRB(20.0, 0.0, 8.0, 12.0),
       child: Row(
         children: [
           Expanded(
