@@ -6,8 +6,8 @@ import 'package:skoob/app/controller/user_data_manager.dart';
 import 'package:skoob/app/models/book.dart';
 import 'package:skoob/app/services/firebase_analytics.dart';
 import 'package:skoob/app/utils/app_colors.dart';
-import 'package:skoob/app/views/pages/user_record.dart';
-import 'package:skoob/app/views/widgets/book_detail_info_list_view_tile.dart';
+import 'package:skoob/app/views/pages/bookshelf/detail/user_record.dart';
+import 'package:skoob/app/views/pages/bookshelf/detail/widgets/info/book_detail_info_list_view_tile.dart';
 
 class BookDetail extends StatefulWidget {
   final Book book;

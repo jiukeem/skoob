@@ -7,9 +7,9 @@ import 'package:skoob/app/models/book/custom_info.dart';
 import 'package:skoob/app/services/firebase_analytics.dart';
 import 'package:skoob/app/utils/app_colors.dart';
 import 'package:skoob/app/utils/util_fuctions.dart';
-import 'package:skoob/app/views/pages/book_detail.dart';
+import 'package:skoob/app/views/pages/bookshelf/detail/book_detail.dart';
 import 'package:skoob/app/views/widgets/general_divider.dart';
-import 'package:skoob/app/views/widgets/status_label.dart';
+import 'package:skoob/app/views/pages/bookshelf/widgets/status_label.dart';
 
 class BookDetailInfoListViewTile extends StatefulWidget {
   final Book book;

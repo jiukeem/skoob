@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:skoob/app/services/firebase_analytics.dart';
 import 'package:skoob/app/utils/app_colors.dart';
-import 'package:skoob/app/views/pages/email_entry.dart';
+import 'package:skoob/app/views/pages/auth/email_entry.dart';
 
 class AuthStart extends StatelessWidget {
   const AuthStart({Key? key}) : super(key: key);

@@ -1,60 +1,54 @@
 import 'package:flutter/material.dart';
-import 'package:skoob/app/views/pages/welcome.dart';
+import 'package:flutter/services.dart';
+import 'package:skoob/app/views/pages/auth/welcome.dart';
 
-import '../../controller/user_data_manager.dart';
-import '../../services/firebase_analytics.dart';
-import '../../utils/app_colors.dart';
-import '../../utils/custom_text_input_formatter.dart';
+import '../../../services/firebase_analytics.dart';
+import '../../../utils/app_colors.dart';
+import '../../../utils/custom_text_input_formatter.dart';
 
-class LoginPassword extends StatefulWidget {
-  final _email;
+class SetupName extends StatefulWidget {
+  final List<String> nameList;
+  final String email;
+  final String password;
 
-  const LoginPassword(this._email, {super.key});
+  const SetupName({required this.nameList, required this.email, required this.password, super.key});
 
   @override
-  State<LoginPassword> createState() => _LoginPasswordState();
+  State<SetupName> createState() => _SetupNameState();
 }
 
-class _LoginPasswordState extends State<LoginPassword> {
-  final UserDataManager _userDataManager = UserDataManager();
+class _SetupNameState extends State<SetupName> {
   late TextEditingController _controller;
-  late FocusNode _focusNode;
   String? _errorText;
-  String? _validPassword;
 
   @override
   void initState() {
     super.initState();
     _controller = TextEditingController();
-    _focusNode = FocusNode();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _focusNode.requestFocus();
-    });
-    _getValidPassword();
   }
 
   @override
   void dispose() {
     _controller.dispose();
-    _focusNode.dispose();
     super.dispose();
-  }
-
-  void _getValidPassword() async {
-    _validPassword ??= await _userDataManager.getValidPassword(widget._email);
   }
 
   void _handleSubmit() {
     setState(() {
       _errorText = null;
-
-      final password = _controller.text;
-      if (_validPassword == password) {
-        AnalyticsService.logEvent('login_password_valid_password_and_start_skoob');
-        Navigator.of(context).push(MaterialPageRoute(builder: (_) => Welcome(isNewUser: false, email: widget._email, password: password, name: '')));
+      final name = _controller.text;
+      if (widget.nameList.contains(name)) {
+        AnalyticsService.logEvent('setup_name_already_exist');
+        _errorText = '이미 존재하는 이름입니다';
       } else {
-        AnalyticsService.logEvent('login_password_invalid_password');
-        _errorText = '비밀번호가 일치하지 않습니다';
+        AnalyticsService.logEvent('setup_name_move_on_to_welcome');
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (_) => Welcome(
+                  email: widget.email,
+                  password: widget.password,
+                  name: name,
+                  isNewUser: true,
+                )));
       }
     });
   }
@@ -86,7 +80,7 @@ class _LoginPasswordState extends State<LoginPassword> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
-                    '비밀번호를 입력해주세요',
+                    '사용할 이름을 정해주세요',
                     style: TextStyle(
                         fontFamily: 'NotoSansKRBold',
                         fontSize: 24,
@@ -101,33 +95,31 @@ class _LoginPasswordState extends State<LoginPassword> {
                 children: [
                   Expanded(
                     child: TextField(
-                      obscureText: true,
                       controller: _controller,
                       keyboardType: TextInputType.visiblePassword,
                       decoration: InputDecoration(
-                        labelText: '비밀번호',
-                        errorText: _errorText,
-                        labelStyle: const TextStyle(
-                            color: AppColors.gray1,
-                            fontFamily: 'NotoSansKRRegular'
-                        ),
-                        floatingLabelStyle: const TextStyle(
-                            color: AppColors.softBlack,
-                            fontFamily: 'NotoSansKRRegular'
-                        ),
-                        contentPadding: const EdgeInsets.only(bottom: 0),
-                        enabledBorder: const UnderlineInputBorder(
-                          borderSide: BorderSide(color: AppColors.softBlack, width: 1.6),
-                        ),
-                        focusedBorder: const UnderlineInputBorder(
-                          borderSide: BorderSide(color: AppColors.softBlack, width: 1.6),
-                        ),
-                        // errorText: _passwordErrorText
+                          labelText: '이름',
+                          helperText: '영문 4-16자',
+                          errorText: _errorText,
+                          labelStyle: const TextStyle(
+                              color: AppColors.gray1,
+                              fontFamily: 'NotoSansKRRegular'
+                          ),
+                          floatingLabelStyle: const TextStyle(
+                              color: AppColors.softBlack,
+                              fontFamily: 'NotoSansKRRegular'
+                          ),
+                          contentPadding: const EdgeInsets.only(bottom: 0),
+                          enabledBorder: const UnderlineInputBorder(
+                            borderSide: BorderSide(color: AppColors.softBlack, width: 1.6),
+                          ),
+                          focusedBorder: const UnderlineInputBorder(
+                            borderSide: BorderSide(color: AppColors.softBlack, width: 1.6),
+                          ),
+                          // errorText: _passwordErrorText
                       ),
                       inputFormatters: [
-                        CustomTextInputFormatter(
-                            pattern: r"""^[\w\d!@#$%^&*()_+=[\]{}|\\:;"'<>,.?/-~]+$"""
-                        ),
+                        FilteringTextInputFormatter.allow(RegExp("[a-zA-Z]+")),
                       ],
                       style: const TextStyle(
                         color: AppColors.softBlack,

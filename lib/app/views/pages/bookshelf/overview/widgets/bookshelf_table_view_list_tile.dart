@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:skoob/app/models/book.dart';
 import 'package:skoob/app/models/book/custom_info.dart';
 import 'package:skoob/app/utils/app_colors.dart';
-import 'package:skoob/app/views/pages/book_detail.dart';
-import 'package:skoob/app/views/widgets/status_label.dart';
-import 'package:skoob/app/views/widgets/bookshelf_list_tile_mixin.dart';
+import 'package:skoob/app/views/pages/bookshelf/detail/book_detail.dart';
+import 'package:skoob/app/views/pages/bookshelf/widgets/status_label.dart';
+import 'package:skoob/app/views/pages/bookshelf/overview/widgets/bookshelf_list_tile_mixin.dart';
 
-import '../../services/firebase_analytics.dart';
+import '../../../../../services/firebase_analytics.dart';
 
 class TableViewListTile extends StatelessWidget with BookshelfListTileMixin {
   TableViewListTile({super.key, required Book book, required bool isLast}) {

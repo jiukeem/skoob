@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:skoob/app/services/firebase_analytics.dart';
-import 'package:skoob/app/views/pages/setup_name.dart';
+import 'package:skoob/app/views/pages/auth/setup_name.dart';
 
-import '../../utils/app_colors.dart';
-import '../../utils/custom_text_input_formatter.dart';
+import '../../../utils/app_colors.dart';
+import '../../../utils/custom_text_input_formatter.dart';
 
 class SetupPassword extends StatefulWidget {
   final String email;

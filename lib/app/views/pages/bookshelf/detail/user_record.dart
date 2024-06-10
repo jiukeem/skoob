@@ -6,7 +6,7 @@ import 'package:skoob/app/models/book.dart';
 import 'package:skoob/app/utils/app_colors.dart';
 import 'package:skoob/app/views/widgets/general_divider.dart';
 
-import '../../services/firebase_analytics.dart';
+import '../../../../services/firebase_analytics.dart';
 
 class UserRecord extends StatefulWidget {
   final Book book;

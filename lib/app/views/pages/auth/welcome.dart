@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:skoob/app/services/firebase_analytics.dart';
-import 'package:skoob/app/views/pages/skoob.dart';
+import 'package:skoob/app/views/pages/home/skoob.dart';
 
-import '../../controller/user_data_manager.dart';
-import '../../utils/app_colors.dart';
+import '../../../controller/user_data_manager.dart';
+import '../../../utils/app_colors.dart';
 
 class Welcome extends StatefulWidget {
   final bool isNewUser;

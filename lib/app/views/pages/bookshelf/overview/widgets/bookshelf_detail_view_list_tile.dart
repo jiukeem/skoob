@@ -4,12 +4,12 @@ import 'package:skoob/app/models/book.dart';
 import 'package:skoob/app/models/book/custom_info.dart';
 import 'package:skoob/app/services/firebase_analytics.dart';
 import 'package:skoob/app/utils/app_colors.dart';
-import 'package:skoob/app/views/pages/book_detail.dart';
+import 'package:skoob/app/views/pages/bookshelf/detail/book_detail.dart';
 import 'package:skoob/app/views/widgets/general_divider.dart';
-import 'package:skoob/app/views/widgets/rate_star.dart';
-import 'package:skoob/app/views/widgets/status_label.dart';
-import 'package:skoob/app/views/widgets/bookshelf_list_tile_mixin.dart';
-import 'package:skoob/app/views/widgets/date_widget_accroding_to_status.dart';
+import 'package:skoob/app/views/pages/bookshelf/widgets/rate_star.dart';
+import 'package:skoob/app/views/pages/bookshelf/widgets/status_label.dart';
+import 'package:skoob/app/views/pages/bookshelf/overview/widgets/bookshelf_list_tile_mixin.dart';
+import 'package:skoob/app/views/pages/bookshelf/detail/widgets/info/date_widget_according_to_status.dart';
 
 class DetailViewListTile extends StatelessWidget with BookshelfListTileMixin {
   DetailViewListTile({super.key, required Book book, required bool isLast, bool isClickable = true}) {

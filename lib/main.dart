@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:skoob/app/views/pages/auth_start.dart';
-import 'package:skoob/app/views/pages/launch.dart';
+import 'package:skoob/app/views/pages/auth/auth_start.dart';
+import 'package:skoob/app/views/pages/home/launch.dart';
 
 import 'package:skoob/firebase_options.dart';
 import 'package:skoob/app/controller/user_data_manager.dart';

@@ -5,12 +5,12 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 
 import 'package:skoob/app/models/skoob_user.dart';
 import 'package:skoob/app/controller/user_data_manager.dart';
-import 'package:skoob/app/views/pages/setting.dart';
-import '../../models/book/custom_info.dart';
-import '../../services/firebase_analytics.dart';
-import '../../utils/app_colors.dart';
-import 'bookshelf.dart';
-import 'friend_search.dart';
+import 'package:skoob/app/views/pages/setting/setting.dart';
+import '../../../models/book/custom_info.dart';
+import '../../../services/firebase_analytics.dart';
+import '../../../utils/app_colors.dart';
+import '../bookshelf/overview/bookshelf.dart';
+import '../search/friend_search.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});

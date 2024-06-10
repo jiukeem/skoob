@@ -9,15 +9,15 @@ import 'package:skoob/app/controller/user_data_manager.dart';
 import 'package:skoob/app/models/book.dart';
 import 'package:skoob/app/models/book/custom_info.dart';
 import 'package:skoob/app/utils/app_colors.dart';
-import 'package:skoob/app/views/widgets/bookshelf_detail_view_list_tile.dart';
-import 'package:skoob/app/views/widgets/bookshelf_table_view_label.dart';
-import 'package:skoob/app/views/widgets/bookshelf_album_view_builder.dart';
-import 'package:skoob/app/views/widgets/bookshelf_table_view_list_tile.dart';
+import 'package:skoob/app/views/pages/bookshelf/overview/widgets/bookshelf_detail_view_list_tile.dart';
+import 'package:skoob/app/views/pages/bookshelf/overview/widgets/bookshelf_table_view_label.dart';
+import 'package:skoob/app/views/pages/bookshelf/overview/builder/bookshelf_album_view_builder.dart';
+import 'package:skoob/app/views/pages/bookshelf/overview/widgets/bookshelf_table_view_list_tile.dart';
 import 'package:skoob/app/views/widgets/general_divider.dart';
-import 'package:skoob/app/views/widgets/sort_option_list_tile.dart';
+import 'package:skoob/app/views/pages/bookshelf/overview/widgets/sort_option_list_tile.dart';
 
-import '../../models/skoob_user.dart';
-import '../../services/firebase_analytics.dart';
+import '../../../../models/skoob_user.dart';
+import '../../../../services/firebase_analytics.dart';
 
 class Bookshelf extends StatefulWidget{
   final bool isVisiting;

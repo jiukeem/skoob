@@ -2,13 +2,13 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:skoob/app/views/pages/auth_start.dart';
+import 'package:skoob/app/views/pages/auth/auth_start.dart';
 import 'package:skoob/app/views/widgets/general_divider.dart';
 
-import '../../controller/user_data_manager.dart';
-import '../../services/firebase_analytics.dart';
-import '../../utils/app_colors.dart';
-import '../../utils/custom_text_input_formatter.dart';
+import '../../../controller/user_data_manager.dart';
+import '../../../services/firebase_analytics.dart';
+import '../../../utils/app_colors.dart';
+import '../../../utils/custom_text_input_formatter.dart';
 
 class Setting extends StatefulWidget {
   const Setting({super.key});

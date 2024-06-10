@@ -8,7 +8,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:skoob/app/controller/user_data_manager.dart';
 import 'package:skoob/app/services/firebase_analytics.dart';
 import 'package:skoob/app/utils/app_colors.dart';
-import 'package:skoob/app/views/pages/skoob.dart';
+import 'package:skoob/app/views/pages/home/skoob.dart';
 import 'package:skoob/app/views/pages/debug_error.dart';
 
 class Intro extends StatefulWidget {

@@ -4,9 +4,9 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:skoob/app/models/skoob_user.dart';
 
-import '../../controller/user_data_manager.dart';
-import '../../services/firebase_analytics.dart';
-import '../../utils/app_colors.dart';
+import '../../../controller/user_data_manager.dart';
+import '../../../services/firebase_analytics.dart';
+import '../../../utils/app_colors.dart';
 
 class FriendSearch extends StatefulWidget {
   const FriendSearch({super.key});
