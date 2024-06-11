@@ -270,7 +270,7 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
                                 }
                               });
                               book.customInfo.rate = rating.toString();
-                              _dataManager.updateBook(book);
+                              _dataManager.saveBook(book);
                             },
                             glow: false,
                           ),

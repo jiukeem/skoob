@@ -1,0 +1,96 @@
+import 'package:hive/hive.dart';
+
+import 'package:skoob/app/models/book.dart';
+import 'package:skoob/app/models/skoob_user.dart';
+import 'package:skoob/app/services/firebase_analytics.dart';
+
+class HiveManager {
+  static final HiveManager _instance = HiveManager._internal();
+  factory HiveManager() => _instance;
+  HiveManager._internal();
+
+  late Box<SkoobUser> _userBox;
+  late Box<Book> _bookBox;
+  late Box<String> _settingBox;
+
+  final _userBoxName = 'userBox';
+  final _bookBoxName = 'bookshelfBox';
+  final _settingBoxName = 'settingBox';
+
+  final _userBoxKey = 'user';
+  final _settingBoxKey = 'lastModifiedAt';
+
+  Future<void> openBox() async {
+    _userBox = await Hive.openBox<SkoobUser>(_userBoxName);
+    _bookBox = await Hive.openBox<Book>(_bookBoxName);
+    _settingBox = await Hive.openBox<String>(_settingBoxName);
+  }
+
+  Future<void> dispose() async {
+    await _bookBox.close();
+    await _userBox.close();
+    await _settingBox.close();
+    return;
+  }
+
+  Future<void> setUser(SkoobUser user) async {
+    await _userBox.put(_userBoxKey, user);
+    AnalyticsService.setUser(user);
+    return;
+  }
+
+  SkoobUser? getUser()  {
+    return _userBox.get(_userBoxKey);
+  }
+
+  Future<bool> hasUser() async {
+    return _userBox.isNotEmpty;
+  }
+
+  Future<bool> isBookExist(String isbn13) async {
+    return _bookBox.values.contains(isbn13);
+  }
+
+  Future<void> addBook(Book book) async {
+    final key = book.basicInfo.isbn13;
+    await _bookBox.put(key, book);
+    // TODO v1.0.0 doesn't have key only index
+    return;
+  }
+
+  Future<void> saveBook(Book book) async {
+    final key = book.basicInfo.isbn13;
+    await _bookBox.put(key, book);
+  }
+
+  Future<void> deleteBook(Book book) async {
+    final key = book.basicInfo.isbn13;
+    _bookBox.delete(key);
+  }
+
+  Future<void> updateLastModifiedTimeInHive() async {
+    await _settingBox.put(_settingBoxKey, DateTime.now().toIso8601String());
+  }
+
+  String? getLastModifiedTimeInHive() {
+    return _settingBox.get(_settingBoxKey);
+  }
+
+  Map<String, Book> getBookshelf()  {
+    return _bookBox.toMap() as Map<String, Book>;
+  }
+
+  Future<void> updateBookshelf(List<Book> bookList) async {
+    await _bookBox.clear();
+
+    for (Book book in bookList) {
+      await _bookBox.put(book.basicInfo.isbn13, book);
+    }
+  }
+
+  Future<void> clearAllLocalData() async {
+    await _userBox.clear();
+    await _bookBox.clear();
+    await _settingBox.clear();
+  }
+}

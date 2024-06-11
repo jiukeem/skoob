@@ -102,7 +102,7 @@ class _SearchResultViewListTileState extends State<SearchResultViewListTile> {
             children: [
               IconButton(
                 onPressed: () {
-                  _dataManager.addBook(book);
+                  _dataManager.saveBook(book);
                   AnalyticsService.logEvent('search_add_book', parameters: {
                     'title': book.basicInfo.title,
                   });

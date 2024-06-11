@@ -94,7 +94,7 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
                     setState(() {
                       widget.book.customInfo.startReadingDate = newDate;
                     });
-                    _dataManager.updateBook(widget.book);
+                    _dataManager.saveBook(widget.book);
                   }
                 }
               },
@@ -150,7 +150,7 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
                       setState(() {
                         widget.book.customInfo.finishReadingDate = newDate;
                       });
-                      _dataManager.updateBook(widget.book);
+                      _dataManager.saveBook(widget.book);
                     }
                   }
                 },
@@ -259,7 +259,7 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
                             'status_to': BookReadingStatus.notStarted.toString()
                           });
                           book.customInfo.status = BookReadingStatus.notStarted;
-                          _dataManager.updateBook(widget.book);
+                          _dataManager.saveBook(widget.book);
                           Navigator.pop(context, BookReadingStatus.notStarted);
                         },
                         child: const Padding(
@@ -276,7 +276,7 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
                             'status_to': BookReadingStatus.reading.toString()
                           });
                           book.customInfo.status = BookReadingStatus.reading;
-                          _dataManager.updateBook(widget.book);
+                          _dataManager.saveBook(widget.book);
                           _dataManager.updateLatestFeed(widget.book, BookReadingStatus.reading);
                           Navigator.pop(context, BookReadingStatus.reading);
                         },
@@ -294,7 +294,7 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
                             'status_to': BookReadingStatus.done.toString()
                           });
                           book.customInfo.status = BookReadingStatus.done;
-                          _dataManager.updateBook(widget.book);
+                          _dataManager.saveBook(widget.book);
                           _dataManager.updateLatestFeed(widget.book, BookReadingStatus.done);
                           Navigator.pop(context, BookReadingStatus.done);
                         },

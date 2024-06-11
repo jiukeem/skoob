@@ -123,7 +123,7 @@ class _UserRecordPageState extends State<UserRecord> {
       'comment_to': _textController.text
     });
     saveUserRecord(_textController.text, book);
-    _dataManager.updateBook(book);
+    _dataManager.saveBook(book);
     Navigator.pop(context, book);
   }
 

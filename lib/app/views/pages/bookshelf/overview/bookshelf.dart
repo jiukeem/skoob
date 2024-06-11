@@ -55,8 +55,8 @@ class _BookshelfState extends State<Bookshelf> {
   }
 
   Future<void> _checkLocalAndServerSync() async {
-    DateTime? localLastModified = await _userDataManager.getLastModifiedTimeHive();
-    DateTime? serverLastModified = await _userDataManager.getLastModifiedTimeFirestore();
+    DateTime? localLastModified = await _userDataManager.getLastModifiedTimeInHive();
+    DateTime? serverLastModified = await _userDataManager.getLastModifiedTimeInFirestore();
 
     if (localLastModified == null && serverLastModified == null) return;
 

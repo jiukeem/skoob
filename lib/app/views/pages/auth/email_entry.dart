@@ -68,7 +68,7 @@ class _EmailEntryState extends State<EmailEntry> {
   }
 
   Future<void> _navigateEmailCorrespondingPage() async {
-    final emailToNameMap = await _userDataManager.getAllUserMap();
+    final emailToNameMap = await _userDataManager.getEntireUserInfo();
     if (emailToNameMap == null) {
       AnalyticsService.logEvent('email_entry_no_network_error');
       Fluttertoast.showToast(
