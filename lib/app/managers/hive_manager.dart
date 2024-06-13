@@ -54,7 +54,7 @@ class HiveManager {
   Future<void> addBook(Book book) async {
     final key = book.basicInfo.isbn13;
     await _bookBox.put(key, book);
-    // TODO v1.0.0 doesn't have key only index
+    // TODO v1.0.0 doesn't have key. only index
     return;
   }
 

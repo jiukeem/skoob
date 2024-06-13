@@ -92,7 +92,7 @@ class _IntroState extends State<Intro> {
 
   Future<void> _updateSkoobUserInfo(User user, {required bool isNewUser}) async {
     final Map<String, String> userData = _createUserData(user);
-    await _dataManager.updateUserProfile(userData, isNewUser);
+    // await _dataManager.updateUserProfile(userData, isNewUser);
     return;
   }
 

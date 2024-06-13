@@ -36,10 +36,9 @@ class _LaunchState extends State<Launch> {
   }
 
   void _checkExistingUserCredential() async {
-    if (await _userDataManager.hasUser()) {
+    if (await _userDataManager.isLocalUserExist()) {
       AnalyticsService.logEvent('launch_existing_user');
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const Skoob()));
-      _userDataManager.setUserFromCurrentLocalUser();
     } else {
       AnalyticsService.logEvent('launch_new_user_and_start_sign_up');
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AuthStart()));
