@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:skoob/app/services/user_service.dart';
 import 'package:skoob/app/views/pages/auth/welcome.dart';
 
-import '../../../controller/user_data_manager.dart';
-import '../../../services/firebase_analytics.dart';
+
+import '../../../services/third_party/firebase_analytics.dart';
 import '../../../utils/app_colors.dart';
 import '../../../utils/custom_text_input_formatter.dart';
 
@@ -16,7 +17,7 @@ class LoginPassword extends StatefulWidget {
 }
 
 class _LoginPasswordState extends State<LoginPassword> {
-  final UserDataManager _userDataManager = UserDataManager();
+  final UserService _userService = UserService();
   late TextEditingController _controller;
   late FocusNode _focusNode;
   String? _errorText;
@@ -41,7 +42,7 @@ class _LoginPasswordState extends State<LoginPassword> {
   }
 
   void _getValidPassword() async {
-    _validPassword ??= await _userDataManager.getValidPassword(widget._email);
+    _validPassword ??= await _userService.getValidPassword(widget._email);
   }
 
   void _handleSubmit() {

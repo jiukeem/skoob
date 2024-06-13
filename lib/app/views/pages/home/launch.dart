@@ -1,11 +1,11 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:skoob/app/services/firebase_analytics.dart';
+import 'package:skoob/app/services/third_party/firebase_analytics.dart';
+import 'package:skoob/app/services/user_service.dart';
 import 'package:skoob/app/views/pages/auth/auth_start.dart';
 import 'package:skoob/app/views/pages/home/skoob.dart';
 
-import '../../../controller/user_data_manager.dart';
 import '../../../utils/app_colors.dart';
 
 class Launch extends StatefulWidget {
@@ -16,7 +16,7 @@ class Launch extends StatefulWidget {
 }
 
 class _LaunchState extends State<Launch> {
-  final UserDataManager _userDataManager = UserDataManager();
+  UserService _userService = UserService();
   final Connectivity _connectivity = Connectivity();
 
   @override
@@ -36,7 +36,7 @@ class _LaunchState extends State<Launch> {
   }
 
   void _checkExistingUserCredential() async {
-    if (await _userDataManager.isLocalUserExist()) {
+    if (await _userService.isLocalUserExist()) {
       AnalyticsService.logEvent('launch_existing_user');
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const Skoob()));
     } else {

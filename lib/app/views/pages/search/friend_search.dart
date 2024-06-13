@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:skoob/app/models/skoob_user.dart';
+import 'package:skoob/app/services/user_service.dart';
 
-import '../../../controller/user_data_manager.dart';
-import '../../../services/firebase_analytics.dart';
+import '../../../services/third_party/firebase_analytics.dart';
 import '../../../utils/app_colors.dart';
 
 class FriendSearch extends StatefulWidget {
@@ -17,7 +17,7 @@ class FriendSearch extends StatefulWidget {
 
 class _FriendSearchState extends State<FriendSearch> {
   final TextEditingController _searchController = TextEditingController();
-  final UserDataManager _userDataManager = UserDataManager();
+  UserService _userService = UserService();
   String _searchKeyword = '';
   bool _isLoading = false;
   bool _isFriend = false;
@@ -34,7 +34,7 @@ class _FriendSearchState extends State<FriendSearch> {
     setState(() {
       _isLoading = true;
     });
-    _resultUser = await _userDataManager.searchUserByName(_searchKeyword);
+    _resultUser = await _userService.searchUserByName(_searchKeyword);
     if (_resultUser == null) {
       AnalyticsService.logEvent('friend_search_no_one_found');
       _guideMessage = '사용자를 찾을 수 없습니다';
@@ -54,7 +54,7 @@ class _FriendSearchState extends State<FriendSearch> {
   }
 
   void _getCurrentFriendsList() async {
-    _currentFriendsList = await _userDataManager.getCurrentFriendsList();
+    _currentFriendsList = await _userService.getCurrentFriendsList();
   }
 
   @override
@@ -178,7 +178,7 @@ class _FriendSearchState extends State<FriendSearch> {
                       'friend_name': _resultUser?.name,
                       'friend_email': _resultUser?.email
                     });
-                    await _userDataManager.addFriend(_resultUser!);
+                    await _userService.addFriend(_resultUser!);
                     Fluttertoast.showToast(
                       msg: '${_resultUser?.name} 님을 친구로 추가했습니다',
                       toastLength: Toast.LENGTH_SHORT,
@@ -223,7 +223,7 @@ class _FriendSearchState extends State<FriendSearch> {
 
     final targetEmail = _resultUser!.email;
 
-    if (_userDataManager.userEmail == targetEmail) {
+    if (_userService.userEmail == targetEmail) {
       _isFriend = true;
       return;
     }

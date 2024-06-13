@@ -1,12 +1,12 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 
-import 'package:skoob/app/controller/user_data_manager.dart';
 import 'package:skoob/app/models/book.dart';
+import 'package:skoob/app/services/book_service.dart';
 import 'package:skoob/app/utils/app_colors.dart';
 import 'package:skoob/app/views/widgets/general_divider.dart';
 
-import '../../../../services/firebase_analytics.dart';
+import '../../../../services/third_party/firebase_analytics.dart';
 
 class UserRecord extends StatefulWidget {
   final Book book;
@@ -20,8 +20,8 @@ class UserRecord extends StatefulWidget {
 }
 
 class _UserRecordPageState extends State<UserRecord> {
+  BookService _bookService = BookService();
   late TextEditingController _textController;
-  final UserDataManager _dataManager = UserDataManager();
 
   @override
   void initState() {
@@ -123,7 +123,7 @@ class _UserRecordPageState extends State<UserRecord> {
       'comment_to': _textController.text
     });
     saveUserRecord(_textController.text, book);
-    _dataManager.saveBook(book);
+    _bookService.saveBook(book);
     Navigator.pop(context, book);
   }
 

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:skoob/app/services/user_service.dart';
 import 'package:skoob/app/views/pages/auth/login_password.dart';
 import 'package:skoob/app/views/pages/auth/setup_password.dart';
-import 'package:skoob/app/views/pages/auth/auth_start.dart';
 
-import '../../../controller/user_data_manager.dart';
-import '../../../services/firebase_analytics.dart';
+import '../../../services/third_party/firebase_analytics.dart';
 import '../../../utils/app_colors.dart';
 
 class EmailEntry extends StatefulWidget {
@@ -16,7 +15,7 @@ class EmailEntry extends StatefulWidget {
 }
 
 class _EmailEntryState extends State<EmailEntry> {
-  final UserDataManager _userDataManager = UserDataManager();
+  final UserService _userService = UserService();
   late TextEditingController _controller;
   late FocusNode _focusNode;
   String? _errorMessage;
@@ -68,7 +67,7 @@ class _EmailEntryState extends State<EmailEntry> {
   }
 
   Future<void> _navigateEmailCorrespondingPage() async {
-    final emailToNameMap = await _userDataManager.getEntireUserInfo();
+    final emailToNameMap = await _userService.getEntireUserInfo();
     if (emailToNameMap == null) {
       AnalyticsService.logEvent('email_entry_no_network_error');
       Fluttertoast.showToast(

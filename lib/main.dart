@@ -3,16 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:skoob/app/services/book_service.dart';
+import 'package:skoob/app/services/user_service.dart';
 import 'package:skoob/app/views/pages/home/launch.dart';
 
 import 'package:skoob/config/firebase_options.dart';
-import 'package:skoob/app/controller/user_data_manager.dart';
 import 'package:skoob/app/models/book.dart';
 import 'package:skoob/app/models/book/basic_info.dart';
 import 'package:skoob/app/models/book/custom_info.dart';
 import 'package:skoob/app/models/skoob_user.dart';
 import 'package:skoob/app/utils/app_colors.dart';
-import 'package:skoob/app/services/firebase_messaging_service.dart';
+import 'package:skoob/app/services/third_party/firebase_messaging_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,15 +30,20 @@ void main() async {
   Hive.registerAdapter(BookAdapter());
   Hive.registerAdapter(UserAdapter());
 
-  var manager = UserDataManager();
-  await manager.initBox();
+  var userService = UserService();
+  var bookService = BookService();
+  await userService.init();
 
   runApp(MultiProvider(
     providers: [
-      Provider<UserDataManager>(
-        create: (_) => manager,
-        dispose: (_, UserDataManager manager) => manager.dispose()
-      )
+      Provider<UserService>(
+        create: (_) => userService,
+        dispose: (_, UserService service) => service.dispose(),
+      ),
+      Provider<BookService>(
+        create: (_) => bookService,
+        dispose: (_, BookService service) {},
+      ),
     ],
     child: MaterialApp(
       theme: ThemeData(

@@ -9,7 +9,7 @@ import 'package:skoob/app/models/book.dart';
 import 'package:skoob/app/models/aladin.dart';
 import 'package:skoob/app/models/book/basic_info.dart';
 import 'package:skoob/app/models/book/custom_info.dart';
-import 'package:skoob/app/services/firebase_analytics.dart';
+import 'package:skoob/app/services/third_party/firebase_analytics.dart';
 import 'package:skoob/app/utils/util_fuctions.dart';
 import 'package:skoob/app/utils/app_colors.dart';
 import 'package:skoob/app/views/pages/search/widgets/search_result_view_list_tile.dart';

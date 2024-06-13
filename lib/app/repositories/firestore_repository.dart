@@ -6,10 +6,10 @@ import 'package:skoob/app/utils/util_fuctions.dart';
 
 import '../models/book.dart';
 
-class FirestoreManager {
-  static final FirestoreManager _instance = FirestoreManager._internal();
-  factory FirestoreManager() => _instance;
-  FirestoreManager._internal();
+class FirestoreRepository {
+  static final FirestoreRepository _instance = FirestoreRepository._internal();
+  factory FirestoreRepository() => _instance;
+  FirestoreRepository._internal();
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;

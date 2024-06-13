@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:skoob/app/services/firebase_analytics.dart';
+import 'package:skoob/app/services/third_party/firebase_analytics.dart';
 import 'package:skoob/app/views/pages/auth/setup_name.dart';
 
 import '../../../utils/app_colors.dart';

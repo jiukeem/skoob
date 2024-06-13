@@ -1,10 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 
-import 'package:skoob/app/controller/user_data_manager.dart';
 import 'package:skoob/app/models/book.dart';
 import 'package:skoob/app/models/book/custom_info.dart';
-import 'package:skoob/app/services/firebase_analytics.dart';
+import 'package:skoob/app/services/book_service.dart';
+import 'package:skoob/app/services/third_party/firebase_analytics.dart';
+import 'package:skoob/app/services/user_service.dart';
 import 'package:skoob/app/utils/app_colors.dart';
 import 'package:skoob/app/utils/util_fuctions.dart';
 import 'package:skoob/app/views/pages/bookshelf/detail/book_detail.dart';
@@ -22,8 +24,9 @@ class BookDetailInfoListViewTile extends StatefulWidget {
 }
 
 class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile> {
+  UserService _userService = UserService();
+  BookService _bookService = BookService();
   final List<String> labels = infoLabelList;
-  final UserDataManager _dataManager = UserDataManager();
 
   Widget _generateTextWidget(String data) {
     return Text(
@@ -94,7 +97,7 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
                     setState(() {
                       widget.book.customInfo.startReadingDate = newDate;
                     });
-                    _dataManager.saveBook(widget.book);
+                    _bookService.saveBook(widget.book);
                   }
                 }
               },
@@ -150,7 +153,7 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
                       setState(() {
                         widget.book.customInfo.finishReadingDate = newDate;
                       });
-                      _dataManager.saveBook(widget.book);
+                      _bookService.saveBook(widget.book);
                     }
                   }
                 },
@@ -259,7 +262,7 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
                             'status_to': BookReadingStatus.notStarted.toString()
                           });
                           book.customInfo.status = BookReadingStatus.notStarted;
-                          _dataManager.saveBook(widget.book);
+                          _bookService.saveBook(widget.book);
                           Navigator.pop(context, BookReadingStatus.notStarted);
                         },
                         child: const Padding(
@@ -276,8 +279,8 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
                             'status_to': BookReadingStatus.reading.toString()
                           });
                           book.customInfo.status = BookReadingStatus.reading;
-                          _dataManager.saveBook(widget.book);
-                          _dataManager.updateLatestFeed(widget.book, BookReadingStatus.reading);
+                          _bookService.saveBook(widget.book);
+                          _userService.updateLatestFeed(widget.book, BookReadingStatus.reading);
                           Navigator.pop(context, BookReadingStatus.reading);
                         },
                         child: const Padding(
@@ -294,8 +297,8 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
                             'status_to': BookReadingStatus.done.toString()
                           });
                           book.customInfo.status = BookReadingStatus.done;
-                          _dataManager.saveBook(widget.book);
-                          _dataManager.updateLatestFeed(widget.book, BookReadingStatus.done);
+                          _bookService.saveBook(widget.book);
+                          _userService.updateLatestFeed(widget.book, BookReadingStatus.done);
                           Navigator.pop(context, BookReadingStatus.done);
                         },
                         child: const Padding(

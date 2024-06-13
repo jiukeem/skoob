@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:skoob/app/services/firebase_analytics.dart';
+import 'package:skoob/app/services/third_party/firebase_analytics.dart';
 
 import 'package:skoob/app/utils/app_colors.dart';
 import 'package:skoob/app/views/pages/bookshelf/overview/bookshelf.dart';

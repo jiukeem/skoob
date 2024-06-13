@@ -1,9 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:skoob/app/services/firebase_analytics.dart';
+import 'package:skoob/app/services/third_party/firebase_analytics.dart';
+import 'package:skoob/app/services/user_service.dart';
 import 'package:skoob/app/views/pages/home/skoob.dart';
 
-import '../../../controller/user_data_manager.dart';
 import '../../../utils/app_colors.dart';
 
 class Welcome extends StatefulWidget {
@@ -19,7 +20,7 @@ class Welcome extends StatefulWidget {
 }
 
 class _WelcomeState extends State<Welcome> {
-  final UserDataManager _userDataManager = UserDataManager();
+  UserService _userService = UserService();
   bool networkDone = false;
 
   @override
@@ -30,9 +31,9 @@ class _WelcomeState extends State<Welcome> {
 
   void _handleUser() async {
     if (widget.isNewUser) {
-      await _userDataManager.handleSignIn(name: widget.name, email: widget.email, password: widget.password);
+      await _userService.handleSignIn(name: widget.name, email: widget.email, password: widget.password);
     } else {
-      await _userDataManager.handleLogin(widget.email);
+      await _userService.handleLogin(widget.email);
     }
     networkDone = true;
     AnalyticsService.logEvent('welcome_move_on_to_skoob_page');

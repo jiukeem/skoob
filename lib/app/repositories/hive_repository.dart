@@ -2,12 +2,12 @@ import 'package:hive/hive.dart';
 
 import 'package:skoob/app/models/book.dart';
 import 'package:skoob/app/models/skoob_user.dart';
-import 'package:skoob/app/services/firebase_analytics.dart';
+import 'package:skoob/app/services/third_party/firebase_analytics.dart';
 
-class HiveManager {
-  static final HiveManager _instance = HiveManager._internal();
-  factory HiveManager() => _instance;
-  HiveManager._internal();
+class HiveRepository {
+  static final HiveRepository _instance = HiveRepository._internal();
+  factory HiveRepository() => _instance;
+  HiveRepository._internal();
 
   late Box<SkoobUser> _userBox;
   late Box<Book> _bookBox;

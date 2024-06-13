@@ -2,9 +2,9 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-import 'package:skoob/app/controller/user_data_manager.dart';
 import 'package:skoob/app/models/book.dart';
-import 'package:skoob/app/services/firebase_analytics.dart';
+import 'package:skoob/app/services/book_service.dart';
+import 'package:skoob/app/services/third_party/firebase_analytics.dart';
 import 'package:skoob/app/utils/app_colors.dart';
 
 class SearchResultViewListTile extends StatefulWidget {
@@ -19,7 +19,7 @@ class SearchResultViewListTile extends StatefulWidget {
 class _SearchResultViewListTileState extends State<SearchResultViewListTile> {
   // bool isInBookshelf = false;
   // bool isInWishlist = false;
-  final UserDataManager _dataManager = UserDataManager();
+  BookService _bookService = BookService();
 
   @override
   Widget build(BuildContext context) {
@@ -102,7 +102,7 @@ class _SearchResultViewListTileState extends State<SearchResultViewListTile> {
             children: [
               IconButton(
                 onPressed: () {
-                  _dataManager.saveBook(book);
+                  _bookService.saveBook(book);
                   AnalyticsService.logEvent('search_add_book', parameters: {
                     'title': book.basicInfo.title,
                   });

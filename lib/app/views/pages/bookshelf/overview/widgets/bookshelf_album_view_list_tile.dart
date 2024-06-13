@@ -6,7 +6,7 @@ import 'package:skoob/app/views/pages/bookshelf/widgets/rate_star.dart';
 import 'package:skoob/app/views/pages/bookshelf/overview/widgets/bookshelf_list_tile_mixin.dart';
 import 'package:skoob/app/views/pages/bookshelf/detail/book_detail.dart';
 
-import '../../../../../services/firebase_analytics.dart';
+import '../../../../../services/third_party/firebase_analytics.dart';
 
 class AlbumViewListTile extends StatelessWidget with BookshelfListTileMixin {
   final double itemWidth;

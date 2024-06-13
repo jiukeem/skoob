@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:skoob/app/views/pages/auth/welcome.dart';
 
-import '../../../services/firebase_analytics.dart';
+import '../../../services/third_party/firebase_analytics.dart';
 import '../../../utils/app_colors.dart';
 import '../../../utils/custom_text_input_formatter.dart';
 

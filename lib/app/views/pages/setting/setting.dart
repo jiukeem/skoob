@@ -1,12 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:skoob/app/services/user_service.dart';
 import 'package:skoob/app/views/pages/auth/auth_start.dart';
 import 'package:skoob/app/views/widgets/general_divider.dart';
 
-import '../../../controller/user_data_manager.dart';
-import '../../../services/firebase_analytics.dart';
+import '../../../services/third_party/firebase_analytics.dart';
 import '../../../utils/app_colors.dart';
 import '../../../utils/custom_text_input_formatter.dart';
 
@@ -18,12 +19,12 @@ class Setting extends StatefulWidget {
 }
 
 class _SettingState extends State<Setting> {
-  final UserDataManager _userDataManager = UserDataManager();
+  UserService _userService = UserService();
   bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
-    final user = _userDataManager.currentUser;
+    final user = _userService.currentUser;
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: AppBar(
@@ -107,7 +108,7 @@ class _SettingState extends State<Setting> {
   }
 
   void _logout() async {
-    await _userDataManager.logout();
+    await _userService.logout();
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (context) => const AuthStart()),
           (Route<dynamic> route) => false,
@@ -335,7 +336,7 @@ class _SettingState extends State<Setting> {
                     ),
                   ),
                   onTap: () async {
-                    final validPassword = await _userDataManager.getValidPassword(_userDataManager.userEmail ?? '');
+                    final validPassword = await _userService.getValidPassword(_userService.userEmail ?? '');
                     setDialogState(() {
                       errorText = null;
 
@@ -366,7 +367,7 @@ class _SettingState extends State<Setting> {
       _isLoading = true;
     });
 
-    await _userDataManager.deleteAccount();
+    await _userService.deleteAccount();
     Fluttertoast.showToast(
       msg: '계정이 안전하게 삭제되었습니다\n그동안 SKOOB을 이용해주셔서 감사합니다',
       toastLength: Toast.LENGTH_LONG,

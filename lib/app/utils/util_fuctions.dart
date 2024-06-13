@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
 import '../models/book.dart';
@@ -42,4 +43,8 @@ Map<String, String> createMapFromSkoobBook(Book book) {
     'rate': book.customInfo.rate,
     'comment': book.customInfo.comment,
   };
+}
+
+bool isDocumentDataValid(DocumentSnapshot? doc) {
+  return doc != null && doc.data() != null;
 }

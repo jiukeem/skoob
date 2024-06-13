@@ -4,10 +4,10 @@ import 'dart:async';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hive_flutter/adapters.dart';
-import 'package:skoob/app/controller/user_data_manager.dart';
 
 import 'package:skoob/app/models/book.dart';
 import 'package:skoob/app/models/book/custom_info.dart';
+import 'package:skoob/app/services/book_service.dart';
 import 'package:skoob/app/utils/app_colors.dart';
 import 'package:skoob/app/views/pages/bookshelf/overview/widgets/bookshelf_detail_view_list_tile.dart';
 import 'package:skoob/app/views/pages/bookshelf/overview/widgets/bookshelf_table_view_label.dart';
@@ -17,7 +17,7 @@ import 'package:skoob/app/views/widgets/general_divider.dart';
 import 'package:skoob/app/views/pages/bookshelf/overview/widgets/sort_option_list_tile.dart';
 
 import '../../../../models/skoob_user.dart';
-import '../../../../services/firebase_analytics.dart';
+import '../../../../services/third_party/firebase_analytics.dart';
 
 class Bookshelf extends StatefulWidget{
   final bool isVisiting;
@@ -29,11 +29,11 @@ class Bookshelf extends StatefulWidget{
 }
 
 class _BookshelfState extends State<Bookshelf> {
+  BookService _bookService = BookService();
   bool _isLoading = true;
   BookshelfViewOption _currentViewOption = BookshelfViewOption.detail;
   SortOption _currentSortOption = SortOption.addedDate;
   bool _isAscending = true;
-  final UserDataManager _userDataManager = UserDataManager();
   List<Book> friendBooks = [];
 
   @override
@@ -55,8 +55,8 @@ class _BookshelfState extends State<Bookshelf> {
   }
 
   Future<void> _checkLocalAndServerSync() async {
-    DateTime? localLastModified = await _userDataManager.getLastModifiedTimeInHive();
-    DateTime? serverLastModified = await _userDataManager.getLastModifiedTimeInFirestore();
+    DateTime? localLastModified = await _bookService.getLastModifiedTimeInHive();
+    DateTime? serverLastModified = await _bookService.getLastModifiedTimeInFirestore();
 
     if (localLastModified == null && serverLastModified == null) return;
 
@@ -89,7 +89,7 @@ class _BookshelfState extends State<Bookshelf> {
   Future<void> _syncFromServer() async {
     AnalyticsService.logEvent('bookshelf_start_sync_from_server');
     try {
-      await _userDataManager.syncBookshelfFromServer();
+      await _bookService.syncBookshelfFromServer();
     } catch (e) {
       print("Error during sync from server: $e");
     }
@@ -98,7 +98,7 @@ class _BookshelfState extends State<Bookshelf> {
   Future<void> _syncFromLocal() async {
     AnalyticsService.logEvent('bookshelf_start_sync_from_local');
     try {
-      _userDataManager.syncBookshelfFromLocal();
+      _bookService.syncBookshelfFromLocal();
     } catch (e) {
       print("Error during sync from local: $e");
     }
@@ -349,7 +349,7 @@ class _BookshelfState extends State<Bookshelf> {
       return;
     }
 
-    friendBooks = await _userDataManager.getFriendBookshelf(widget.hostUser!.email);
+    friendBooks = await _bookService.getFriendBookshelf(widget.hostUser!.email);
     setState(() {
       _isLoading = false;
     });

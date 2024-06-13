@@ -4,10 +4,10 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 
 import 'package:skoob/app/models/skoob_user.dart';
-import 'package:skoob/app/controller/user_data_manager.dart';
+import 'package:skoob/app/services/user_service.dart';
 import 'package:skoob/app/views/pages/setting/setting.dart';
 import '../../../models/book/custom_info.dart';
-import '../../../services/firebase_analytics.dart';
+import '../../../services/third_party/firebase_analytics.dart';
 import '../../../utils/app_colors.dart';
 import '../bookshelf/overview/bookshelf.dart';
 import '../search/friend_search.dart';
@@ -20,7 +20,7 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
-  final UserDataManager _userDataManager = UserDataManager();
+  final UserService _userService = UserService();
   late TabController _tabController;
   bool _isFriendsTabLoading = true;
   final List<SkoobUser> _friendList = [];
@@ -35,9 +35,9 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
 
   Future<void> _getFriendsData() async {
     _friendList.clear();
-    final friendsList = await _userDataManager.getCurrentFriendsList();
+    final friendsList = await _userService.getCurrentFriendsList();
     for (String friendEmail in friendsList) {
-      final friend = await _userDataManager.getFriendData(friendEmail);
+      final friend = await _userService.getFriendData(friendEmail);
       if (friend != null) {
         _friendList.add(friend);
       }
