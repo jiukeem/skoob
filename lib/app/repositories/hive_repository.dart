@@ -22,6 +22,29 @@ class HiveRepository {
     _userBox = await Hive.openBox<SkoobUser>(userBoxName);
     _bookBox = await Hive.openBox<Book>(bookBoxName);
     _settingBox = await Hive.openBox<String>(settingBoxName);
+
+    // v1.0.0 used auto-generated key in bookBox
+    await _migrateOldBooksIfNeeded();
+  }
+
+  Future<void> _migrateOldBooksIfNeeded() async {
+    final oldBookBox = await Hive.openBox<Book>(oldBookBoxName);
+
+    if (oldBookBox.isNotEmpty) {
+      for (int i = 0; i < oldBookBox.length; i++) {
+        final book = oldBookBox.getAt(i);
+        if (book != null) {
+          final key = book.basicInfo.isbn13;
+          print(key);
+          print(key);
+          print(key);
+          print(key);
+          await _bookBox.put(key, book.clone());
+        }
+      }
+      await oldBookBox.clear();
+    }
+    await oldBookBox.close();
   }
 
   Future<void> dispose() async {

@@ -1,3 +1,4 @@
-final userBoxName = 'userBox';
-final bookBoxName = 'bookshelfBox';
-final settingBoxName = 'settingBox';
+const userBoxName = 'userBox';
+const bookBoxName = 'newBookshelfBox';
+const settingBoxName = 'settingBox';
+const oldBookBoxName = 'bookshelfBox';

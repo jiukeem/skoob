@@ -18,6 +18,13 @@ class Book extends HiveObject{
     CustomInfo customInfo = CustomInfo.fromMap(data);
     return Book(basicInfo: basicInfo, customInfo: customInfo);
   }
+
+  Book clone() {
+    return Book(
+      basicInfo: this.basicInfo,
+      customInfo: this.customInfo,
+    );
+  }
 }
 
 class BookAdapter extends TypeAdapter<Book> {
