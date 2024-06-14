@@ -7,6 +7,7 @@ import 'package:skoob/app/views/pages/auth/auth_start.dart';
 import 'package:skoob/app/views/pages/home/skoob.dart';
 
 import '../../../utils/app_colors.dart';
+import '../../widgets/skoob_alert_dialog.dart';
 
 class Launch extends StatefulWidget {
   const Launch({super.key});
@@ -16,7 +17,7 @@ class Launch extends StatefulWidget {
 }
 
 class _LaunchState extends State<Launch> {
-  UserService _userService = UserService();
+  final UserService _userService = UserService();
   final Connectivity _connectivity = Connectivity();
 
   @override
@@ -28,7 +29,7 @@ class _LaunchState extends State<Launch> {
   void _checkNetworkAndLogin() async {
     var connectivityResult = await _connectivity.checkConnectivity();
     if (connectivityResult == ConnectivityResult.none) {
-      _showNoNetworkDialog();
+      _showNoNetworkDialog(context);
       AnalyticsService.logEvent('launch_no_network_and_show_dialog');
     } else {
       _checkExistingUserCredential();
@@ -60,76 +61,25 @@ class _LaunchState extends State<Launch> {
     );
   }
 
-  void _showNoNetworkDialog()  {
-    Widget confirmButton = InkWell(
-      child: Container(
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(5.0)),
-          color: AppColors.primaryGreen,
-        ),
-        child: const Padding(
-          padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
-          child: Text(
-            '확인',
-            style: TextStyle(
-              fontFamily: 'NotoSansKRMedium',
-              fontSize: 14.0,
-              color: AppColors.white,
-            ),
-          ),
-        ),
-      ),
-      onTap: () {
-        Navigator.of(context).pop();
-        if (Navigator.canPop(context)) {
-          Navigator.pop(context);
-        }
-      },
-    );
-
-    AlertDialog alert = AlertDialog(
-      backgroundColor: AppColors.white,
-      surfaceTintColor: AppColors.white,
-      title: const Text('네트워크 없음'),
-      content: const Text('네트워크 연결 후\nSKOOB 앱을 다시 실행해주세요'),
-      actions: [
-        confirmButton,
-      ],
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-      ),
-    );
-
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) {
-      return alert;
-    });
-  }
-
-  void _showNoInternetDialog() {
-    showDialog(
+  void _showNoNetworkDialog(BuildContext context) {
+    buildAlertDialog(
       context: context,
-      barrierDismissible: false, // user must tap button for close dialog
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: AppColors.white,
-          title: const Text('네트워크 없음'),
-          content: const Text("네트워크 연결 후 앱을 다시 실행해주세요"),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('확인'),
-              onPressed: () {
-                Navigator.of(context).pop();
-                if (Navigator.canPop(context)) {
-                  Navigator.pop(context);
-                }
-              },
-            ),
-          ],
-        );
-      },
+      titleText: '네트워크 없음',
+      contentText: '네트워크 연결 후\nSKOOB 앱을 다시 실행해주세요',
+      actions: [
+        buildDialogButton(
+          text: '확인',
+          backgroundColor: AppColors.primaryGreen,
+          textColor: AppColors.white,
+          onTap: () {
+            Navigator.of(context).pop();
+            if (Navigator.canPop(context)) {
+              Navigator.pop(context);
+            }
+          },
+        ),
+      ],
+      barrierDismissible: false,
     );
   }
 }

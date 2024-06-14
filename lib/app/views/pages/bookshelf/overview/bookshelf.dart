@@ -7,17 +7,16 @@ import 'package:hive_flutter/adapters.dart';
 
 import 'package:skoob/app/models/book.dart';
 import 'package:skoob/app/models/book/custom_info.dart';
+import 'package:skoob/app/models/skoob_user.dart';
 import 'package:skoob/app/services/book_service.dart';
+import 'package:skoob/app/services/third_party/firebase_analytics.dart';
 import 'package:skoob/app/utils/app_colors.dart';
-import 'package:skoob/app/views/pages/bookshelf/overview/widgets/bookshelf_detail_view_list_tile.dart';
-import 'package:skoob/app/views/pages/bookshelf/overview/widgets/bookshelf_table_view_label.dart';
+import 'package:skoob/app/views/pages/bookshelf/overview/widgets/detail_view_list_tile.dart';
+import 'package:skoob/app/views/pages/bookshelf/overview/widgets/sort_option_bottom_sheet.dart';
+import 'package:skoob/app/views/pages/bookshelf/overview/widgets/table_view_label.dart';
 import 'package:skoob/app/views/pages/bookshelf/overview/builder/bookshelf_album_view_builder.dart';
-import 'package:skoob/app/views/pages/bookshelf/overview/widgets/bookshelf_table_view_list_tile.dart';
-import 'package:skoob/app/views/widgets/general_divider.dart';
-import 'package:skoob/app/views/pages/bookshelf/overview/widgets/sort_option_list_tile.dart';
-
-import '../../../../models/skoob_user.dart';
-import '../../../../services/third_party/firebase_analytics.dart';
+import 'package:skoob/app/views/pages/bookshelf/overview/widgets/table_view_list_tile.dart';
+import 'package:skoob/config/config.dart';
 
 class Bookshelf extends StatefulWidget{
   final bool isVisiting;
@@ -29,11 +28,11 @@ class Bookshelf extends StatefulWidget{
 }
 
 class _BookshelfState extends State<Bookshelf> {
-  BookService _bookService = BookService();
-  bool _isLoading = true;
+  final BookService _bookService = BookService();
   BookshelfViewOption _currentViewOption = BookshelfViewOption.detail;
   SortOption _currentSortOption = SortOption.addedDate;
   bool _isAscending = true;
+  bool _isLoading = true;
   List<Book> friendBooks = [];
 
   @override
@@ -68,7 +67,7 @@ class _BookshelfState extends State<Bookshelf> {
 
     if (serverLastModified == null) {
       // server is not updated
-      _syncFromLocal();
+      await _syncFromLocal();
       return;
     }
 
@@ -88,20 +87,24 @@ class _BookshelfState extends State<Bookshelf> {
 
   Future<void> _syncFromServer() async {
     AnalyticsService.logEvent('bookshelf_start_sync_from_server');
-    try {
-      await _bookService.syncBookshelfFromServer();
-    } catch (e) {
-      print("Error during sync from server: $e");
-    }
+    await _bookService.syncBookshelfFromServer();
   }
 
   Future<void> _syncFromLocal() async {
     AnalyticsService.logEvent('bookshelf_start_sync_from_local');
-    try {
-      _bookService.syncBookshelfFromLocal();
-    } catch (e) {
-      print("Error during sync from local: $e");
+    await _bookService.syncBookshelfFromLocal();
+  }
+
+  void _getFriendBookshelf() async {
+    if (widget.hostUser == null) {
+      return;
     }
+
+    friendBooks = await _bookService.getFriendBookshelf(widget.hostUser!.email);
+    setState(() {
+      _isLoading = false;
+    });
+    return;
   }
 
   @override
@@ -112,7 +115,7 @@ class _BookshelfState extends State<Bookshelf> {
             children: [
               _buildBookshelfAppBar(),
               ValueListenableBuilder(
-                valueListenable: Hive.box<Book>('bookshelfBox').listenable(),
+                valueListenable: Hive.box<Book>(bookBoxName).listenable(),
                 builder: (context, Box<Book> box, _) {
                   var books = box.values.toList();
                   return _buildContentBasedOnBookshelfStatus(books);
@@ -190,7 +193,7 @@ class _BookshelfState extends State<Bookshelf> {
               friendName,
               style: const TextStyle(
                   fontFamily: 'LexendExaMedium', fontSize: 24.0),
-                          ),
+              ),
             ]
           ),
         ),
@@ -344,18 +347,6 @@ class _BookshelfState extends State<Bookshelf> {
     }
   }
 
-  void _getFriendBookshelf() async {
-    if (widget.hostUser == null) {
-      return;
-    }
-
-    friendBooks = await _bookService.getFriendBookshelf(widget.hostUser!.email);
-    setState(() {
-      _isLoading = false;
-    });
-    return;
-  }
-
   List<Book> _sortBookshelf(List<Book> list) {
     int statusComparator(BookReadingStatus a, BookReadingStatus b) {
       const order = {
@@ -401,51 +392,7 @@ class _BookshelfState extends State<Bookshelf> {
     final result = await showModalBottomSheet(
         context: context,
         builder: (context) {
-          return Container(
-            decoration: const BoxDecoration(
-                color: AppColors.white,
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(30.0),
-                    topRight: Radius.circular(30.0)
-                )
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(height: 12.0),
-                Container(
-                  width: 64,
-                  height: 2,
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                    color: AppColors.gray2,
-                  ),
-                ),
-                const SizedBox(height: 18.0),
-                const Text(
-                  'SORT',
-                  style: TextStyle(
-                      fontFamily: 'LexendRegular',
-                      fontSize: 16.0,
-                      color: AppColors.softBlack
-                  ),
-                ),
-                const SizedBox(height: 16.0),
-                const GeneralDivider(verticalPadding: 0),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: sortOptionMapBottomSheet.keys.length,
-                    itemBuilder: (context, index) {
-                      return SortOptionListTile(
-                          index: index,
-                          currentSortOption: _currentSortOption,
-                          isAscending: _isAscending
-                      );
-                    }),
-                ),
-              ],
-            ),
-          );
+          return buildSortOptionBottomSheet(_currentSortOption, _isAscending);
         }
     );
 
@@ -469,25 +416,4 @@ class _BookshelfState extends State<Bookshelf> {
 }
 
 enum BookshelfViewOption { detail, table, album }
-enum SortOption { title, rate, status, startReadingDate, finishReadingDate, category, addedDate }
-
-final Map<String, SortOption> sortOptionMapBottomSheet = {
-  '제목순': SortOption.title,
-  '평점순': SortOption.rate,
-  '상태순': SortOption.status,
-  '시작한 날짜순': SortOption.startReadingDate,
-  '완독한 날짜순': SortOption.finishReadingDate,
-  '카테고리순': SortOption.category,
-  '추가한 날짜순': SortOption.addedDate
-};
-
-final Map<SortOption, String> sortOptionMapSortIcon = {
-  SortOption.title: '제목',
-  SortOption.rate: '평점',
-  SortOption.status: '상태',
-  SortOption.startReadingDate: '시작일',
-  SortOption.finishReadingDate: '완독일',
-  SortOption.category: '카테고리',
-  SortOption.addedDate: '추가일'
-};
 

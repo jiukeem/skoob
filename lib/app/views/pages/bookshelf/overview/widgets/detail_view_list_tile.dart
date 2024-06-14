@@ -11,6 +11,8 @@ import 'package:skoob/app/views/pages/bookshelf/widgets/status_label.dart';
 import 'package:skoob/app/views/pages/bookshelf/overview/widgets/bookshelf_list_tile_mixin.dart';
 import 'package:skoob/app/views/pages/bookshelf/detail/widgets/info/date_widget_according_to_status.dart';
 
+import '../../detail/builder/book_detail_page_route_builder.dart';
+
 class DetailViewListTile extends StatelessWidget with BookshelfListTileMixin {
   DetailViewListTile({super.key, required Book book, required bool isLast, bool isClickable = true}) {
     this.book = book;
@@ -32,21 +34,7 @@ class DetailViewListTile extends StatelessWidget with BookshelfListTileMixin {
                 AnalyticsService.logEvent('bookshelf_detail_view_option_book_tapped');
                 Navigator.push(
                     context,
-                    PageRouteBuilder(
-                      pageBuilder: (context, animation, secondaryAnimation) => BookDetail(book: book),
-                      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                        const begin = Offset(1.0, 0.0);
-                        const end = Offset.zero;
-                        const curve = Curves.ease;
-
-                        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-                        var offsetAnimation = animation.drive(tween);
-
-                        return SlideTransition(
-                          position: offsetAnimation,
-                          child: child,
-                        );
-                      })
+                    buildBookDetailPageRoute(book)
                 );
               },
               child: Row(

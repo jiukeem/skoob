@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:skoob/app/services/third_party/firebase_analytics.dart';
@@ -20,8 +19,7 @@ class Welcome extends StatefulWidget {
 }
 
 class _WelcomeState extends State<Welcome> {
-  UserService _userService = UserService();
-  bool networkDone = false;
+  final UserService _userService = UserService();
 
   @override
   void initState() {
@@ -35,7 +33,10 @@ class _WelcomeState extends State<Welcome> {
     } else {
       await _userService.handleLogin(widget.email);
     }
-    networkDone = true;
+    _navigateToSkoobPage();
+  }
+
+  void _navigateToSkoobPage() {
     AnalyticsService.logEvent('welcome_move_on_to_skoob_page');
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (_) => const Skoob()),

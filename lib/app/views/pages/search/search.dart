@@ -72,10 +72,10 @@ class _SearchState extends State<Search> {
 
     Map<String, dynamic> result = jsonDecode(rawResponse.body);
     List<dynamic> items = result['item'];
-    items.forEach((item) {
+    for (var item in items) {
       var book = _setBookConfiguration(item);
       _searchResults.add(book);
-    });
+    }
   }
 
   Book _setBookConfiguration(dynamic item) {

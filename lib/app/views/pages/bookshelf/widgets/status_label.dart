@@ -19,58 +19,41 @@ class StatusLabel extends StatelessWidget {
       case BookReadingStatus.initial:
         return const SizedBox.shrink();
       case BookReadingStatus.notStarted:
-        return Container(
-          decoration: const BoxDecoration(
-            color: AppColors.gray2,
-            borderRadius: BorderRadius.all(Radius.circular(20.0)),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 1.0, horizontal: 6.0),
-            child: Text(
-              'not started',
-              style: TextStyle(
-                  fontFamily: 'LexendRegular',
-                  color: AppColors.white,
-                  fontSize: fontSize),
-            ),
-          ),
-        );
+        return _buildStatusContainer(text: 'not started',
+            textColor: AppColors.white,
+            backgroundColor: AppColors.gray2);
       case BookReadingStatus.reading:
-        return Container(
-          decoration: const BoxDecoration(
-            color: AppColors.secondaryYellow,
-            borderRadius: BorderRadius.all(Radius.circular(20.0)),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 1.0, horizontal: 6.0),
-            child: Text(
-              'reading',
-              style: TextStyle(
-                  fontFamily: 'LexendRegular',
-                  color: AppColors.softBlack,
-                  fontSize: fontSize),
-            ),
-          ),
-        );
+        return _buildStatusContainer(text: 'reading',
+            textColor: AppColors.softBlack,
+            backgroundColor: AppColors.secondaryYellow);
       case BookReadingStatus.done:
-        return Container(
-          decoration: const BoxDecoration(
-            color: AppColors.softBlack,
-            borderRadius: BorderRadius.all(Radius.circular(20.0)),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 1.0, horizontal: 6.0),
-            child: Text(
-              'done',
-              style: TextStyle(
-                  fontFamily: 'LexendRegular',
-                  color: AppColors.white,
-                  fontSize: fontSize),
-            ),
-          ),
-        );
+        return _buildStatusContainer(text: 'reading',
+            textColor: AppColors.white,
+            backgroundColor: AppColors.softBlack);
       default:
         return const SizedBox.shrink();
     }
+  }
+
+  Widget _buildStatusContainer(
+      {required String text,
+      required Color backgroundColor,
+      required Color textColor}) {
+    return Container(
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: const BorderRadius.all(Radius.circular(20.0)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 1.0, horizontal: 6.0),
+        child: Text(
+          text,
+          style: TextStyle(
+              fontFamily: 'LexendRegular',
+              color: textColor,
+              fontSize: fontSize),
+        ),
+      ),
+    );
   }
 }

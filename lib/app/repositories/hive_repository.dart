@@ -4,6 +4,8 @@ import 'package:skoob/app/models/book.dart';
 import 'package:skoob/app/models/skoob_user.dart';
 import 'package:skoob/app/services/third_party/firebase_analytics.dart';
 
+import '../../config/config.dart';
+
 class HiveRepository {
   static final HiveRepository _instance = HiveRepository._internal();
   factory HiveRepository() => _instance;
@@ -13,17 +15,13 @@ class HiveRepository {
   late Box<Book> _bookBox;
   late Box<String> _settingBox;
 
-  final _userBoxName = 'userBox';
-  final _bookBoxName = 'bookshelfBox';
-  final _settingBoxName = 'settingBox';
-
   final _userBoxKey = 'user';
   final _settingBoxKey = 'lastModifiedAt';
 
   Future<void> openBox() async {
-    _userBox = await Hive.openBox<SkoobUser>(_userBoxName);
-    _bookBox = await Hive.openBox<Book>(_bookBoxName);
-    _settingBox = await Hive.openBox<String>(_settingBoxName);
+    _userBox = await Hive.openBox<SkoobUser>(userBoxName);
+    _bookBox = await Hive.openBox<Book>(bookBoxName);
+    _settingBox = await Hive.openBox<String>(settingBoxName);
   }
 
   Future<void> dispose() async {

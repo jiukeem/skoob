@@ -25,7 +25,6 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   bool _isFriendsTabLoading = true;
   final List<SkoobUser> _friendList = [];
 
-
   @override
   void initState() {
     super.initState();
@@ -58,54 +57,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.white,
-      appBar: AppBar(
-        surfaceTintColor: AppColors.white,
-        backgroundColor: AppColors.white,
-        title: const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 4.0),
-          child: Text(
-            'MY PAGE',
-            style: TextStyle(
-              fontFamily: 'LexendExaMedium',
-              fontSize: 24.0
-          ),),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(FluentIcons.person_add_24_regular),
-            onPressed: () {
-              _navigateAndUpdateFriendList();
-            },
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0, 0, 8.0, 0),
-            child: IconButton(
-                onPressed: () {
-                  AnalyticsService.logEvent('profile_setting_button_tapped');
-                  Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                          pageBuilder: (context, animation, secondaryAnimation) => const Setting(),
-                          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                            const begin = Offset(1.0, 0.0);
-                            const end = Offset.zero;
-                            const curve = Curves.ease;
-
-                            var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-                            var offsetAnimation = animation.drive(tween);
-
-                            return SlideTransition(
-                              position: offsetAnimation,
-                              child: child,
-                            );
-                          })
-                  );
-                },
-                icon: const Icon(FluentIcons.settings_24_regular)
-            ),
-          ),
-        ],
-      ),
+      appBar: _buildAppBar(context),
       body: Column(
         children: <Widget>[
           _buildUserProfile(),
@@ -116,12 +68,62 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
               physics: const NeverScrollableScrollPhysics(),
               children: [
                 _buildFriendsTab(),
-                // Text('feed tab'),
               ],
             ),
           ),
         ],
       ),
+    );
+  }
+
+  AppBar _buildAppBar(BuildContext context) {
+    return AppBar(
+      surfaceTintColor: AppColors.white,
+      backgroundColor: AppColors.white,
+      title: const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 4.0),
+        child: Text(
+          'MY PAGE',
+          style: TextStyle(
+              fontFamily: 'LexendExaMedium',
+              fontSize: 24.0
+          ),
+        ),
+      ),
+      actions: [
+        IconButton(
+          icon: const Icon(FluentIcons.person_add_24_regular),
+          onPressed: _navigateAndUpdateFriendList,
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0, 0, 8.0, 0),
+          child: IconButton(
+              onPressed: () {
+                AnalyticsService.logEvent('profile_setting_button_tapped');
+                Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) => const Setting(),
+                        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                          const begin = Offset(1.0, 0.0);
+                          const end = Offset.zero;
+                          const curve = Curves.ease;
+
+                          var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+                          var offsetAnimation = animation.drive(tween);
+
+                          return SlideTransition(
+                            position: offsetAnimation,
+                            child: child,
+                          );
+                        }
+                    )
+                );
+              },
+              icon: const Icon(FluentIcons.settings_24_regular)
+          ),
+        ),
+      ],
     );
   }
 
@@ -166,7 +168,6 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                               ),
                             ),
                           ),
-                          // const SizedBox(width: 6.0,),
                           Text(
                             feedMap['latestFeedStatus'],
                             style: const TextStyle(
@@ -199,7 +200,8 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
           child: Image.asset(
             'assets/profile_default.jpg',
             fit: BoxFit.cover,
-          )),
+          )
+      ),
     );
   }
 
@@ -210,7 +212,6 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
       unselectedLabelColor: AppColors.gray2,
       tabs: const [
         Tab(text: 'FRIENDS'),
-        // Tab(text: 'FEED'),
       ],
       labelStyle: const TextStyle(
         fontFamily: 'LexendMedium',
@@ -231,15 +232,140 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
     );
   }
 
+  Widget _buildFriendsTab() {
+    return _isFriendsTabLoading
+        ? const Center(
+            child: SpinKitRotatingCircle(
+              size: 30.0,
+              color: AppColors.primaryYellow,
+            ),
+          )
+        : RefreshIndicator(
+            color: AppColors.white,
+            backgroundColor: AppColors.primaryYellow,
+            onRefresh: _handleRefresh,
+            child: ListView.builder(
+              padding: const EdgeInsets.only(bottom: 100.0),
+              itemCount: _friendList.length,
+              itemBuilder: (context, index) {
+                final friend = _friendList[index];
+                return _buildFriendTile(friend);
+              },
+            ),
+          );
+  }
+
+  Widget _buildFriendTile(SkoobUser friend) {
+    final feedMap = _makeFeedMessage(friend);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+      child: InkWell(
+        onTap: () {
+          _visitFriendBookshelf(friend);
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: AppColors.gray3,
+              width: 1.0,
+            ),
+            borderRadius: const BorderRadius.all(
+              Radius.circular(30),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.gray2.withOpacity(0.8),
+                spreadRadius: 0.5,
+                blurRadius: 1,
+                offset: const Offset(0, 2),
+              ),
+              const BoxShadow(
+                color: AppColors.white,
+                spreadRadius: 0,
+                blurRadius: 0,
+                offset: Offset(0, 0),
+              ),
+            ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Row(
+              children: [
+                _buildFriendImage(),
+                const SizedBox(width: 16,),
+                _buildFriendDetails(friend, feedMap),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFriendImage() {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(12),
+      child: SizedBox(
+        width: 54,
+        height: 54,
+        child: Image.asset(
+          'assets/profile_default.jpg',
+          fit: BoxFit.cover,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFriendDetails(SkoobUser friend, Map<String, dynamic> feedMap) {
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            friend.name,
+            style: const TextStyle(
+              color: AppColors.softBlack,
+              fontFamily: 'NotoSansKRRegular',
+              fontSize: 18.0,
+            ),
+          ),
+          Row(
+            children: [
+              Flexible(
+                child: Text(
+                  '${feedMap['latestFeedBookTitle']}  ',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: AppColors.softBlack,
+                    fontFamily: 'NotoSansKRBold',
+                    fontSize: 14.0,
+                  ),
+                ),
+              ),
+              Text(
+                feedMap['latestFeedStatus'],
+                style: const TextStyle(
+                  color: AppColors.softBlack,
+                  fontFamily: 'NotoSansKRRegular',
+                  fontSize: 14.0,
+                ),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
   Map<String, dynamic> _makeFeedMessage(SkoobUser user) {
-    final title =  user.latestFeedBookTitle;
+    final title = user.latestFeedBookTitle;
     final status = user.latestFeedStatus;
 
     String verb = '';
     if (status == BookReadingStatus.reading) {
       verb = '읽는 중';
-    }
-    if (status == BookReadingStatus.done) {
+    } else if (status == BookReadingStatus.done) {
       verb = '완독!';
     }
 
@@ -254,119 +380,6 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
       'latestFeedBookTitle': latestFeedTitle,
       'latestFeedStatus': latestFeedStatus
     };
-  }
-
-  Widget _buildFriendsTab() {
-    return _isFriendsTabLoading
-        ? const Center(
-          child: SpinKitRotatingCircle(
-            size: 30.0,
-            color: AppColors.primaryYellow,
-          ),
-        )
-        : RefreshIndicator(
-          color: AppColors.white,
-          backgroundColor: AppColors.primaryYellow,
-          onRefresh: _handleRefresh,
-          child: ListView.builder(
-              padding: const EdgeInsets.only(bottom: 100.0),
-              itemCount: _friendList.length,
-              itemBuilder: (context, index) {
-                final friend = _friendList[index];
-                final feedMap = _makeFeedMessage(friend);
-                return Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-                  child: InkWell(
-                    onTap: () {
-                      _visitFriendBookshelf(friend);
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: AppColors.gray3,
-                          width: 1.0
-                        ),
-                        borderRadius: const BorderRadius.all(
-                            Radius.circular(30)
-                        ),
-                        boxShadow:  [
-                          BoxShadow(
-                            color: AppColors.gray2.withOpacity(0.8), // Darker shadow for more depth
-                            spreadRadius: 0.5,
-                            blurRadius: 1,
-                            offset: const Offset(0, 2), // Vertically lower shadow for a lifted effect
-                          ),
-                          const BoxShadow(
-                            color: AppColors.white, // Soft light from top for a raised effect
-                            spreadRadius: 0,
-                            blurRadius: 0,
-                            offset: Offset(0, 0),
-                          ),
-                        ],
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: Row(
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: SizedBox(
-                                  width: 54,
-                                  height: 54,
-                                  child: Image.asset(
-                                          'assets/profile_default.jpg',
-                                          fit: BoxFit.cover,
-                                        )),
-                            ),
-                            const SizedBox(width: 16,),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    friend.name,
-                                    style: const TextStyle(
-                                      color: AppColors.softBlack,
-                                      fontFamily: 'NotoSansKRRegular',
-                                      fontSize: 18.0,
-                                    ),
-                                  ),
-                                  Row(
-                                    children: [
-                                      Flexible(
-                                        child: Text(
-                                          '${feedMap['latestFeedBookTitle']}  ',
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(
-                                            color: AppColors.softBlack,
-                                            fontFamily: 'NotoSansKRBold',
-                                            fontSize: 14.0,
-                                          ),
-                                        ),
-                                      ),
-                                      // const SizedBox(width: 6.0,),
-                                      Text(
-                                        feedMap['latestFeedStatus'],
-                                        style: const TextStyle(
-                                          color: AppColors.softBlack,
-                                          fontFamily: 'NotoSansKRRegular',
-                                          fontSize: 14.0,
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              }),
-        );
   }
 
   void _visitFriendBookshelf(SkoobUser friend) {
@@ -392,6 +405,4 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
     _friendList.clear();
     await _getFriendsData();
   }
-
-
 }
