@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 
-import '../../../../../models/book.dart';
-import '../book_detail.dart';
+import '../../models/book.dart';
+import 'bookshelf/detail/book_detail.dart';
 
-PageRouteBuilder buildBookDetailPageRoute(Book book) {
+PageRouteBuilder HorizontalSlidePageRoute(Widget destinationPage) {
   return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) => BookDetail(book: book),
+      pageBuilder: (context, animation, secondaryAnimation) => destinationPage,
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         const begin = Offset(1.0, 0.0);
         const end = Offset.zero;

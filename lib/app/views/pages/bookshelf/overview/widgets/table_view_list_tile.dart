@@ -4,7 +4,7 @@ import 'package:skoob/app/models/book.dart';
 import 'package:skoob/app/models/book/custom_info.dart';
 import 'package:skoob/app/utils/app_colors.dart';
 import 'package:skoob/app/views/pages/bookshelf/detail/book_detail.dart';
-import 'package:skoob/app/views/pages/bookshelf/detail/builder/book_detail_page_route_builder.dart';
+import 'package:skoob/app/views/pages/horizontal_slide_page_route_builder.dart';
 import 'package:skoob/app/views/pages/bookshelf/widgets/status_label.dart';
 import 'package:skoob/app/views/pages/bookshelf/overview/widgets/bookshelf_list_tile_mixin.dart';
 
@@ -33,7 +33,7 @@ class TableViewListTile extends StatelessWidget with BookshelfListTileMixin {
               AnalyticsService.logEvent('bookshelf_table_view_option_book_tapped');
               Navigator.push(
                   context,
-                  buildBookDetailPageRoute(book)
+                  HorizontalSlidePageRoute(BookDetail(book: book))
               );
             },
             child: Row(

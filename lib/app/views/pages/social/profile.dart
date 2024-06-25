@@ -10,7 +10,7 @@ import '../../../models/book/custom_info.dart';
 import '../../../services/third_party/firebase_analytics.dart';
 import '../../../utils/app_colors.dart';
 import '../bookshelf/overview/bookshelf.dart';
-import '../search/friend_search.dart';
+import 'friend_search.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});

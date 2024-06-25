@@ -27,7 +27,7 @@ class StatusLabel extends StatelessWidget {
             textColor: AppColors.softBlack,
             backgroundColor: AppColors.secondaryYellow);
       case BookReadingStatus.done:
-        return _buildStatusContainer(text: 'reading',
+        return _buildStatusContainer(text: 'done',
             textColor: AppColors.white,
             backgroundColor: AppColors.softBlack);
       default:

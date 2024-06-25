@@ -11,7 +11,7 @@ import 'package:skoob/app/views/pages/bookshelf/widgets/status_label.dart';
 import 'package:skoob/app/views/pages/bookshelf/overview/widgets/bookshelf_list_tile_mixin.dart';
 import 'package:skoob/app/views/pages/bookshelf/detail/widgets/info/date_widget_according_to_status.dart';
 
-import '../../detail/builder/book_detail_page_route_builder.dart';
+import '../../../horizontal_slide_page_route_builder.dart';
 
 class DetailViewListTile extends StatelessWidget with BookshelfListTileMixin {
   DetailViewListTile({super.key, required Book book, required bool isLast, bool isClickable = true}) {
@@ -34,7 +34,7 @@ class DetailViewListTile extends StatelessWidget with BookshelfListTileMixin {
                 AnalyticsService.logEvent('bookshelf_detail_view_option_book_tapped');
                 Navigator.push(
                     context,
-                    buildBookDetailPageRoute(book)
+                    HorizontalSlidePageRoute(BookDetail(book: book))
                 );
               },
               child: Row(

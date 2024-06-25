@@ -349,6 +349,20 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
   }
 
   Widget _buildTabBarView() {
+    final List<String> infoLabelList = [
+      'Status',
+      'Title',
+      'Author',
+      'Publisher',
+      'Publish Date',
+      'Category',
+      // 'Link',
+    ];
+
+    if (book.basicInfo.translator.isNotEmpty) {
+      infoLabelList.add('Translator');
+    }
+
     return TabBarView(
       controller: _tabController,
       physics: const NeverScrollableScrollPhysics(),
@@ -359,7 +373,7 @@ class _BookDetailState extends State<BookDetail> with SingleTickerProviderStateM
               padding: const EdgeInsets.fromLTRB(0, 16.0, 0, 0),
               itemCount: infoLabelList.length,
               itemBuilder: (context, index) {
-                return BookDetailInfoListViewTile(book: book, index: index);
+                return BookDetailInfoListViewTile(book: book, index: index, labels: infoLabelList,);
               }),
         ),
         // Column(
@@ -477,14 +491,3 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
     return false;
   }
 }
-
-final List<String> infoLabelList = [
-  'Status',
-  'Title',
-  'Author',
-  'Translator',
-  'Publisher',
-  'Publish Date',
-  'Category',
-  // 'Link',
-];

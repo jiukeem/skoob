@@ -7,14 +7,16 @@ import 'package:skoob/app/services/third_party/firebase_analytics.dart';
 import 'package:skoob/app/services/user_service.dart';
 import 'package:skoob/app/utils/app_colors.dart';
 import 'package:skoob/app/utils/util_fuctions.dart';
+import 'package:skoob/app/views/pages/search/widgets/expandable_text_widget.dart';
 import 'package:skoob/app/views/widgets/general_divider.dart';
 import 'package:skoob/app/views/pages/bookshelf/widgets/status_label.dart';
 
 class BookDetailInfoListViewTile extends StatefulWidget {
   final Book book;
   final int index;
+  final List<String> labels;
 
-  const BookDetailInfoListViewTile({super.key, required this.book, required this.index});
+  const BookDetailInfoListViewTile({super.key, required this.book, required this.index, required this.labels});
 
   @override
   State<BookDetailInfoListViewTile> createState() => _BookDetailInfoListViewTileState();
@@ -23,10 +25,10 @@ class BookDetailInfoListViewTile extends StatefulWidget {
 class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile> {
   final UserService _userService = UserService();
   final BookService _bookService = BookService();
-  final List<String> labels = infoLabelList;
 
   @override
   Widget build(BuildContext context) {
+    final labels = widget.labels;
     final String label = labels[widget.index];
 
     return Column(
@@ -74,6 +76,8 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
         return _generateCategoryWidget(widget.book.basicInfo.category);
       case 'Link':
         return _generateTextWidget(widget.book.basicInfo.infoUrl);
+      case 'Introduction':
+        return _generateIntroductionWidget(widget.book.basicInfo.description);
       default:
         return _generateTextWidget('error');
     }
@@ -88,6 +92,10 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
         color: AppColors.softBlack,
       ),
     );
+  }
+
+  Widget _generateIntroductionWidget(String description) {
+    return ExpandableTextWidget(description: description);
   }
 
   Widget _generateStatusWidget(BookReadingStatus status) {
@@ -361,14 +369,3 @@ class _BookDetailInfoListViewTileState extends State<BookDetailInfoListViewTile>
     );
   }
 }
-
-final List<String> infoLabelList = [
-  'Status',
-  'Title',
-  'Author',
-  'Translator',
-  'Publisher',
-  'Publish Date',
-  'Category',
-  'Link',
-];
